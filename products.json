@@ -1,19 +1,4 @@
 {
   "banner": "🔥 تشكيلة الشتاء وصلت",
-  "products": [
-    {
-      "id": 2,
-      "title": "سديري مخطط وبلوفرات",
-      "badge": "كولكشن جديد ❄️",
-      "image": "images/mvwk6z540nc0.jpg",
-      "description": "سديري صوف مخطط شيك جداً، متوفر مع كولكشن بلوفرات تريكو بألوان هادية وتطريز راقي وجواكت جينز مميزة.",
-      "colors": [
-        "بينك مخطط",
-        "سماوي",
-        "جينز أزرق"
-      ],
-      "tiktokUrl": "https://www.tiktok.com/@noorstore11",
-      "available": true
-    }
-  ]
+  "products": []
 }
