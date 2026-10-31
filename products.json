@@ -5,21 +5,23 @@
       "id": 1,
       "title": "تشكيلة السويت شيرت والجينز",
       "badge": "تريند التيك توك",
+      "image": "447959.webp",
+      "description": "أطقم سويت شيرت شتوية خامة تقيلة بتصميمات تريندي، متناسقة مع بنطلونات جينز واسعة ثلجي تقطيعات جبارة.",
+      "colors": [
+        "أبيض",
+        "بينك",
+        "جينز فاتح",
+        "احمر"
+      ],
+      "sizes": [
+        "Free Size"
+      ],
       "category": "",
       "tag": "",
-      "featured": false,
-      "image": "447959.webp",
+      "featured": true,
       "images": [
         "447959.webp"
       ],
-      "description": "أطقم سويت شيرت شتوية خامة تقيلة بتصميمات تريندي، متناسقة مع بنطلونات جينز واسعة ثلجي تقطيعات جبارة.",
-      "colors": [
-        "نبيتي",
-        "أبيض",
-        "بينك",
-        "جينز فاتح"
-      ],
-      "sizes": [],
       "tiktokUrl": "https://www.tiktok.com/@noorstore11",
       "available": true
     },
@@ -27,13 +29,7 @@
       "id": 2,
       "title": "سديري مخطط وبلوفرات",
       "badge": "كولكشن جديد ❄️",
-      "category": "",
-      "tag": "",
-      "featured": false,
       "image": "447961.webp",
-      "images": [
-        "447961.webp"
-      ],
       "description": "سديري صوف مخطط شيك جداً، متوفر مع كولكشن بلوفرات تريكو بألوان هادية وتطريز راقي وجواكت جينز مميزة.",
       "colors": [
         "بينك مخطط",
@@ -41,6 +37,12 @@
         "جينز أزرق"
       ],
       "sizes": [],
+      "category": "",
+      "tag": "",
+      "featured": false,
+      "images": [
+        "447961.webp"
+      ],
       "tiktokUrl": "https://www.tiktok.com/@noorstore11",
       "available": true
     }
