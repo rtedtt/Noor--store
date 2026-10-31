@@ -2,8 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-width=1.0">
-    <title>محل نور - Noor Store | أحدث صيحات الموضة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محل نور | أحدث كولكشن ملابس نسائية في بني سويف</title>
+    
+    <!-- أكواد الـ SEO لفهرسة جوجل -->
+    <meta name="description" content="محل نور للملابس النسائية (DS Branhami) - أحدث صيحات الموضة والتريندات في بني سويف، شارع الجبالي. تيشرتات، هوديز، وبنطلونات بأفضل الأسعار.">
+    <meta name="keywords" content="محل نور, ملابس حريمي, ملابس نسائية, بني سويف, شارع الجبالي, تيشرتات, هوديز, ملابس شتوي, DS Branhami">
+    <meta property="og:title" content="محل نور | أحدث كولكشن ملابس">
+    <meta property="og:description" content="شرفنا في فرع بني سويف وشوف أحدث التريندات بنفسك.">
+    
+    <!-- اللوجو اللي بيظهر في المتصفح وجوجل -->
+    <link rel="icon" href="logo.jpg">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,7 +44,6 @@
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
         .modal { display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal.active { display: flex; opacity: 1; }
-        /* أنيميشن ناعم للظهور */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
     </style>
@@ -45,19 +54,18 @@
     <header class="fixed w-full top-0 z-50 glass-panel border-b border-gray-800">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-brand-dark border-2 border-brand-accent flex items-center justify-center font-bold text-xl overflow-hidden">
-                    <span class="text-brand-accent">NR</span>
-                </div>
+                <!-- صورة اللوجو -->
+                <img src="logo.jpg" alt="محل نور" class="w-12 h-12 rounded-full border-2 border-brand-accent object-cover bg-black">
                 <div>
-                    <h1 class="font-bold text-xl leading-tight text-brand-accent">محل نور <span class="text-sm bg-gray-800 text-gray-300 px-2 py-0.5 rounded ml-1">الجبالي</span></h1>
-                    <p class="text-xs text-gray-400">Noor Store • Fashion For You</p>
+                    <h1 class="font-bold text-lg md:text-xl leading-tight text-brand-accent">محل نور <span class="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded ml-1">الجبالي</span></h1>
+                    <p class="text-[10px] md:text-xs text-gray-400">Noor Store • Fashion For You</p>
                 </div>
             </div>
-            <div class="flex gap-3">
-                <a href="https://wa.me/+201000000000" target="_blank" class="w-10 h-10 rounded-full bg-brand-whatsapp text-white flex items-center justify-center hover:scale-110 transition shadow-lg shadow-green-900/50">
-                    <i class="fab fa-whatsapp text-xl"></i>
+            <div class="flex gap-2">
+                <a href="https://wa.me/+201271425089" target="_blank" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-brand-whatsapp text-white flex items-center justify-center hover:scale-110 transition shadow-lg shadow-green-900/50">
+                    <i class="fab fa-whatsapp text-lg"></i>
                 </a>
-                <button onclick="sharePage()" class="w-10 h-10 rounded-full bg-gray-800 text-brand-accent border border-brand-accent flex items-center justify-center hover:bg-brand-accent hover:text-black transition">
+                <button onclick="sharePage()" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-800 text-brand-accent border border-brand-accent flex items-center justify-center hover:bg-brand-accent hover:text-black transition">
                     <i class="fas fa-share-alt"></i>
                 </button>
             </div>
@@ -71,14 +79,14 @@
             <span class="inline-block py-1 px-3 rounded-full bg-gray-800 border border-gray-700 text-brand-accent text-sm mb-4">
                 🔥 تشكيلة الشتاء وصلت
             </span>
-            <h2 class="text-4xl md:text-5xl font-black mb-4 leading-tight">
+            <h2 class="text-3xl md:text-5xl font-black mb-4 leading-tight">
                 أشيك تريندات الملابس <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-yellow-200">بأسعار زمان في بني سويف</span>
             </h2>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-lg">
-                بنختارلك أحسن خامة وأشيك موديل. تقدر تشرفنا في المحل وتشوف وتقيس بنفسك!
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-base md:text-lg px-2">
+                بنختارلك أحسن خامة وأشيك موديل نسائي. تقدري تشرفينا في المحل وتتشوفي وتقيسي بنفسك!
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-10">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-10 px-4">
                 <a href="#collection" class="bg-brand-accent text-black font-bold py-3 px-8 rounded-full hover:bg-yellow-400 transition transform hover:scale-105 shadow-[0_0_15px_rgba(212,175,55,0.4)]">
                     <i class="fas fa-tshirt mr-2"></i> تصفح الكولكشن
                 </a>
@@ -86,35 +94,20 @@
                     <i class="fab fa-tiktok"></i> تابعنا على تيك توك
                 </a>
             </div>
-
-            <!-- TikTok Stats -->
-            <div class="flex justify-center gap-8 text-center border-t border-gray-800 pt-8 max-w-md mx-auto">
-                <div>
-                    <div class="text-2xl font-bold text-white">6K+</div>
-                    <div class="text-sm text-gray-500">إعجاب</div>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold text-white">2.3K+</div>
-                    <div class="text-sm text-gray-500">متابع</div>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold text-brand-accent"><i class="fas fa-star"></i></div>
-                    <div class="text-sm text-gray-500">رقم 1 في مصر</div>
-                </div>
-            </div>
         </div>
     </section>
 
     <!-- Collection Section -->
-    <section id="collection" class="py-16 px-4 bg-[#0a0a0a]">
+    <section id="collection" class="py-12 px-2 md:px-4 bg-[#0a0a0a]">
         <div class="container mx-auto">
-            <div class="text-center mb-12">
-                <h3 class="text-3xl font-bold mb-2">أحدث الموديلات</h3>
+            <div class="text-center mb-10">
+                <h3 class="text-2xl md:text-3xl font-bold mb-2">أحدث الموديلات</h3>
                 <div class="w-16 h-1 bg-brand-accent mx-auto rounded"></div>
-                <p class="text-gray-400 mt-4">معاينة وشراء من الفرع مباشرة - شارع الجبالي</p>
+                <p class="text-gray-400 mt-3 text-sm">معاينة وشراء من الفرع مباشرة - شارع الجبالي</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="products-grid">
+            <!-- الكلاس هنا اتغير لـ grid-cols-2 عشان يبقوا كارتين جنب بعض في الموبايل -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6" id="products-grid">
                 <!-- Products will be injected here via JS -->
             </div>
         </div>
@@ -123,14 +116,14 @@
     <!-- Location Section -->
     <section class="py-16 px-4 border-t border-gray-800">
         <div class="container mx-auto max-w-4xl">
-            <div class="glass-panel rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-8">
-                <div class="w-16 h-16 rounded-full bg-brand-accent/20 text-brand-accent flex items-center justify-center text-3xl shrink-0">
+            <div class="glass-panel rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-accent/20 text-brand-accent flex items-center justify-center text-2xl md:text-3xl shrink-0">
                     <i class="fas fa-map-marker-alt"></i>
                 </div>
                 <div class="text-center md:text-right flex-1">
-                    <h3 class="text-2xl font-bold mb-2">عنواننا منور بيك</h3>
-                    <p class="text-gray-300 mb-4 text-lg">بني سويف - منتصف شارع الجبالي أمام سعد فرغلي للأقمشة (تحت أولاد مصطفى علي)</p>
-                    <p class="text-brand-accent font-bold"><i class="fas fa-store mr-1"></i> تشرفنا بالزيارة للمعاينة والقياس!</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">عنواننا منور بيكِ</h3>
+                    <p class="text-gray-300 mb-3 text-sm md:text-lg">بني سويف - منتصف شارع الجبالي أمام سعد فرغلي للأقمشة (تحت أولاد مصطفى علي)</p>
+                    <p class="text-brand-accent font-bold text-sm md:text-base"><i class="fas fa-store mr-1"></i> تشرفينا بالزيارة للمعاينة والقياس!</p>
                 </div>
             </div>
         </div>
@@ -138,42 +131,39 @@
 
     <!-- Footer -->
     <footer class="bg-black py-8 border-t border-gray-900 text-center">
-        <p class="text-gray-500">جميع الحقوق محفوظة © محل نور 2024</p>
-        <p class="text-xs text-gray-700 mt-2">Developed with ❤️ for DS Branhami</p>
+        <p class="text-gray-500 text-sm">جميع الحقوق محفوظة © محل نور 2024</p>
     </footer>
 
     <!-- Product Modal -->
     <div id="product-modal" class="modal fixed inset-0 z-[100] items-center justify-center px-4 bg-black/90 backdrop-blur-sm">
         <div class="bg-[#1a1a1a] border border-gray-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
-            <button onclick="closeModal()" class="absolute top-4 right-4 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-red-500 z-10 transition">
+            <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-red-500 z-10 transition">
                 <i class="fas fa-times"></i>
             </button>
             
-            <div class="w-full h-64 bg-gray-800 relative overflow-hidden" id="modal-image-container">
+            <div class="w-full h-56 md:h-64 bg-gray-800 relative overflow-hidden" id="modal-image-container">
                 <!-- Image goes here -->
             </div>
             
-            <div class="p-6">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 id="modal-title" class="text-2xl font-bold text-white"></h3>
-                </div>
-                <p class="text-brand-accent font-bold mb-4 text-lg"><i class="fas fa-tag"></i> متاح للمعاينة بالفرع</p>
+            <div class="p-5">
+                <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-white mb-2"></h3>
+                <p class="text-brand-accent font-bold mb-3 text-sm md:text-base"><i class="fas fa-tag"></i> متاح للمعاينة بالفرع</p>
                 
-                <p id="modal-desc" class="text-gray-300 mb-6 text-sm leading-relaxed"></p>
+                <p id="modal-desc" class="text-gray-300 mb-5 text-xs md:text-sm leading-relaxed"></p>
                 
-                <div class="mb-6">
-                    <p class="text-sm text-gray-400 mb-2">حدد اللون المفضل للاستفسار:</p>
+                <div class="mb-5">
+                    <p class="text-xs md:text-sm text-gray-400 mb-2">حددي اللون للاستفسار:</p>
                     <div id="modal-colors" class="flex gap-2 flex-wrap">
                         <!-- Colors go here -->
                     </div>
                 </div>
                 
-                <div class="flex flex-col gap-3">
-                    <button id="modal-wa-btn" class="w-full bg-brand-whatsapp text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-600 transition">
-                        <i class="fab fa-whatsapp text-xl"></i> استفسر عن الموديل واللون
+                <div class="flex flex-col gap-2">
+                    <button id="modal-wa-btn" class="w-full bg-brand-whatsapp text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-600 transition text-sm md:text-base">
+                        <i class="fab fa-whatsapp text-lg"></i> استفسري عن الموديل
                     </button>
-                    <a id="modal-tiktok-btn" href="#" target="_blank" class="w-full glass-panel text-white border border-gray-600 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition">
-                        <i class="fab fa-tiktok"></i> شوفه على الطبيعة في التيك توك
+                    <a id="modal-tiktok-btn" href="#" target="_blank" class="w-full glass-panel text-white border border-gray-600 font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition text-sm md:text-base">
+                        <i class="fab fa-tiktok"></i> شوفيه فيديو على تيك توك
                     </a>
                 </div>
             </div>
@@ -181,26 +171,25 @@
     </div>
 
     <script>
-        // WhatsApp Number - غيره لرقمك الحقيقي
-        const waNumber = "+201000000000"; 
+        // التعديل هنا لرقم الواتساب الخاص بك
+        const waNumber = "+201271425089"; 
         
-        // Products Data - هنا تم ربط الصور الحقيقية المرفوعة
         const products = [
             {
                 id: 1,
                 title: "تشكيلة السويت شيرت والجينز",
                 badge: "تريند التيك توك",
-                image: "447959.webp", // اسم صورتك المرفوعة بالضبط
-                description: "أطقم سويت شيرت شتوية خامة تقيلة بتصميمات تريندي (Battle Bear / Fearless)، متناسقة مع بنطلونات جينز واسعة ثلجي تقطيعات جبارة.",
+                image: "447959.webp", 
+                description: "أطقم سويت شيرت شتوية خامة تقيلة بتصميمات تريندي، متناسقة مع بنطلونات جينز واسعة ثلجي تقطيعات جبارة.",
                 colors: ["نبيتي", "أبيض", "بينك", "جينز فاتح"],
                 tiktokUrl: "https://www.tiktok.com/@noorstore11"
             },
             {
                 id: 2,
-                title: "سديري مخطط وبلوفرات تريكو",
+                title: "سديري مخطط وبلوفرات",
                 badge: "كولكشن جديد ❄️",
-                image: "447961.webp", // اسم صورتك المرفوعة بالضبط
-                description: "سديري صوف مخطط شيك جداً للجامعة والخروج، متوفر مع كولكشن بلوفرات تريكو بألوان هادية وتطريز راقي وجواكت جينز مميزة.",
+                image: "447961.webp", 
+                description: "سديري صوف مخطط شيك جداً، متوفر مع كولكشن بلوفرات تريكو بألوان هادية وتطريز راقي وجواكت جينز مميزة.",
                 colors: ["بينك مخطط", "سماوي", "جينز أزرق"],
                 tiktokUrl: "https://www.tiktok.com/@noorstore11"
             }
@@ -208,37 +197,30 @@
 
         let selectedColor = "";
 
-        // Render Products
         const grid = document.getElementById('products-grid');
         products.forEach(p => {
-            const colorsHtml = p.colors.slice(0,3).map(c => `<span class="w-3 h-3 rounded-full bg-gray-400 inline-block border border-gray-600" title="${c}"></span>`).join('');
-            const plus = p.colors.length > 3 ? `<span class="text-xs text-gray-500">+${p.colors.length - 3}</span>` : '';
+            const colorsHtml = p.colors.slice(0,3).map(c => `<span class="w-2.5 h-2.5 rounded-full bg-gray-400 inline-block border border-gray-600" title="${c}"></span>`).join('');
+            const plus = p.colors.length > 3 ? `<span class="text-[10px] text-gray-500">+${p.colors.length - 3}</span>` : '';
             
-            // Image rendering logic
             const imageHtml = p.image 
                 ? `<img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">`
-                : `<div class="w-full h-full flex items-center justify-center text-4xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
+                : `<div class="w-full h-full flex items-center justify-center text-3xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
 
             grid.innerHTML += `
-                <div class="glass-panel rounded-2xl overflow-hidden product-card group">
-                    <div class="h-64 bg-gray-800 relative overflow-hidden cursor-pointer" onclick="openModal(${p.id})">
+                <div class="glass-panel rounded-xl overflow-hidden product-card group flex flex-col">
+                    <div class="h-44 md:h-56 bg-gray-800 relative overflow-hidden cursor-pointer shrink-0" onclick="openModal(${p.id})">
                         ${imageHtml}
-                        <div class="absolute top-3 left-3 bg-brand-accent text-black text-xs font-bold px-2 py-1 rounded">
+                        <div class="absolute top-2 left-2 bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">
                             ${p.badge}
                         </div>
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
-                            <span class="border border-brand-accent text-brand-accent px-4 py-2 rounded-full font-bold bg-black/50 backdrop-blur-sm">
-                                <i class="fas fa-eye"></i> معاينة التفاصيل
-                            </span>
-                        </div>
                     </div>
-                    <div class="p-5">
-                        <h4 class="text-lg font-bold mb-1 truncate">${p.title}</h4>
-                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">${p.description}</p>
+                    <div class="p-3 md:p-4 flex flex-col flex-1">
+                        <h4 class="text-sm md:text-lg font-bold mb-1 truncate">${p.title}</h4>
+                        <p class="text-gray-400 text-[10px] md:text-sm mb-3 line-clamp-2 flex-1">${p.description}</p>
                         
-                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-700/50">
-                            <button onclick="quickWa(${p.id})" class="text-brand-whatsapp hover:text-green-400 transition bg-green-900/20 w-10 h-10 rounded-full flex items-center justify-center">
-                                <i class="fab fa-whatsapp text-lg"></i>
+                        <div class="flex justify-between items-center mt-auto pt-2 border-t border-gray-700/50">
+                            <button onclick="quickWa(${p.id})" class="text-brand-whatsapp hover:text-green-400 transition bg-green-900/20 w-8 h-8 rounded-full flex items-center justify-center">
+                                <i class="fab fa-whatsapp text-sm md:text-lg"></i>
                             </button>
                             <div class="flex items-center gap-1">
                                 ${colorsHtml} ${plus}
@@ -249,13 +231,12 @@
             `;
         });
 
-        // Modal Logic
         const modal = document.getElementById('product-modal');
         let currentProduct = null;
 
         function openModal(id) {
             currentProduct = products.find(p => p.id === id);
-            selectedColor = currentProduct.colors[0]; // افتراضي اول لون
+            selectedColor = currentProduct.colors[0]; 
             
             document.getElementById('modal-title').innerText = currentProduct.title;
             document.getElementById('modal-desc').innerText = currentProduct.description;
@@ -265,7 +246,7 @@
             if(currentProduct.image) {
                 imgContainer.innerHTML = `<img src="${currentProduct.image}" class="w-full h-full object-cover">`;
             } else {
-                imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-6xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
+                imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
             }
 
             renderColors();
@@ -278,7 +259,7 @@
         function renderColors() {
             const container = document.getElementById('modal-colors');
             container.innerHTML = currentProduct.colors.map(c => `
-                <button onclick="selectColor('${c}')" class="px-3 py-1 text-sm rounded-full border ${selectedColor === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">
+                <button onclick="selectColor('${c}')" class="px-2 py-1 text-[11px] md:text-sm rounded-full border ${selectedColor === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">
                     ${c}
                 </button>
             `).join('');
@@ -292,7 +273,7 @@
 
         function updateModalWaButton() {
             const btn = document.getElementById('modal-wa-btn');
-            const msg = encodeURIComponent(`السلام عليكم، حابب استفسر عن الموديل ده: ${currentProduct.title} (لون: ${selectedColor})، هل لسه متاح في المحل؟`);
+            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title} (لون: ${selectedColor})، هل لسه متاح في المحل؟`);
             btn.onclick = () => window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
         }
 
@@ -307,14 +288,12 @@
             document.body.style.overflow = 'auto';
         }
 
-        // إغلاق النافذة عند الضغط خارجها
         modal.addEventListener('click', function(e) {
             if(e.target === modal) {
                 closeModal();
             }
         });
 
-        // Smooth Scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -328,11 +307,11 @@
             if (navigator.share) {
                 navigator.share({
                     title: 'محل نور - بني سويف',
-                    text: 'شوف أحدث كولكشن شتوي من محل نور للملابس التريندي في بني سويف 🔥',
+                    text: 'شوفي أحدث كولكشن شتوي من محل نور للملابس التريندي في بني سويف 🔥',
                     url: window.location.href,
                 });
             } else {
-                alert('انسخ الرابط ده وشاركه مع أصحابك: ' + window.location.href);
+                alert('انسخي الرابط ده وشاركيه مع صاحباتك: ' + window.location.href);
             }
         }
     </script>
