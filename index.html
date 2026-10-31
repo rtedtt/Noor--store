@@ -99,6 +99,14 @@
         </div>
     </section>
 
+    <!-- Featured Slider -->
+    <section id="featured" class="hidden px-2 md:px-4 pb-8">
+        <div class="container mx-auto">
+            <h3 class="text-lg font-bold mb-3 px-1">📌 مميز عندنا</h3>
+            <div id="feat-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
+        </div>
+    </section>
+
     <!-- Collection Section -->
     <section id="collection" class="py-12 px-2 md:px-4 bg-[#0a0a0a]">
         <div class="container mx-auto">
@@ -109,6 +117,10 @@
             </div>
 
             <!-- الكلاس هنا اتغير لـ grid-cols-2 عشان يبقوا كارتين جنب بعض في الموبايل -->
+            <div class="mb-5 px-1">
+                <input id="search" type="search" placeholder="🔍 ابحثي بالاسم أو الوصف..." class="w-full bg-[#1a1a1a] border border-gray-700 rounded-full px-5 py-2.5 text-sm outline-none focus:border-brand-accent mb-3">
+                <div id="filters" class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none"></div>
+            </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6" id="products-grid">
                 <!-- Products will be injected here via JS -->
             </div>
@@ -159,6 +171,10 @@
                         <!-- Colors go here -->
                     </div>
                 </div>
+                <div id="modal-sizes-wrap" class="mb-5 hidden">
+                    <p class="text-xs md:text-sm text-gray-400 mb-2">حددي المقاس:</p>
+                    <div id="modal-sizes" class="flex gap-2 flex-wrap"></div>
+                </div>
                 
                 <div class="flex flex-col gap-2">
                     <button id="modal-wa-btn" class="w-full bg-brand-whatsapp text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-600 transition text-sm md:text-base">
@@ -199,12 +215,14 @@
 
         let products = [];
         let selectedColor = "";
+        let selectedSize = "";
 
         const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         const grid = document.getElementById('products-grid');
 
         function renderProducts() {
-            grid.innerHTML = products.length ? products.map(p => {
+            const shown = products.filter(matches);
+            grid.innerHTML = shown.length ? shown.map(p => {
                 const off = p.available === false;
                 const colors = p.colors || [];
                 const colorsHtml = colors.slice(0,3).map(c => `<span class="w-2.5 h-2.5 rounded-full bg-gray-400 inline-block border border-gray-600" title="${esc(c)}"></span>`).join('');
@@ -217,6 +235,7 @@
                     <div class="h-44 md:h-56 bg-gray-800 relative overflow-hidden cursor-pointer shrink-0" onclick="openModal(${Number(p.id)})">
                         ${imageHtml}
                         ${p.badge ? `<div class="absolute top-2 left-2 bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">${esc(p.badge)}</div>` : ''}
+                        ${tagHtml(p)}
                         ${off ? '<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-bold">غير متوفر حالياً</div>' : ''}
                     </div>
                     <div class="p-3 md:p-4 flex flex-col flex-1">
@@ -231,7 +250,57 @@
                         </div>
                     </div>
                 </div>`;
-            }).join('') : '<p class="col-span-full text-center text-gray-500 py-10">موديلات جديدة قريباً 🤍</p>';
+            }).join('') : `<p class="col-span-full text-center text-gray-500 py-10">${products.length ? 'مفيش نتايج للبحث ده 🔍' : 'موديلات جديدة قريباً 🤍'}</p>`;
+        }
+
+        const TAGS = { hot: ['🔥 هوت', 'from-red-600 to-orange-500'], trend: ['⭐ تريند', 'from-fuchsia-600 to-purple-600'] };
+        const tagHtml = p => TAGS[p.tag] ? `<div class="absolute top-2 right-2 bg-gradient-to-r ${TAGS[p.tag][1]} text-white text-[10px] md:text-xs font-black px-2 py-0.5 rounded-full shadow-lg">${TAGS[p.tag][0]}</div>` : '';
+        const norm = x => String(x || '').toLowerCase().replace(/[\u064B-\u065F\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+        let curCat = '', q = '';
+        const matches = p => (!curCat || p.category === curCat) && (!q || norm(p.title + ' ' + p.description + ' ' + (p.category || '')).includes(q));
+        const prep = list => list.map(p => ({ ...p, images: (p.images && p.images.length) ? p.images : (p.image ? [p.image] : []) }));
+
+        function renderFilters() {
+            const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+            const box = document.getElementById('filters');
+            box.classList.toggle('hidden', !cats.length);
+            box.innerHTML = ['', ...cats].map(c => `<button data-c="${esc(c)}" class="shrink-0 px-4 py-1.5 rounded-full text-xs md:text-sm border transition ${curCat === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'border-gray-600 text-gray-300'}">${c ? esc(c) : 'الكل'}</button>`).join('');
+        }
+        document.getElementById('filters').addEventListener('click', e => {
+            const b = e.target.closest('button'); if (!b) return;
+            curCat = b.dataset.c; renderFilters(); renderProducts();
+        });
+        document.getElementById('search').addEventListener('input', e => { q = norm(e.target.value.trim()); renderProducts(); });
+
+        function renderFeatured() {
+            const f = products.filter(p => p.featured && p.available !== false);
+            document.getElementById('featured').classList.toggle('hidden', !f.length);
+            document.getElementById('feat-track').innerHTML = f.map(p => `
+                <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
+                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}</div>
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>
+                </div>`).join('');
+        }
+        const ft = document.getElementById('feat-track');
+        let ftPause = 0;
+        ['pointerdown', 'touchstart', 'wheel'].forEach(ev => ft.addEventListener(ev, () => { ftPause = Date.now() + 6000; }, { passive: true }));
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => {
+            if (Date.now() < ftPause || !ft.firstElementChild || ft.scrollWidth <= ft.clientWidth + 4) return;
+            const end = Math.abs(ft.scrollLeft) + ft.clientWidth >= ft.scrollWidth - 4;
+            end ? ft.scrollTo({ left: 0, behavior: 'smooth' }) : ft.scrollBy({ left: -(ft.firstElementChild.offsetWidth + 12), behavior: 'smooth' });
+        }, 3500);
+
+        function renderGallery() {
+            const imgs = currentProduct.images || [];
+            if (!imgs.length) return;
+            const c = document.getElementById('modal-image-container');
+            c.innerHTML = `<div id="gal-track" class="flex h-full overflow-x-auto snap-x snap-mandatory" style="scrollbar-width:none">${imgs.map(s => `<img loading="lazy" src="${esc(s)}" alt="${esc(currentProduct.title)}" class="w-full h-full object-cover shrink-0 snap-center">`).join('')}</div>`
+                + (imgs.length > 1 ? `<div class="absolute bottom-2 inset-x-0 flex justify-center gap-1.5 pointer-events-none">${imgs.map((_, i) => `<span class="gal-dot w-1.5 h-1.5 rounded-full ${i ? 'bg-white/40' : 'bg-white'}"></span>`).join('')}</div>` : '');
+            const t = document.getElementById('gal-track');
+            t.onscroll = () => {
+                const i = Math.round(Math.abs(t.scrollLeft) / t.clientWidth);
+                c.querySelectorAll('.gal-dot').forEach((d, k) => d.className = `gal-dot w-1.5 h-1.5 rounded-full ${k === i ? 'bg-white' : 'bg-white/40'}`);
+            };
         }
 
         async function loadProducts() {
@@ -241,13 +310,15 @@
                 const d = await r.json();
                 const list = Array.isArray(d) ? d : d.products;
                 if (!Array.isArray(list)) throw 0;
-                products = list;
+                products = prep(list);
                 if (!Array.isArray(d) && typeof d.banner === 'string') {
                     const b = document.getElementById('season-banner');
                     if (d.banner.trim()) b.textContent = d.banner; else b.style.display = 'none';
                 }
-            } catch (e) { products = defaultProducts; }
+            } catch (e) { products = prep(defaultProducts); }
             renderProducts();
+            renderFilters();
+            renderFeatured();
             openFromHash();
         }
         document.getElementById('yr').textContent = new Date().getFullYear();
@@ -278,7 +349,9 @@
 
         function openModal(id) {
             currentProduct = products.find(p => p.id === id);
-            selectedColor = (currentProduct.colors || [])[0] || ''; 
+            selectedColor = (currentProduct.colors || [])[0] || '';
+            selectedSize = '';
+            renderSizes(); 
             
             document.getElementById('modal-title').innerText = currentProduct.title;
             document.getElementById('modal-desc').innerText = currentProduct.description;
@@ -299,6 +372,7 @@
             renderColors();
             updateModalWaButton();
             
+            renderGallery();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -312,6 +386,20 @@
             `).join('');
         }
 
+        function renderSizes() {
+            const sizes = currentProduct.sizes || [];
+            document.getElementById('modal-sizes-wrap').classList.toggle('hidden', !sizes.length);
+            document.getElementById('modal-sizes').innerHTML = sizes.map(s => `
+                <button data-s="${esc(s)}" onclick="selectSize(this.dataset.s)" class="min-w-[42px] px-3 py-1 text-[11px] md:text-sm rounded-lg border ${selectedSize === s ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">${esc(s)}</button>
+            `).join('');
+        }
+
+        function selectSize(s) {
+            selectedSize = selectedSize === s ? '' : s;
+            renderSizes();
+            updateModalWaButton();
+        }
+
         function selectColor(color) {
             selectedColor = color;
             renderColors();
@@ -320,7 +408,7 @@
 
         function updateModalWaButton() {
             const btn = document.getElementById('modal-wa-btn');
-            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title} ${selectedColor ? `(لون: ${selectedColor})` : ''}، هل لسه متاح في المحل؟`);
+            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title} ${(d => d.length ? '(' + d.join('، ') + ')' : '')([selectedSize && 'المقاس: ' + selectedSize, selectedColor && 'اللون: ' + selectedColor].filter(Boolean))}، هل لسه متاح في المحل؟`);
             btn.onclick = () => window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
         }
 

@@ -63,6 +63,14 @@ textarea.in{min-height:96px;resize:vertical}
 #toast.on{opacity:1;transform:none}
 #toast.bad{border-color:var(--rd);background:#3d1f1f}
 .bn{padding:12px;margin-bottom:14px;border:1px solid var(--ln);border-radius:16px;background:var(--s1)}.bn label{margin:0 0 6px}.bn div{display:flex;gap:8px}
+button.chip{padding:6px 12px;color:var(--mu);cursor:pointer}
+#pk{min-height:90px}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.gi{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--s2)}
+.gi img{width:100%;height:100%;object-fit:cover}
+.gi b{position:absolute;top:4px;right:4px;padding:1px 6px;border-radius:6px;background:var(--gd);color:#1a1405;font-size:10px}
+.gi div{position:absolute;inset:auto 0 0;display:flex;background:rgba(0,0,0,.65)}
+.gi button{flex:1;height:34px;border:0;background:none;color:#fff;font-size:16px}
 details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
 </style>
 </head>
@@ -115,11 +123,21 @@ details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
     <label>الألوان</label>
     <div style="display:flex;gap:8px"><input class="in" id="f_c" placeholder="اكتب لون وبعدين إضافة"><button class="btn" id="f_cb" type="button">إضافة</button></div>
     <div class="chips" id="chips"></div>
+    <label>المقاسات (اختياري)</label>
+    <div style="display:flex;gap:8px"><input class="in" id="f_s" placeholder="مثال: S, M, L أو Free Size"><button class="btn" id="f_sb" type="button">إضافة</button></div>
+    <div class="chips" id="schips"></div>
+    <div class="chips" id="qs"></div>
+    <label>التصنيف</label>
+    <input class="in" id="f_k" list="cats" placeholder="مثال: تيشرتات"><datalist id="cats"></datalist>
+    <label>شارة مميزة</label>
+    <select class="in" id="f_g"><option value="">بدون</option><option value="hot">🔥 هوت</option><option value="trend">⭐ تريند</option></select>
+    <label class="sw" style="margin-top:16px"><input type="checkbox" id="f_f"><i></i>مميز (يظهر في الشريط المتحرك)</label>
     <label>رابط التيك توك (اختياري)</label>
     <input class="in ltr" id="f_u" type="url" inputmode="url" autocapitalize="off" placeholder="https://www.tiktok.com/...">
-    <label>صورة الموديل</label>
-    <div class="pick" id="pk"></div>
-    <input type="file" id="fi" accept="image/*" hidden>
+    <label>صور الموديل (لحد 8 — الأولى هي الغلاف)</label>
+    <div class="gal" id="gal"></div>
+    <div class="pick" id="pk"><span style="font-size:28px">📷</span><span>اضغط لإضافة صور من الموبايل</span></div>
+    <input type="file" id="fi" accept="image/*" multiple hidden>
     <label class="sw" style="margin-top:20px"><input type="checkbox" id="f_a" checked><i></i>متوفر حالياً</label>
   </div>
   <div class="foot"><button class="btn" id="fc">إلغاء</button><button class="btn p" id="fs">حفظ</button></div>
@@ -167,7 +185,7 @@ const getF=async p=>{try{return await gh(`${R()}/contents/${p}?ref=${encodeURICo
 const putF=(p,b64,msg,sha)=>gh(`${R()}/contents/${p}`,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
 const delF=async(p,msg)=>{const f=await getF(p);if(f)await gh(`${R()}/contents/${p}`,{method:'DELETE',body:JSON.stringify({message:msg,sha:f.sha,branch:cfg.branch})})};
 
-const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],tiktokUrl:p.tiktokUrl||'',available:p.available!==false});
+const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false});
 function parse(f){if(!f)return{banner:'',products:[]};const j=JSON.parse(dec(f.content)),l=Array.isArray(j)?j:j.products;if(!Array.isArray(l))throw new Error('products.json مش بالصيغة المتوقعة');return{banner:Array.isArray(j)?'':(j.banner||''),products:l.map(norm)}}
 
 async function load(){
@@ -184,7 +202,7 @@ async function mutate(fn,msg,bn){
   }
 }
 async function rmImg(path){
-  if(!path||!path.startsWith('images/')||items.some(p=>p.image===path))return;
+  if(!path||!path.startsWith('images/')||items.some(p=>p.images.includes(path)))return;
   try{await delF(path,'Remove image '+path)}catch{}
 }
 
@@ -209,12 +227,13 @@ function render(){
   <div class="card" data-id="${p.id}">
     <div class="th ${p.available?'':'off'}">${p.image?`<img src="${esc(src(p))}" alt="" onerror="this.remove()">`:''}${p.available?'':'<b>غير متوفر</b>'}</div>
     <div class="inf">
-      <h3>${esc(p.title)}</h3>
+      <h3>${p.featured?'📌 ':''}${p.tag==='hot'?'🔥 ':p.tag==='trend'?'⭐ ':''}${esc(p.title)}</h3>
       ${p.badge?`<span class="pill">${esc(p.badge)}</span>`:''}
-      <div class="mu">${esc(p.colors.join('، '))||'بدون ألوان'}</div>
+      <div class="mu">${p.category?esc(p.category)+' • ':''}${esc(p.colors.join('، '))||'بدون ألوان'}${p.sizes.length?' • '+esc(p.sizes.join(' / ')):''}</div>
       <div class="row">
         <label class="sw"><input type="checkbox" data-a="tg" ${p.available?'checked':''}><i></i>${p.available?'متوفر':'غير متوفر'}</label>
         <span style="flex:1"></span>
+        <button class="btn sq ${p.featured?'p':''}" data-a="ft" aria-label="تثبيت في الشريط المميز">📌</button>
         <button class="btn sq" data-a="ed" aria-label="تعديل">✏️</button>
         <button class="btn sq d" data-a="rm" aria-label="حذف">🗑️</button>
       </div>
@@ -225,6 +244,7 @@ $('#list').addEventListener('click',e=>{
   const a=e.target.closest('[data-a]');if(!a)return;
   const id=+a.closest('.card').dataset.id;
   if(a.dataset.a==='ed')openForm(id);
+  else if(a.dataset.a==='ft')feat(id);
   else if(a.dataset.a==='rm'){const p=items.find(x=>x.id===id);delId=id;$('#cft').textContent=p.title;$('#cf').classList.add('on')}
 });
 $('#list').addEventListener('change',async e=>{
@@ -235,24 +255,30 @@ $('#list').addEventListener('change',async e=>{
   catch(x){toast(x.message,1);render()}finally{busy()}
 });
 
+async function feat(id){
+  const p=items.find(x=>x.id===id),v=!p.featured;busy('جاري التحديث...');
+  try{await mutate(l=>l.map(x=>x.id===id?{...x,featured:v}:x),'Featured '+(v?'on':'off')+': '+id);toast(v?'تم تثبيت الموديل في الشريط المميز':'تم إلغاء التثبيت')}
+  catch(e){toast(e.message,1)}finally{busy()}
+}
 /* ===== الحذف ===== */
 $('#cn').onclick=()=>$('#cf').classList.remove('on');
 $('#cy').onclick=async()=>{
   $('#cf').classList.remove('on');
   const p=items.find(x=>x.id===delId);if(!p)return;
   busy('جاري الحذف...');
-  try{await mutate(l=>l.filter(x=>x.id!==delId),'Delete: '+p.title);await rmImg(p.image);toast('تم حذف الموديل نهائياً')}
+  try{await mutate(l=>l.filter(x=>x.id!==delId),'Delete: '+p.title);for(const x of p.images)await rmImg(x);toast('تم حذف الموديل نهائياً')}
   catch(e){toast(e.message,1)}finally{busy()}
 };
 
 /* ===== نموذج الإضافة / التعديل ===== */
 function openForm(id){
   const p=id?items.find(x=>x.id===id):null;
-  F={id:id||0,colors:[...(p?p.colors:[])],img:null,old:p?p.image:''};
+  F={id:id||0,colors:[...(p?p.colors:[])],sizes:[...(p?p.sizes:[])],gal:(p?p.images:[]).map(x=>({p:x,url:src({image:x}),b64:''})),oldImgs:p?[...p.images]:[]};
   $('#ft').textContent=p?'تعديل الموديل':'موديل جديد';
   $('#f_t').value=p?p.title:'';$('#f_b').value=p?p.badge:'';$('#f_d').value=p?p.description:'';
-  $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?p.available:true;
-  chips();pickShow();
+  $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?p.available:true;$('#f_k').value=p?p.category:'';$('#f_g').value=p?p.tag:'';$('#f_f').checked=p?p.featured:false;
+  $('#cats').innerHTML=[...new Set(['تيشرتات','هوديز','بنطلونات',...items.map(x=>x.category)].filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
+  $('#f_s').value='';chips();schips();pickShow();
   $('#frm').classList.add('on');$('#frm').scrollTop=0;document.body.style.overflow='hidden';
 }
 const closeForm=()=>{$('#frm').classList.remove('on');document.body.style.overflow=''};
@@ -262,21 +288,41 @@ function addColors(){
   $('#f_c').value='';chips();
 }
 function pickShow(){
-  const s=F.img?F.img.url:(F.old?src({image:F.old}):'');
-  $('#pk').innerHTML=s?`<img src="${esc(s)}" alt="" onerror="this.outerHTML='<span>تعذر عرض الصورة الحالية</span>'">`:'<span style="font-size:34px">📷</span><span>اضغط لاختيار صورة من الموبايل</span>';
+  $('#gal').innerHTML=F.gal.map((g,i)=>`<div class="gi"><img src="${esc(g.url)}" alt="" onerror="this.remove()">${i?'':'<b>الغلاف</b>'}<div><button type="button" data-g="p" data-i="${i}" aria-label="قبل">→</button><button type="button" data-g="n" data-i="${i}" aria-label="بعد">←</button><button type="button" data-g="x" data-i="${i}" aria-label="حذف">×</button></div></div>`).join('');
 }
+const schips=()=>{
+  $('#schips').innerHTML=F.sizes.map((c,i)=>`<span class="chip"><button type="button" data-i="${i}" aria-label="حذف المقاس">×</button>${esc(c)}</span>`).join('');
+  $('#qs').innerHTML=['S','M','L','XL','XXL','Free Size'].filter(x=>!F.sizes.includes(x)).map(x=>`<button type="button" class="chip" data-q="${x}">+ ${x}</button>`).join('');
+};
+function addSizes(){
+  $('#f_s').value.split(/[,،\n]/).map(s=>s.trim()).filter(s=>s&&!F.sizes.includes(s)).forEach(s=>F.sizes.push(s));
+  $('#f_s').value='';schips();
+}
+$('#f_sb').onclick=addSizes;
+$('#f_s').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addSizes()}});
+$('#f_s').addEventListener('input',e=>{if(/[,،]$/.test(e.target.value))addSizes()});
+$('#schips').addEventListener('click',e=>{const b=e.target.closest('button');if(b){F.sizes.splice(+b.dataset.i,1);schips()}});
+$('#qs').addEventListener('click',e=>{const b=e.target.closest('[data-q]');if(b){F.sizes.push(b.dataset.q);schips()}});
 $('#f_cb').onclick=addColors;
 $('#f_c').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addColors()}});
 $('#f_c').addEventListener('input',e=>{if(/[,،]$/.test(e.target.value))addColors()});
 $('#chips').addEventListener('click',e=>{const b=e.target.closest('button');if(b){F.colors.splice(+b.dataset.i,1);chips()}});
 $('#pk').onclick=()=>$('#fi').click();
-async function pickFile(f){
-  if(!f)return;busy('جاري تجهيز الصورة...');
-  try{F.img=await shrink(f);pickShow()}catch(x){toast(x.message,1)}finally{busy()}
+async function pickFiles(fs){
+  fs=[...fs];if(!fs.length)return;busy('جاري تجهيز الصور...');
+  try{for(const f of fs){if(F.gal.length>=8){toast('الحد الأقصى 8 صور',1);break}const r=await shrink(f);F.gal.push({p:'',url:r.url,b64:r.b64})}pickShow()}
+  catch(x){toast(x.message,1)}finally{busy()}
 }
-$('#fi').onchange=e=>{const f=e.target.files[0];e.target.value='';pickFile(f)};
+$('#fi').onchange=e=>{pickFiles(e.target.files);e.target.value=''};
 $('#pk').addEventListener('dragover',e=>e.preventDefault());
-$('#pk').addEventListener('drop',e=>{e.preventDefault();pickFile(e.dataTransfer.files[0])});
+$('#pk').addEventListener('drop',e=>{e.preventDefault();pickFiles(e.dataTransfer.files)});
+$('#gal').addEventListener('click',e=>{
+  const b=e.target.closest('[data-g]');if(!b)return;
+  const i=+b.dataset.i,g=b.dataset.g,l=F.gal;
+  if(g==='x')l.splice(i,1);
+  else{const j=g==='p'?i-1:i+1;if(j<0||j>=l.length)return;[l[i],l[j]]=[l[j],l[i]]}
+  pickShow();
+});
 $('#bs').onclick=async()=>{
   busy('جاري حفظ النص...');
   try{await mutate(l=>l,'Update banner',$('#bt').value.trim());toast('✓ تم حفظ النص الموسمي')}
@@ -285,29 +331,31 @@ $('#bs').onclick=async()=>{
 $('#fx').onclick=$('#fc').onclick=closeForm;
 
 $('#fs').onclick=async()=>{
-  addColors();
+  addColors();addSizes();
   const t=$('#f_t').value.trim();
   if(!t){toast('اكتب اسم الموديل الأول',1);$('#f_t').focus();return}
   let u=$('#f_u').value.trim();if(u&&!/^https?:\/\//i.test(u))u='https://'+u;
-  const rec={title:t,badge:$('#f_b').value.trim(),description:$('#f_d').value.trim(),colors:[...F.colors],tiktokUrl:u,available:$('#f_a').checked};
-  const id=F.id;let np='';
+  const rec={title:t,badge:$('#f_b').value.trim(),description:$('#f_d').value.trim(),colors:[...F.colors],sizes:[...F.sizes],category:$('#f_k').value.trim(),tag:$('#f_g').value,featured:$('#f_f').checked,tiktokUrl:u,available:$('#f_a').checked};
+  const id=F.id,up=[];
   busy('جاري الحفظ...');
   try{
-    if(F.img){
-      busy('جاري رفع الصورة...');
-      np='images/'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';
-      await putF(np,F.img.b64,'Add image '+np);
-      prev[np]=F.img.url;
+    let n=0;
+    for(const g of F.gal)if(!g.p){
+      busy(`جاري رفع الصور (${++n})...`);
+      g.p='images/'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';
+      await putF(g.p,g.b64,'Add image '+g.p);up.push(g.p);prev[g.p]=g.url;
     }
+    const imgs=F.gal.map(g=>g.p);
     busy('جاري تحديث products.json...');
     await mutate(l=>id
-      ?l.map(p=>p.id===id?{...p,...rec,image:np||p.image}:p)
-      :[{id:Math.max(0,...l.map(p=>p.id))+1,...rec,image:np},...l],
+      ?l.map(p=>p.id===id?{...p,...rec,images:imgs,image:imgs[0]||''}:p)
+      :[{id:Math.max(0,...l.map(p=>p.id))+1,...rec,images:imgs,image:imgs[0]||''},...l],
       (id?'Update: ':'Add: ')+t);
-    if(np&&F.old)await rmImg(F.old);
+    for(const o of F.oldImgs)if(!imgs.includes(o))await rmImg(o);
     closeForm();toast('✓ تم الحفظ — التغيير بيظهر في الموقع خلال دقيقة أو اتنين');
   }catch(e){
-    if(np)try{await delF(np,'Cleanup '+np)}catch{}
+    F.gal.forEach(g=>{if(up.includes(g.p))g.p=''});
+    for(const p of up)try{await delF(p,'Cleanup '+p)}catch{}
     toast(e.message,1);
   }finally{busy()}
 };
