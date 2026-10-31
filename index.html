@@ -8,6 +8,8 @@
     <!-- أكواد الـ SEO لفهرسة جوجل -->
     <meta name="description" content="محل نور للملابس النسائية (DS Branhami) - أحدث صيحات الموضة والتريندات في بني سويف، شارع الجبالي. تيشرتات، هوديز، وبنطلونات بأفضل الأسعار.">
     <meta name="keywords" content="محل نور, ملابس حريمي, ملابس نسائية, بني سويف, شارع الجبالي, تيشرتات, هوديز, ملابس شتوي, DS Branhami">
+    <meta property="og:image" content="logo.jpg">
+    <meta property="og:type" content="website">
     <meta property="og:title" content="محل نور | أحدث كولكشن ملابس">
     <meta property="og:description" content="شرفنا في فرع بني سويف وشوف أحدث التريندات بنفسك.">
     
@@ -62,7 +64,7 @@
                 </div>
             </div>
             <div class="flex gap-2">
-                <a href="https://wa.me/+201271425089" target="_blank" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-brand-whatsapp text-white flex items-center justify-center hover:scale-110 transition shadow-lg shadow-green-900/50">
+                <a href="https://wa.me/201271425089" target="_blank" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-brand-whatsapp text-white flex items-center justify-center hover:scale-110 transition shadow-lg shadow-green-900/50">
                     <i class="fab fa-whatsapp text-lg"></i>
                 </a>
                 <button onclick="sharePage()" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-800 text-brand-accent border border-brand-accent flex items-center justify-center hover:bg-brand-accent hover:text-black transition">
@@ -76,7 +78,7 @@
     <section class="pt-32 pb-16 px-4 relative overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-brand-accent/10 to-transparent opacity-50"></div>
         <div class="container mx-auto text-center relative z-10 animate-fade-in">
-            <span class="inline-block py-1 px-3 rounded-full bg-gray-800 border border-gray-700 text-brand-accent text-sm mb-4">
+            <span id="season-banner" class="inline-block py-1 px-3 rounded-full bg-gray-800 border border-gray-700 text-brand-accent text-sm mb-4">
                 🔥 تشكيلة الشتاء وصلت
             </span>
             <h2 class="text-3xl md:text-5xl font-black mb-4 leading-tight">
@@ -131,7 +133,7 @@
 
     <!-- Footer -->
     <footer class="bg-black py-8 border-t border-gray-900 text-center">
-        <p class="text-gray-500 text-sm">جميع الحقوق محفوظة © محل نور 2024</p>
+        <p class="text-gray-500 text-sm">جميع الحقوق محفوظة © محل نور <span id="yr">2026</span></p>
     </footer>
 
     <!-- Product Modal -->
@@ -147,7 +149,7 @@
             
             <div class="p-5">
                 <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-white mb-2"></h3>
-                <p class="text-brand-accent font-bold mb-3 text-sm md:text-base"><i class="fas fa-tag"></i> متاح للمعاينة بالفرع</p>
+                <p id="modal-status" class="text-brand-accent font-bold mb-3 text-sm md:text-base"><i class="fas fa-tag"></i> متاح للمعاينة بالفرع</p>
                 
                 <p id="modal-desc" class="text-gray-300 mb-5 text-xs md:text-sm leading-relaxed"></p>
                 
@@ -172,9 +174,9 @@
 
     <script>
         // التعديل هنا لرقم الواتساب الخاص بك
-        const waNumber = "+201271425089"; 
+        const waNumber = "201271425089"; 
         
-        const products = [
+        const defaultProducts = [
             {
                 id: 1,
                 title: "تشكيلة السويت شيرت والجينز",
@@ -195,56 +197,101 @@
             }
         ];
 
+        let products = [];
         let selectedColor = "";
 
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         const grid = document.getElementById('products-grid');
-        products.forEach(p => {
-            const colorsHtml = p.colors.slice(0,3).map(c => `<span class="w-2.5 h-2.5 rounded-full bg-gray-400 inline-block border border-gray-600" title="${c}"></span>`).join('');
-            const plus = p.colors.length > 3 ? `<span class="text-[10px] text-gray-500">+${p.colors.length - 3}</span>` : '';
-            
-            const imageHtml = p.image 
-                ? `<img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">`
-                : `<div class="w-full h-full flex items-center justify-center text-3xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
 
-            grid.innerHTML += `
+        function renderProducts() {
+            grid.innerHTML = products.length ? products.map(p => {
+                const off = p.available === false;
+                const colors = p.colors || [];
+                const colorsHtml = colors.slice(0,3).map(c => `<span class="w-2.5 h-2.5 rounded-full bg-gray-400 inline-block border border-gray-600" title="${esc(c)}"></span>`).join('');
+                const plus = colors.length > 3 ? `<span class="text-[10px] text-gray-500">+${colors.length - 3}</span>` : '';
+                const imageHtml = p.image
+                    ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover ${off ? 'opacity-40' : ''}">`
+                    : `<div class="w-full h-full flex items-center justify-center text-3xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
+                return `
                 <div class="glass-panel rounded-xl overflow-hidden product-card group flex flex-col">
-                    <div class="h-44 md:h-56 bg-gray-800 relative overflow-hidden cursor-pointer shrink-0" onclick="openModal(${p.id})">
+                    <div class="h-44 md:h-56 bg-gray-800 relative overflow-hidden cursor-pointer shrink-0" onclick="openModal(${Number(p.id)})">
                         ${imageHtml}
-                        <div class="absolute top-2 left-2 bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">
-                            ${p.badge}
-                        </div>
+                        ${p.badge ? `<div class="absolute top-2 left-2 bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">${esc(p.badge)}</div>` : ''}
+                        ${off ? '<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-bold">غير متوفر حالياً</div>' : ''}
                     </div>
                     <div class="p-3 md:p-4 flex flex-col flex-1">
-                        <h4 class="text-sm md:text-lg font-bold mb-1 truncate">${p.title}</h4>
-                        <p class="text-gray-400 text-[10px] md:text-sm mb-3 line-clamp-2 flex-1">${p.description}</p>
-                        
+                        <h4 class="text-sm md:text-lg font-bold mb-1 truncate">${esc(p.title)}</h4>
+                        <p class="text-gray-400 text-[10px] md:text-sm mb-3 line-clamp-2 flex-1">${esc(p.description)}</p>
                         <div class="flex justify-between items-center mt-auto pt-2 border-t border-gray-700/50">
-                            <button onclick="quickWa(${p.id})" class="text-brand-whatsapp hover:text-green-400 transition bg-green-900/20 w-8 h-8 rounded-full flex items-center justify-center">
+                            <button onclick="quickWa(${Number(p.id)})" class="text-brand-whatsapp hover:text-green-400 transition bg-green-900/20 w-8 h-8 rounded-full flex items-center justify-center">
                                 <i class="fab fa-whatsapp text-sm md:text-lg"></i>
                             </button>
-                            <div class="flex items-center gap-1">
-                                ${colorsHtml} ${plus}
-                            </div>
+                            <button onclick="shareProduct(${Number(p.id)})" aria-label="مشاركة الموديل" class="text-brand-accent bg-gray-800 w-8 h-8 rounded-full flex items-center justify-center"><i class="fas fa-share-alt text-sm"></i></button>
+                            <div class="flex items-center gap-1">${colorsHtml} ${plus}</div>
                         </div>
                     </div>
-                </div>
-            `;
-        });
+                </div>`;
+            }).join('') : '<p class="col-span-full text-center text-gray-500 py-10">موديلات جديدة قريباً 🤍</p>';
+        }
+
+        async function loadProducts() {
+            try {
+                const r = await fetch('products.json?v=' + Date.now(), { cache: 'no-store' });
+                if (!r.ok) throw 0;
+                const d = await r.json();
+                const list = Array.isArray(d) ? d : d.products;
+                if (!Array.isArray(list)) throw 0;
+                products = list;
+                if (!Array.isArray(d) && typeof d.banner === 'string') {
+                    const b = document.getElementById('season-banner');
+                    if (d.banner.trim()) b.textContent = d.banner; else b.style.display = 'none';
+                }
+            } catch (e) { products = defaultProducts; }
+            renderProducts();
+            openFromHash();
+        }
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        function shareProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+            const url = location.origin + location.pathname + '#p' + id;
+            const text = `شوفي الموديل ده من محل نور: ${p.title}`;
+            if (navigator.share) {
+                navigator.share({ title: p.title, text, url }).catch(() => {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => alert('تم نسخ رابط الموديل ✓'));
+            } else {
+                prompt('انسخي رابط الموديل:', url);
+            }
+        }
+
+        function openFromHash() {
+            const m = location.hash.match(/^#p(\d+)$/);
+            if (m && products.some(p => p.id === +m[1])) openModal(+m[1]);
+        }
+        window.addEventListener('hashchange', openFromHash);
+        loadProducts();
 
         const modal = document.getElementById('product-modal');
         let currentProduct = null;
 
         function openModal(id) {
             currentProduct = products.find(p => p.id === id);
-            selectedColor = currentProduct.colors[0]; 
+            selectedColor = (currentProduct.colors || [])[0] || ''; 
             
             document.getElementById('modal-title').innerText = currentProduct.title;
             document.getElementById('modal-desc').innerText = currentProduct.description;
-            document.getElementById('modal-tiktok-btn').href = currentProduct.tiktokUrl;
+            const tk = document.getElementById('modal-tiktok-btn');
+            tk.href = currentProduct.tiktokUrl || '#';
+            tk.style.display = currentProduct.tiktokUrl ? '' : 'none';
+            document.getElementById('modal-status').innerHTML = currentProduct.available === false
+                ? '<i class="fas fa-ban"></i> غير متوفر حالياً'
+                : '<i class="fas fa-tag"></i> متاح للمعاينة بالفرع';
             
             const imgContainer = document.getElementById('modal-image-container');
             if(currentProduct.image) {
-                imgContainer.innerHTML = `<img src="${currentProduct.image}" class="w-full h-full object-cover">`;
+                imgContainer.innerHTML = `<img loading="lazy" src="${currentProduct.image}" class="w-full h-full object-cover">`;
             } else {
                 imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
             }
@@ -258,9 +305,9 @@
 
         function renderColors() {
             const container = document.getElementById('modal-colors');
-            container.innerHTML = currentProduct.colors.map(c => `
-                <button onclick="selectColor('${c}')" class="px-2 py-1 text-[11px] md:text-sm rounded-full border ${selectedColor === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">
-                    ${c}
+            container.innerHTML = (currentProduct.colors || []).map(c => `
+                <button data-c="${esc(c)}" onclick="selectColor(this.dataset.c)" class="px-2 py-1 text-[11px] md:text-sm rounded-full border ${selectedColor === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">
+                    ${esc(c)}
                 </button>
             `).join('');
         }
@@ -273,7 +320,7 @@
 
         function updateModalWaButton() {
             const btn = document.getElementById('modal-wa-btn');
-            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title} (لون: ${selectedColor})، هل لسه متاح في المحل؟`);
+            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title} ${selectedColor ? `(لون: ${selectedColor})` : ''}، هل لسه متاح في المحل؟`);
             btn.onclick = () => window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
         }
 
@@ -284,6 +331,7 @@
         }
 
         function closeModal() {
+            if (location.hash.startsWith('#p')) history.replaceState(null, '', location.pathname + location.search);
             modal.classList.remove('active');
             document.body.style.overflow = 'auto';
         }
