@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html border-box class="scroll-smooth" lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محل نور | Noor Store - Fashion For You</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Alex Brush for chic logo accents -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#faf5f0',
+                            100: '#f3e8dc',
+                            200: '#e4d0ba',
+                            300: '#d0af8f',
+                            400: '#bc8a64',
+                            500: '#aa6f43',
+                            600: '#945837',
+                            700: '#75422d',
+                            800: '#5f3729',
+                            900: '#4e2f23',
+                            gold: '#d4af37',
+                            dark: '#121212',
+                            card: '#1e1e1e'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        script: ['Alex Brush', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0d0d0d;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #aa6f43;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bc8a64;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fce0a6 0%, #d4af37 50%, #aa6f43 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-card {
+            background: rgba(30, 30, 30, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        .pulse-glow {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            animation: pulseGlow 2s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+            100% { box-shadow: 0 0 22px rgba(212, 175, 55, 0.6); }
+        }
+
+        .badge-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .badge-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255,255,255,0.25), transparent);
+            transform: rotate(30deg);
+            animation: shine 4s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            20% { transform: translateX(100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* Modal Animation */
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-pop {
+            animation: modalPop 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div class="bg-gradient-to-r from-brand-900 via-brand-700 to-brand-900 text-amber-100 text-xs md:text-sm py-2 px-4 text-center font-bold tracking-wide border-b border-brand-500/20 shadow-md">
+        <span class="inline-flex items-center gap-2">
+            <i class="fa-solid fa-fire text-amber-400 animate-bounce"></i>
+            <span>أحدث تشكيلة شتاء وكاجوال حريمي في بني سويف! شرفونا في الفرع بمنتصف شارع الجبالي</span>
+            <i class="fa-solid fa-sparkles text-amber-400"></i>
+        </span>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 glass-card border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-900 to-black p-0.5 border border-brand-gold/60 flex items-center justify-center shadow-lg group-hover:border-brand-gold transition duration-300">
+                    <div class="w-full h-full rounded-full bg-black flex flex-col items-center justify-center text-center">
+                        <span class="font-script text-amber-300 text-xl leading-none">NR</span>
+                        <span class="text-[8px] font-bold text-amber-100 tracking-tighter">STORE</span>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-1.5">
+                        <span class="gold-gradient-text">محل نور</span>
+                        <span class="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-normal">الجبالي</span>
+                    </h1>
+                    <p class="text-[11px] text-gray-400 font-medium">Noor Store • Fashion For You</p>
+                </div>
+            </a>
+
+            <!-- Quick Action Buttons -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="https://www.tiktok.com/@noorstore11" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-2 bg-black hover:bg-neutral-900 border border-neutral-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition duration-200">
+                    <i class="fa-brands fa-tiktok text-cyan-400"></i>
+                    <span>@noorstore11</span>
+                </a>
+                
+                <a href="https://wa.me/201000000000?text=سلام%20عليكم،%20حابب%20استفسر%20عن%20التشكيلة%20الجديدة" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-900/30 transition duration-200">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span class="hidden xs:inline">واتساب المحل</span>
+                </a>
+
+                <button onclick="sharePage()" title="مشاركة الصفحة" class="w-10 h-10 bg-neutral-900 hover:bg-neutral-800 text-amber-400 border border-neutral-700 rounded-xl flex items-center justify-center transition">
+                    <i class="fa-solid fa-share-nodes text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- HERO SECTION -->
+        <section class="relative py-12 md:py-20 overflow-hidden">
+            <!-- Background Ornaments -->
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute -bottom-10 right-0 w-80 h-80 bg-amber-600/10 rounded-full blur-[90px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    
+                    <!-- Text Content -->
+                    <div class="lg:col-span-7 text-center lg:text-right space-y-6">
+                        <div class="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-1.5 rounded-full text-xs font-bold badge-shine">
+                            <i class="fa-solid fa-star text-amber-400"></i>
+                            <span>أرقى تشكيلة كاجوال وحريمي ف بني سويف</span>
+                        </div>
+
+                        <h2 class="text-3xl sm:text-5xl lg:text-6xl font-black leading-tight text-white">
+                            شياكتك وتألقكِ مع <br>
+                            <span class="gold-gradient-text">محل نور - شارع الجبالي</span>
+                        </h2>
+
+                        <p class="text-gray-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            مرحباً بكم في أحدث مجموعاتنا للشتاء والصيف! نوفر لكي أحدث التريندات العالمية، هوديز وسويت شيرتات، كولكشن التريكو، البنطلونات الجينز واسعة، والدرسات المميزة بأفضل خامات وأشيك كواليتي.
+                        </p>
+
+                        <!-- Address Banner Box -->
+                        <div class="glass-card p-4 rounded-2xl border border-amber-500/20 flex flex-col sm:flex-row items-center gap-3 justify-between text-right">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-location-dot text-lg"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-amber-300 font-bold">العنوان والتواجد</div>
+                                    <div class="text-xs sm:text-sm text-gray-200 font-semibold">بني سويف - منتصف شارع الجبالي (أمام سعد فرغلي للأقمشة - تحت أولاد مصطفى علي)</div>
+                                </div>
+                            </div>
+                            <button onclick="copyAddress()" class="shrink-0 bg-neutral-800 hover:bg-neutral-700 text-gray-300 text-xs px-3 py-2 rounded-lg border border-neutral-700 transition">
+                                <i class="fa-regular fa-copy me-1"></i> نسخ العنوان
+                            </button>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                            <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-neutral-900 via-neutral-800 to-black hover:from-neutral-800 hover:to-neutral-900 text-white font-bold px-6 py-3.5 rounded-xl border border-neutral-700 shadow-xl transition transform hover:scale-105">
+                                <i class="fa-brands fa-tiktok text-xl text-cyan-400"></i>
+                                <span>تابعنا على TikTok (@noorstore11)</span>
+                            </a>
+
+                            <!-- Smooth Scroll Link Button -->
+                            <a href="#catalog" onclick="scrollToCatalog(event)" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-extrabold px-6 py-3.5 rounded-xl transition shadow-lg shadow-amber-500/25 transform hover:scale-105">
+                                <span>تصفح الكولكشن</span>
+                                <i class="fa-solid fa-arrow-down animate-bounce"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Visual Banner / Social Highlight Card -->
+                    <div class="lg:col-span-5">
+                        <div class="relative rounded-3xl p-1 bg-gradient-to-b from-amber-500/30 via-brand-600/20 to-transparent shadow-2xl">
+                            <div class="glass-card rounded-[22px] p-6 text-center relative overflow-hidden space-y-5">
+                                
+                                <div class="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-amber-400 via-brand-500 to-amber-300"></div>
+
+                                <div class="relative inline-block mt-2">
+                                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-brand-700 to-black border-2 border-amber-400 p-1 mx-auto pulse-glow overflow-hidden flex items-center justify-center">
+                                        <div class="w-full h-full rounded-full bg-neutral-900 flex flex-col items-center justify-center">
+                                            <span class="font-script text-3xl text-amber-300">NR</span>
+                                            <span class="text-[9px] font-bold tracking-widest text-gray-300">NOOR STORE</span>
+                                        </div>
+                                    </div>
+                                    <span class="absolute bottom-0 right-1 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-black flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> متواجدون الان
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">محل نور اللي في الجبالي 🔥</h3>
+                                    <p class="text-xs text-amber-300 font-medium mt-1">@noorstore11 • تيك توك رسمي</p>
+                                </div>
+
+                                <!-- Quick Social Grid inside card -->
+                                <div class="grid grid-cols-2 gap-3 pt-2">
+                                    <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="p-3 bg-neutral-900/80 hover:bg-neutral-800 rounded-xl border border-neutral-700/80 transition text-right group">
+                                        <div class="flex items-center justify-between">
+                                            <i class="fa-brands fa-tiktok text-cyan-400 text-lg group-hover:scale-110 transition"></i>
+                                            <span class="text-[10px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded">نشط جداً</span>
+                                        </div>
+                                        <div class="text-xs font-bold text-white mt-2">حساب التيك توك</div>
+                                        <div class="text-[10px] text-gray-400">شاهد الموديلات فيديو</div>
+                                    </a>
+
+                                    <a href="https://wa.me/201000000000" target="_blank" class="p-3 bg-neutral-900/80 hover:bg-neutral-800 rounded-xl border border-neutral-700/80 transition text-right group">
+                                        <div class="flex items-center justify-between">
+                                            <i class="fa-brands fa-whatsapp text-emerald-400 text-lg group-hover:scale-110 transition"></i>
+                                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">حجز سريع</span>
+                                        </div>
+                                        <div class="text-xs font-bold text-white mt-2">واتساب الاستفسارات</div>
+                                        <div class="text-[10px] text-gray-400">تواصل مباشر معنا</div>
+                                    </a>
+                                </div>
+
+                                <div class="pt-2 border-t border-white/10 text-xs text-gray-400 flex items-center justify-between px-1">
+                                    <span><i class="fa-solid fa-store me-1 text-amber-400"></i> فرع بني سويف</span>
+                                    <span><i class="fa-solid fa-tags me-1 text-amber-400"></i> أسعار خاصة وفيديوهات أول بأول</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS & FEATURES BAR -->
+        <section class="border-y border-white/10 bg-neutral-950/60 py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+                    
+                    <div class="p-3 glass-card rounded-2xl border-white/5 hover:border-amber-500/30 transition">
+                        <i class="fa-solid fa-shirt text-amber-400 text-xl sm:text-2xl mb-1"></i>
+                        <div class="text-xs sm:text-sm font-bold text-white">أحدث الخامات والتقفيل</div>
+                        <div class="text-[11px] text-gray-400">خامات شتوية وصيفية ممتازة</div>
+                    </div>
+
+                    <div class="p-3 glass-card rounded-2xl border-white/5 hover:border-amber-500/30 transition">
+                        <i class="fa-solid fa-store text-amber-400 text-xl sm:text-2xl mb-1"></i>
+                        <div class="text-xs sm:text-sm font-bold text-white">معاينة وشراء من المحل</div>
+                        <div class="text-[11px] text-gray-400">تشرفونا في الفرع مباشرة</div>
+                    </div>
+
+                    <div class="p-3 glass-card rounded-2xl border-white/5 hover:border-amber-500/30 transition">
+                        <i class="fa-solid fa-crown text-amber-400 text-xl sm:text-2xl mb-1"></i>
+                        <div class="text-xs sm:text-sm font-bold text-white">موديلات تريندي حصرياً</div>
+                        <div class="text-[11px] text-gray-400">Battle, Sister, Knit & Jeans</div>
+                    </div>
+
+                    <div class="p-3 glass-card rounded-2xl border-white/5 hover:border-amber-500/30 transition">
+                        <i class="fa-solid fa-location-dot text-amber-400 text-xl sm:text-2xl mb-1"></i>
+                        <div class="text-xs sm:text-sm font-bold text-white">موقع متميز</div>
+                        <div class="text-[11px] text-gray-400">منتصف شارع الجبالي ببني سويف</div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CATALOG SECTION -->
+        <section id="catalog" class="py-12 sm:py-16 scroll-mt-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Header -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <div class="text-amber-400 text-xs font-bold tracking-widest uppercase mb-1">معرض الموديلات والمعروضات</div>
+                        <h3 class="text-2xl sm:text-4xl font-extrabold text-white">تشكيلة المحل <span class="gold-gradient-text">المتاحة حالياً</span></h3>
+                        <p class="text-xs sm:text-sm text-gray-400 mt-1">اضغط على أي موديل للاستفسار فوراً عبر الواتساب أو التيك توك</p>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="relative min-w-[260px] sm:min-w-[320px]">
+                        <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث باسم الموديل، هودي، جينز..." class="w-full bg-neutral-900 border border-neutral-700 rounded-xl py-2.5 pr-10 pl-4 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500 transition">
+                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Category Filters Bar -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar scroll-smooth" id="categoryPills">
+                    <button onclick="setCategory('all')" class="cat-pill active shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 text-black border border-amber-400 transition shadow-md">
+                        الكل 🔥
+                    </button>
+                    <button onclick="setCategory('hoodies')" class="cat-pill shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-neutral-900 text-gray-300 border border-neutral-800 hover:border-neutral-700 transition">
+                        هوديز وسويت شيرتات 🧥
+                    </button>
+                    <button onclick="setCategory('knits')" class="cat-pill shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-neutral-900 text-gray-300 border border-neutral-800 hover:border-neutral-700 transition">
+                        كارديجان وتريكو 🧶
+                    </button>
+                    <button onclick="setCategory('jeans')" class="cat-pill shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-neutral-900 text-gray-300 border border-neutral-800 hover:border-neutral-700 transition">
+                        جينز وبنطلونات 👖
+                    </button>
+                    <button onclick="setCategory('dresses')" class="cat-pill shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-neutral-900 text-gray-300 border border-neutral-800 hover:border-neutral-700 transition">
+                        درسات وفساتين 👗
+                    </button>
+                    <button onclick="setCategory('vests')" class="cat-pill shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-neutral-900 text-gray-300 border border-neutral-800 hover:border-neutral-700 transition">
+                        فيستات وقمصان 👔
+                    </button>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Products dynamically rendered by JS -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden text-center py-16 glass-card rounded-3xl mt-6">
+                    <i class="fa-solid fa-shirt-long text-4xl text-neutral-600 mb-3"></i>
+                    <h4 class="text-lg font-bold text-gray-300">لم نجد موديلات تطابق بحثك</h4>
+                    <p class="text-xs text-gray-500 mt-1">جرب البحث بكلمة أخرى أو اختر قسم آخر</p>
+                    <button onclick="resetFilters()" class="mt-4 bg-amber-500/20 text-amber-300 text-xs px-4 py-2 rounded-xl border border-amber-500/30 font-bold hover:bg-amber-500/30 transition">
+                        عرض كل الموديلات
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TIKTOK HIGHLIGHT SECTION (NEW ENHANCEMENT) -->
+        <section class="py-12 bg-neutral-900/50 border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-8 space-y-2">
+                    <span class="text-xs bg-cyan-500/10 text-cyan-400 font-bold px-3 py-1 rounded-full border border-cyan-500/20">
+                        <i class="fa-brands fa-tiktok me-1"></i> تابع فيديوهاتنا اليومية
+                    </span>
+                    <h3 class="text-2xl sm:text-3xl font-black text-white">فيديوهات الموديلات على تيك توك</h3>
+                    <p class="text-xs sm:text-sm text-gray-400">بننزل الموديلات بالفيديو أول بأول على حسابنا الرسمي</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="glass-card rounded-2xl p-4 text-center border border-neutral-800 hover:border-cyan-500/40 transition group">
+                        <div class="w-12 h-12 bg-black text-cyan-400 rounded-xl flex items-center justify-center mx-auto text-xl mb-3 border border-neutral-800 group-hover:scale-110 transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-white">عروض الدرسات والكاجوال</h4>
+                        <p class="text-[11px] text-gray-400 mt-1">استعراض ألوان وخامات الدرسات الصيفية والشتوية</p>
+                        <span class="inline-block mt-3 text-xs text-cyan-400 font-bold">شاهد على تيك توك ←</span>
+                    </a>
+
+                    <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="glass-card rounded-2xl p-4 text-center border border-neutral-800 hover:border-amber-500/40 transition group">
+                        <div class="w-12 h-12 bg-black text-amber-400 rounded-xl flex items-center justify-center mx-auto text-xl mb-3 border border-neutral-800 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-fire"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-white">كولكشن الهوديز والتريكو</h4>
+                        <p class="text-[11px] text-gray-400 mt-1">أشيك موديلات الدببة والسويت شيرتات البولر</p>
+                        <span class="inline-block mt-3 text-xs text-amber-400 font-bold">شاهد على تيك توك ←</span>
+                    </a>
+
+                    <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="glass-card rounded-2xl p-4 text-center border border-neutral-800 hover:border-emerald-500/40 transition group">
+                        <div class="w-12 h-12 bg-black text-emerald-400 rounded-xl flex items-center justify-center mx-auto text-xl mb-3 border border-neutral-800 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-tags"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-white">أقوى العروض الحصرية</h4>
+                        <p class="text-[11px] text-gray-400 mt-1">أسعار وتخفيضات خاصة داخل المحل للجبالي</p>
+                        <span class="inline-block mt-3 text-xs text-emerald-400 font-bold">شاهد على تيك توك ←</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOCATION & STORE HOURS SECTION -->
+        <section class="py-12 bg-neutral-950 border-t border-white/10 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="glass-card rounded-3xl p-6 sm:p-10 border border-amber-500/20">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        
+                        <div class="lg:col-span-7 space-y-4">
+                            <span class="bg-amber-500/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">
+                                <i class="fa-solid fa-location-dot me-1"></i> موقعنا وساعات العمل
+                            </span>
+                            <h3 class="text-2xl sm:text-3xl font-black text-white">زورونا في فرع بني سويف</h3>
+                            <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
+                                يسعدنا استقبالكم لمعاينة أحدث موديلات الشتاء والصيف وتجربة أرقى الموديلات بنفسكم!
+                            </p>
+
+                            <div class="space-y-3 pt-2">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-map-pin text-sm"></i>
+                                    </div>
+                                    <div class="text-xs sm:text-sm text-gray-200">
+                                        <strong class="text-amber-300 block">العنوان بالتفصيل:</strong>
+                                        بني سويف - منتصف شارع الجبالي - أمام سعد فرغلي للأقمشة (تحت أولاد مصطفى علي)
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-solid fa-clock text-sm"></i>
+                                    </div>
+                                    <div class="text-xs sm:text-sm text-gray-200">
+                                        <strong class="text-amber-300 block">مواعيد العمل:</strong>
+                                        يومياً من الساعة 11:00 صباحاً حتى 11:00 مساءً
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="fa-brands fa-tiktok text-sm"></i>
+                                    </div>
+                                    <div class="text-xs sm:text-sm text-gray-200">
+                                        <strong class="text-amber-300 block">المتابعة والتواصل السريع:</strong>
+                                        من خلال حساب التيك توك الرسمي <span class="text-cyan-400 font-bold">@noorstore11</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-3 pt-4">
+                                <a href="https://wa.me/201000000000?text=أهلاً،%20حابب%20أعرف%20عنوان%20المحل%20بالظبط" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2">
+                                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                                    <span>استفسر عبر الواتساب</span>
+                                </a>
+
+                                <button onclick="copyAddress()" class="bg-neutral-800 hover:bg-neutral-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-xl border border-neutral-700 transition flex items-center gap-2">
+                                    <i class="fa-regular fa-copy"></i>
+                                    <span>نسخ العنوان</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Map Placeholder Graphic -->
+                        <div class="lg:col-span-5">
+                            <div class="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 text-center relative overflow-hidden space-y-4">
+                                <div class="w-16 h-16 bg-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-2xl border border-amber-500/30">
+                                    <i class="fa-solid fa-shop"></i>
+                                </div>
+                                <h4 class="font-bold text-white text-base">محل نور - بني سويف</h4>
+                                <p class="text-xs text-gray-400">شارع الجبالي الشهير بمدينة بني سويف</p>
+                                <div class="p-3 bg-neutral-950 rounded-xl border border-neutral-800 text-[11px] text-amber-200 font-medium">
+                                    📍 علامة مميزة: أمام محلات سعد فرغلي للأقمشة وتحت أولاد مصطفى علي
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-neutral-800 py-8 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-4">
+            <div class="flex items-center justify-center gap-3">
+                <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="w-9 h-9 rounded-full bg-neutral-900 hover:bg-neutral-800 text-gray-300 hover:text-cyan-400 border border-neutral-800 flex items-center justify-center transition">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+                <a href="https://wa.me/201000000000" target="_blank" class="w-9 h-9 rounded-full bg-neutral-900 hover:bg-neutral-800 text-gray-300 hover:text-emerald-400 border border-neutral-800 flex items-center justify-center transition">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a href="#" class="w-9 h-9 rounded-full bg-neutral-900 hover:bg-neutral-800 text-gray-300 hover:text-amber-400 border border-neutral-800 flex items-center justify-center transition">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+            </div>
+
+            <p class="text-gray-400 font-semibold">جميع الحقوق محفوظة © محل نور (Noor Store - بني سويف)</p>
+            <p class="text-[10px] text-gray-600">تصميم الصفحة للعرض السريع والتواصل المباشر مع العملاء عبر الواتساب والتيك توك</p>
+        </div>
+    </footer>
+
+    <!-- STICKY FLOATING SOCIAL BAR (Mobile Friendly) -->
+    <div class="fixed bottom-4 right-4 left-4 z-40 sm:hidden flex items-center gap-2">
+        <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="flex-1 bg-black/90 backdrop-blur border border-neutral-700 text-white text-xs font-bold py-3 rounded-2xl flex items-center justify-center gap-2 shadow-2xl">
+            <i class="fa-brands fa-tiktok text-cyan-400 text-base"></i>
+            <span>التيك توك</span>
+        </a>
+        <a href="https://wa.me/201000000000?text=سلام%20عليكم،%20حابب%20أعرف%20تفاصيل%20الموديلات" target="_blank" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-3 rounded-2xl flex items-center justify-center gap-2 shadow-2xl shadow-emerald-900/50">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+            <span>تواصل واتساب</span>
+        </a>
+    </div>
+
+    <!-- PRODUCT DETAIL / INQUIRY MODAL -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-lg w-full rounded-3xl border border-amber-500/30 overflow-hidden shadow-2xl relative animate-pop">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 left-4 z-10 w-9 h-9 bg-neutral-900/80 hover:bg-neutral-800 text-gray-300 rounded-full border border-neutral-700 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="p-6 space-y-5">
+                
+                <!-- Modal Graphic Header -->
+                <div id="modalGraphic" class="h-52 sm:h-60 rounded-2xl bg-neutral-900 relative flex items-center justify-center overflow-hidden border border-neutral-800">
+                    <div class="text-center p-4">
+                        <i id="modalIcon" class="fa-solid fa-shirt text-6xl text-amber-400 mb-2"></i>
+                        <div id="modalCategoryBadge" class="text-xs bg-amber-500/20 text-amber-300 font-bold px-3 py-1 rounded-full border border-amber-500/30 inline-block mt-2">
+                            قسم الشتاء
+                        </div>
+                    </div>
+                    <span id="modalBadge" class="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full bg-brand-600 text-white">
+                        جديد
+                    </span>
+                </div>
+
+                <!-- Modal Info -->
+                <div>
+                    <h3 id="modalTitle" class="text-xl sm:text-2xl font-black text-white">اسم الموديل</h3>
+                    <p id="modalDesc" class="text-xs sm:text-sm text-gray-300 mt-2 leading-relaxed">وصف الموديل المتاح في محل نور</p>
+                </div>
+
+                <!-- Color Swatches & Interactive Selection -->
+                <div class="space-y-2 pt-2 border-t border-neutral-800">
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                        <span>اختر لونك المفضل للحجز/الاستفسار:</span>
+                        <span id="selectedColorDisplay" class="font-bold text-amber-300">الكل</span>
+                    </div>
+                    <div id="modalColorSwatches" class="flex flex-wrap gap-2 pt-1">
+                        <!-- Swatches inserted by JS -->
+                    </div>
+                </div>
+
+                <!-- Quick Inquiry CTA -->
+                <div class="pt-2 space-y-2">
+                    <a id="modalWhatsappBtn" href="#" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm transition shadow-lg shadow-emerald-900/40">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span id="modalWaText">استفسر فوراً عن هذا الموديل عبر الواتساب</span>
+                    </a>
+
+                    <a id="modalTiktokBtn" href="https://www.tiktok.com/@noorstore11" target="_blank" class="w-full bg-neutral-900 hover:bg-neutral-800 text-gray-200 font-semibold py-2.5 px-4 rounded-xl border border-neutral-700 flex items-center justify-center gap-2 text-xs transition">
+                        <i class="fa-brands fa-tiktok text-cyan-400"></i>
+                        <span id="modalTiktokText">مشاهدة فيديو القطعة على تيك توك</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 hidden bg-amber-500 text-black font-bold text-xs px-5 py-2.5 rounded-full shadow-2xl transition-all duration-300 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMsg">تم النسخ بنجاح!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Store Items Inspired by Noor Store TikTok & Images
+        // يمكنك تعديل خاصية image بوضع اسم الصورة أو رابطها
+        // وقمت بإضافة خاصية tiktokUrl لتضع فيها رابط الفيديو الخاص بالقطعة مباشرة
+        const products = [
+            {
+                id: 1,
+                title: "سويت شيرت Battle Enuing Bear (بولر كولار)",
+                category: "hoodies",
+                badge: "🔥 الأكثر طلباً",
+                badgeColor: "bg-red-600",
+                desc: "سويت شيرت خامة شتوية تقيلة مع كابوتشينو وطبعة الدب الشهيرة Battle Enuing. ألوان شيك مريحة باللبس.",
+                colors: ["أسود", "بني", "نبيتي", "روز", "أبيض"],
+                colorCodes: ["#121212", "#5c3d2e", "#6b1124", "#e8a5b8", "#f5f5f5"],
+                icon: "fa-solid fa-shirt",
+                image: "https://placehold.co/600x600/1e1e1e/d4af37?text=Battle+Bear", // ضع هنا مسار أو رابط صورة السويت شيرت
+                tiktokUrl: "https://www.tiktok.com/@noorstore11" // ضع رابط فيديو القطعة هنا
+            },
+            {
+                id: 2,
+                title: "هودي Sister Bow الدافئ",
+                category: "hoodies",
+                badge: "كولكشن جديد ❄️",
+                badgeColor: "bg-amber-600",
+                desc: "هودي ثقيل بجيوب فرو وطبعة فيونكة Sister مع كابوشون دافئ. خامة فاخرة لموسم الشتاء.",
+                colors: ["أبيض", "بينك", "بني غامق", "نبيتي"],
+                colorCodes: ["#ffffff", "#f48fb1", "#3e2723", "#4a148c"],
+                icon: "fa-solid fa-vest",
+                image: "https://placehold.co/600x600/1e1e1e/f48fb1?text=Sister+Hoodie", // ضع مسار أو رابط الصورة هنا
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            },
+            {
+                id: 3,
+                title: "كارديجان تريكو مضلع أزرق سمائي",
+                category: "knits",
+                badge: "تريند التيك توك",
+                badgeColor: "bg-cyan-600",
+                desc: "كارديجان شيك وجذاب بتطريز زجزاج وخامة تريكو ناعمة جداً مع لياقة وأزرار راقية.",
+                colors: ["أزرق سمائي", "أصفر مستردة", "روز فاتح"],
+                colorCodes: ["#81d4fa", "#fbc02d", "#f8bbd0"],
+                icon: "fa-solid fa-layer-group",
+                image: "https://placehold.co/600x600/1e1e1e/81d4fa?text=Knit+Cardigan",
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            },
+            {
+                id: 4,
+                title: "بنطلون جينز واسع ثلجي Wide Leg",
+                category: "jeans",
+                badge: "رقم 1 في مصر 🏆",
+                badgeColor: "bg-blue-600",
+                desc: "بنطلون جينز خامة جبارة تقطيعات مميزة ورجلة واسعة تريندي مناسب لكل أطقم الكاجوال.",
+                colors: ["ثلجي فاتح", "أزرق متوسط", "كحلي غامق"],
+                colorCodes: ["#b3e5fc", "#42a5f5", "#1a237e"],
+                icon: "fa-solid fa-scissors",
+                image: "https://placehold.co/600x600/1e1e1e/42a5f5?text=Jeans+Wide+Leg",
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            },
+            {
+                id: 5,
+                title: "فيست تريكو برقبة ياقة فرو وتطريز فيونكة",
+                category: "vests",
+                badge: "مميز جداً",
+                badgeColor: "bg-emerald-600",
+                desc: "فيست شتوي أنيق يلبس فوق القمصان بياقة فرو أبيض ناعمة وتطريز شيك.",
+                colors: ["زيتي غامق", "نبيتي", "أسود", "بني كافيه"],
+                colorCodes: ["#2e7d32", "#880e4f", "#121212", "#6d4c41"],
+                icon: "fa-solid fa-shirt",
+                image: "https://placehold.co/600x600/1e1e1e/2e7d32?text=Faux+Fur+Vest",
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            },
+            {
+                id: 6,
+                title: "درّس صيفي/شتوي مشجر ألوان تحفة",
+                category: "dresses",
+                badge: "عرض خاص ⚡",
+                badgeColor: "bg-purple-600",
+                desc: "تشكيلة دريسات ألوان ربيعية وشتوية قماش طري ومريح جداً في اللبس بستايل واسع وأنيق.",
+                colors: ["مشجر زهور", "روز مشجر", "أزرق مطبوع", "زيتي"],
+                colorCodes: ["#dce775", "#f48fb1", "#64b5f6", "#558b2f"],
+                icon: "fa-solid fa-person-dress",
+                image: "https://placehold.co/600x600/1e1e1e/dce775?text=Dress+Collection",
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            },
+            {
+                id: 7,
+                title: "بلوفر بولك بولو Gucci & Hat",
+                category: "knits",
+                badge: "جديد ⚡",
+                badgeColor: "bg-amber-600",
+                desc: "بلوفر مخطّط بخامة كشمير وتريكو تقيل مع تطريز كاب وجيوب ناعمة.",
+                colors: ["بني مخطط", "أصفر", "أخضر زيتوني"],
+                colorCodes: ["#4e342e", "#fdd835", "#33691e"],
+                icon: "fa-solid fa-shirt",
+                image: "https://placehold.co/600x600/1e1e1e/fdd835?text=Gucci+Pullover",
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            },
+            {
+                id: 8,
+                title: "جواكت وكوت شتوي فرنسي Classic",
+                category: "vests",
+                badge: "كولكشن شيك",
+                badgeColor: "bg-neutral-700",
+                desc: "جاكيت ترينش كلاسيك قصير مع أزرار مزدوجة خامة حزام وجيوب شيك جداً.",
+                colors: ["زيتي كلاسيك", "بيج هاڤان", "أسود"],
+                colorCodes: ["#33691e", "#d7ccc8", "#000000"],
+                icon: "fa-solid fa-user-ninja",
+                image: "https://placehold.co/600x600/1e1e1e/d7ccc8?text=Classic+Jacket",
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            }
+        ];
+
+        let currentCategory = 'all';
+        let activeProduct = null;
+        let selectedColor = null;
+
+        // Smooth Scroll Logic
+        function scrollToCatalog(e) {
+            e.preventDefault();
+            const target = document.getElementById('catalog');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Render Product Cards
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
+            const emptyState = document.getElementById('emptyState');
+
+            const filtered = products.filter(item => {
+                const matchesCat = (currentCategory === 'all') || (item.category === currentCategory);
+                const matchesSearch = item.title.toLowerCase().includes(searchVal) || 
+                                      item.desc.toLowerCase().includes(searchVal) ||
+                                      item.colors.some(c => c.toLowerCase().includes(searchVal));
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            grid.innerHTML = filtered.map(item => `
+                <div class="glass-card rounded-2xl p-4 border border-white/10 hover:border-amber-500/50 transition-all duration-300 transform hover:-translate-y-1.5 flex flex-col justify-between group">
+                    <div onclick="openModal(${item.id})" class="cursor-pointer">
+                        <!-- Product Visual Box -->
+                        <div class="h-44 sm:h-52 rounded-xl bg-neutral-900 border border-neutral-800 relative flex items-center justify-center overflow-hidden mb-3 group-hover:border-amber-500/30 transition">
+                            
+                            ${item.image ? `
+                                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\\'${item.icon} text-5xl sm:text-6xl text-amber-500/30\\'></i>';">
+                            ` : `
+                                <i class="${item.icon} text-5xl sm:text-6xl text-amber-500/30 group-hover:scale-110 group-hover:text-amber-400 transition duration-300"></i>
+                            `}
+
+                            <span class="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${item.badgeColor} shadow-md z-10">
+                                ${item.badge}
+                            </span>
+
+                            <div class="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur text-[10px] text-amber-300 px-2 py-1 rounded-lg text-center font-bold border border-amber-500/30 flex items-center justify-center gap-1 z-10">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                                <span>معاينة التفاصيل</span>
+                            </div>
+                        </div>
+
+                        <!-- Product Title -->
+                        <h4 class="font-bold text-xs sm:text-sm text-white line-clamp-2 leading-snug group-hover:text-amber-300 transition">
+                            ${item.title}
+                        </h4>
+
+                        <p class="text-[11px] text-gray-400 mt-1 line-clamp-2">
+                            ${item.desc}
+                        </p>
+                    </div>
+
+                    <!-- Card Footer Actions -->
+                    <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            ${item.colorCodes.slice(0, 3).map(c => `
+                                <span class="w-2.5 h-2.5 rounded-full border border-neutral-700" style="background-color: ${c}"></span>
+                            `).join('')}
+                            ${item.colorCodes.length > 3 ? `<span class="text-[9px] text-gray-400 me-1">+${item.colorCodes.length - 3}</span>` : ''}
+                        </div>
+
+                        <a href="https://wa.me/201000000000?text=${encodeURIComponent('سلام عليكم، استفسار عن توفر قطعة: ' + item.title)}" target="_blank" title="استفسار مباشر" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white p-2 rounded-xl border border-emerald-500/30 text-xs transition flex items-center gap-1 font-bold">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span class="hidden sm:inline">واتساب</span>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Category Filter Switching
+        function setCategory(cat) {
+            currentCategory = cat;
+            
+            const pills = document.querySelectorAll('.cat-pill');
+            pills.forEach(pill => {
+                pill.classList.remove('bg-amber-500', 'text-black', 'border-amber-400', 'active', 'shadow-md');
+                pill.classList.add('bg-neutral-900', 'text-gray-300', 'border-neutral-800');
+            });
+
+            event.currentTarget.classList.remove('bg-neutral-900', 'text-gray-300', 'border-neutral-800');
+            event.currentTarget.classList.add('bg-amber-500', 'text-black', 'border-amber-400', 'active', 'shadow-md');
+
+            renderProducts();
+        }
+
+        // Search Filter
+        function filterProducts() {
+            renderProducts();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            currentCategory = 'all';
+            renderProducts();
+        }
+
+        // Modal Logic
+        function openModal(id) {
+            activeProduct = products.find(p => p.id === id);
+            if (!activeProduct) return;
+
+            selectedColor = activeProduct.colors[0] || 'الكل';
+
+            document.getElementById('modalTitle').innerText = activeProduct.title;
+            document.getElementById('modalDesc').innerText = activeProduct.desc;
+            document.getElementById('modalBadge').innerText = activeProduct.badge;
+            document.getElementById('modalBadge').className = `absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full text-white z-10 ${activeProduct.badgeColor}`;
+
+            // Set Image or Fallback Icon in Modal Graphic
+            const graphicBox = document.getElementById('modalGraphic');
+            if (activeProduct.image) {
+                graphicBox.innerHTML = `
+                    <img src="${activeProduct.image}" alt="${activeProduct.title}" class="w-full h-full object-cover">
+                    <span id="modalBadge" class="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full text-white z-10 ${activeProduct.badgeColor}">
+                        ${activeProduct.badge}
+                    </span>
+                `;
+            } else {
+                graphicBox.innerHTML = `
+                    <div class="text-center p-4">
+                        <i class="${activeProduct.icon} text-6xl text-amber-400 mb-2"></i>
+                        <div class="text-xs bg-amber-500/20 text-amber-300 font-bold px-3 py-1 rounded-full border border-amber-500/30 inline-block mt-2">
+                            قسم الكاجوال
+                        </div>
+                    </div>
+                    <span id="modalBadge" class="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full text-white z-10 ${activeProduct.badgeColor}">
+                        ${activeProduct.badge}
+                    </span>
+                `;
+            }
+
+            // Update TikTok Button URL
+            document.getElementById('modalTiktokBtn').href = activeProduct.tiktokUrl || "https://www.tiktok.com/@noorstore11";
+
+            renderModalColors();
+            updateModalWaBtn();
+
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function renderModalColors() {
+            if (!activeProduct) return;
+            document.getElementById('selectedColorDisplay').innerText = selectedColor;
+
+            const swatches = document.getElementById('modalColorSwatches');
+            swatches.innerHTML = activeProduct.colorCodes.map((c, i) => {
+                const colorName = activeProduct.colors[i] || '';
+                const isSelected = colorName === selectedColor;
+                return `
+                    <button onclick="selectModalColor('${colorName}')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition border ${isSelected ? 'bg-amber-500/20 border-amber-400 text-amber-300 font-bold' : 'bg-neutral-900 border-neutral-800 text-gray-300 hover:border-neutral-700'}">
+                        <span class="w-3 h-3 rounded-full border border-neutral-700" style="background-color: ${c}"></span>
+                        <span>${colorName}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectModalColor(colorName) {
+            selectedColor = colorName;
+            renderModalColors();
+            updateModalWaBtn();
+        }
+
+        function updateModalWaBtn() {
+            if (!activeProduct) return;
+            const waMsg = encodeURIComponent(`سلام عليكم، حابب أستفسر عن الموديل: (${activeProduct.title}) - اللون المطلوب: [${selectedColor}] - هل متوفر بالفرع ف شارع الجبالي؟`);
+            document.getElementById('modalWhatsappBtn').href = `https://wa.me/201000000000?text=${waMsg}`;
+            document.getElementById('modalWaText').innerText = `استفسر عن اللون (${selectedColor}) عبر الواتساب`;
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        // Close Modal on backdrop click
+        document.getElementById('productModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Copy Address Helper
+        function copyAddress() {
+            const addressText = "بني سويف - منتصف شارع الجبالي أمام سعد فرغلي للأقمشة تحت أولاد مصطفى علي - محل نور Noor Store";
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(addressText).then(() => {
+                    showToast('تم نسخ عنوان المحل بنجاح!');
+                });
+            } else {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = addressText;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('تم نسخ عنوان المحل بنجاح!');
+            }
+        }
+
+        // Share Website Helper
+        function sharePage() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'محل نور - بني سويف',
+                    text: 'تصفح أحدث موديلات الشتاء والكاجوال من محل نور بمنتصف شارع الجبالي ببني سويف!',
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                copyAddress();
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2500);
+        }
+
+        // Initial Load
+        window.onload = function() {
+            renderProducts();
+        }
+    </script>
+</body>
+</html>
