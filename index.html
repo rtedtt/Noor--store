@@ -48,6 +48,26 @@
         .modal.active { display: flex; opacity: 1; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+
+        /* ===== المساعد التفاعلي (Mascot) ===== */
+        #mascot { position: fixed; left: 0; top: 0; z-index: 40; width: 96px; height: 96px; direction: rtl;
+            touch-action: none; /* يمنع تمرير الصفحة أثناء سحب الشخصية */
+            user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+            cursor: grab; will-change: transform; outline: none; }
+        #mascot:focus-visible #mascot-body { outline: 2px solid #d4af37; outline-offset: 4px; border-radius: 16px; }
+        #mascot.dragging { cursor: grabbing; }
+        #mascot-body { width: 100%; height: 100%; transform-origin: 50% 90%; transition: transform .18s ease; }
+        #mascot-img, #mascot-fallback { width: 100%; height: 100%; display: block; pointer-events: none; -webkit-user-drag: none;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,.35)); transition: filter .18s ease; }
+        #mascot-img { object-fit: contain; }
+        #mascot-fallback { display: none; font-size: 60px; line-height: 96px; text-align: center; }
+        #mascot.dragging #mascot-body { transform: scale(1.15); }
+        #mascot.dragging #mascot-img, #mascot.dragging #mascot-fallback { filter: drop-shadow(0 18px 12px rgba(0,0,0,.6)); }
+        #mascot-bubble { position: absolute; left: 0; top: 0; width: max-content; max-width: 220px; background: #fff; color: #1a1a1a;
+            font-weight: 700; font-size: 13px; line-height: 1.6; padding: 9px 14px; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,.45);
+            opacity: 0; transform: scale(.85); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
+        #mascot-bubble.show { opacity: 1; transform: scale(1); }
+        @media (prefers-reduced-motion: reduce) { #mascot-body, #mascot-img, #mascot-bubble { transition: none; } }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-accent selection:text-black">
@@ -450,6 +470,236 @@
                 alert('انسخي الرابط ده وشاركيه مع صاحباتك: ' + window.location.href);
             }
         }
+    </script>
+
+    <!-- المساعد التفاعلي (Mascot) -->
+    <div id="mascot" role="button" tabindex="0" aria-label="مساعد محل نور">
+        <div id="mascot-bubble" role="status" aria-live="polite"></div>
+        <div id="mascot-body">
+            <img id="mascot-img" alt="" draggable="false" decoding="async">
+            <div id="mascot-fallback">⭐</div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // ================== إعدادات المساعد (عدّلي من هنا) ==================
+            var IMG_WELCOME  = "welcome.webp";   // تلويح
+            var IMG_IDLE     = "idle.webp";      // وقوف طبيعي (الوضع الافتراضي)
+            var IMG_HEART    = "heart.webp";     // عمل قلب
+            var IMG_CONFUSED = "confused.webp";  // حيرة
+            var IMG_DRAG     = "drag.webp";      // مرفوعة في الهواء
+
+            var MASCOT_HEIGHT    = 128;    // ارتفاع الشخصية بالبكسل (العرض بيتحسب تلقائياً من الصورة)
+            var EDGE_GAP         = 14;     // المسافة الابتدائية من حافة الشاشة (يسار/تحت)
+            var TAP_THRESHOLD    = 5;      // أقل من كده (بكسل) = نقر، أكتر = سحب
+            var WELCOME_MS       = 3000;   // مدة صورة الترحيب
+            var REACTION_MS      = 3000;   // مدة صورة القلب/الحيرة بعد النقر
+            var PRELOAD_TIMEOUT  = 4000;   // أقصى انتظار لتحميل الصور قبل البدء
+            var SOUND_ON         = true;   // false لإيقاف الصوت
+
+            var WELCOME_MESSAGE  = "نورتي محل نور! 😍";
+            var HEART_MESSAGES = [          // رسائل مع صورة القلب
+                "نورتي محل نور! 😍",
+                "شوفي تريندات الشتاء 🔥",
+                "تشكيلة الشتاء وصلت ❄️",
+                "ألوان وموديلات جديدة كل أسبوع ✨",
+                "شرفينا في الفرع ببني سويف 🛍️"
+            ];
+            var CONFUSED_MESSAGES = [       // رسائل مع صورة الحيرة
+                "محتاجة مساعدة؟ 💬",
+                "مش لاقية اللي بتدوري عليه؟ 🤔",
+                "كلمينا على الواتساب ونرد عليكي فوراً 💚",
+                "شوفي الفيديوهات على التيك توك 🎬"
+            ];
+            // =====================================================================
+
+            var IMAGES = { welcome: IMG_WELCOME, idle: IMG_IDLE, heart: IMG_HEART, confused: IMG_CONFUSED, drag: IMG_DRAG };
+            var mascot = document.getElementById('mascot');
+            var imgEl = document.getElementById('mascot-img');
+            var fallbackEl = document.getElementById('mascot-fallback');
+            var bubble = document.getElementById('mascot-bubble');
+            if (!mascot || !imgEl || !bubble) return;
+
+            var MH = MASCOT_HEIGHT, MW = Math.round(MASCOT_HEIGHT * 190 / 257);   // العرض يتظبط تلقائياً بعد تحميل الصور
+            function applySize() {
+                mascot.style.width = MW + 'px';
+                mascot.style.height = MH + 'px';
+                fallbackEl.style.lineHeight = MH + 'px';
+                fallbackEl.style.fontSize = Math.round(MH * 0.5) + 'px';
+            }
+            applySize();
+
+            // ---------- Preload للصور (لتجنب الوميض عند التبديل) ----------
+            var failed = {}, keepAlive = [];
+            function preloadAll() {
+                var jobs = Object.keys(IMAGES).map(function (key) {
+                    return new Promise(function (resolve) {
+                        var im = new Image();
+                        im.onload = function () {
+                            if (key === 'idle' && im.naturalWidth && im.naturalHeight) {
+                                MW = Math.round(MH * im.naturalWidth / im.naturalHeight);   // نفس نسبة أبعاد الصورة
+                            }
+                            resolve();
+                        };
+                        im.onerror = function () { failed[key] = true; resolve(); };
+                        im.src = IMAGES[key];
+                        keepAlive.push(im); // نحتفظ بالمرجع عشان الصورة تفضل في الكاش
+                    });
+                });
+                return Promise.race([
+                    Promise.all(jobs),
+                    new Promise(function (resolve) { setTimeout(resolve, PRELOAD_TIMEOUT); })
+                ]);
+            }
+
+            // ---------- State Machine ----------
+            var state = null, revertTimer = null;
+            function setState(name) {
+                if (state === name) return;
+                state = name;
+                mascot.setAttribute('data-state', name);
+                if (failed[name]) {                // لو الصورة مش موجودة نعرض الإيموجي بدل مربع فاضي
+                    imgEl.style.display = 'none';
+                    fallbackEl.style.display = 'block';
+                } else {
+                    fallbackEl.style.display = 'none';
+                    imgEl.style.display = 'block';
+                    imgEl.src = IMAGES[name];
+                }
+            }
+            function goIdleAfter(ms) {
+                clearTimeout(revertTimer);
+                revertTimer = setTimeout(function () { hideBubble(); setState('idle'); }, ms);
+            }
+
+            // ---------- الموضع + حدود الشاشة ----------
+            var posX = 0, posY = 0;
+            function viewW() { return document.documentElement.clientWidth || window.innerWidth; }
+            function viewH() { return window.innerHeight; }
+            function clamp(v, min, max) { return Math.min(Math.max(v, min), Math.max(min, max)); }
+            function setPos(x, y) {
+                posX = clamp(x, 0, viewW() - MW);
+                posY = clamp(y, 0, viewH() - MH);
+                mascot.style.transform = 'translate3d(' + posX + 'px,' + posY + 'px,0)';
+            }
+            window.addEventListener('resize', function () { hideBubble(); setPos(posX, posY); });
+
+            // ---------- فقاعة الكلام (بتتموضع جوه حدود الشاشة) ----------
+            var bubbleTimer = null;
+            function showBubble(text, ms) {
+                bubble.textContent = text;
+                var bw = bubble.offsetWidth, bh = bubble.offsetHeight, gap = 10;
+                var above = posY >= bh + gap + 6;
+                var desiredLeft = posX + MW / 2 - bw / 2;
+                var left = clamp(desiredLeft, 8, viewW() - bw - 8);
+                bubble.style.left = (left - posX) + 'px';
+                bubble.style.top = (above ? -(bh + gap) : MH + gap) + 'px';
+                bubble.classList.add('show');
+                clearTimeout(bubbleTimer);
+                bubbleTimer = setTimeout(hideBubble, ms);
+            }
+            function hideBubble() { clearTimeout(bubbleTimer); bubble.classList.remove('show'); }
+
+            // ---------- صوت Pop (Web Audio API) ----------
+            var audioCtx = null;
+            function unlockAudio() {
+                if (!SOUND_ON) return;
+                try {
+                    var AC = window.AudioContext || window.webkitAudioContext;
+                    if (!AC) return;
+                    if (!audioCtx) audioCtx = new AC();
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                } catch (e) {}
+            }
+            function playPop() {
+                if (!SOUND_ON || !audioCtx) return;
+                try {
+                    var t = audioCtx.currentTime;
+                    var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, t);
+                    osc.frequency.exponentialRampToValueAtTime(1100, t + 0.09);
+                    gain.gain.setValueAtTime(0.0001, t);
+                    gain.gain.exponentialRampToValueAtTime(0.25, t + 0.015);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(t); osc.stop(t + 0.18);
+                } catch (e) {}
+            }
+
+            // ---------- النقر ----------
+            var lastMsg = '';
+            function pick(list) {
+                var m, tries = 0;
+                do { m = list[Math.floor(Math.random() * list.length)]; tries++; } while (m === lastMsg && list.length > 1 && tries < 6);
+                lastMsg = m;
+                return m;
+            }
+            function onTap() {
+                playPop();
+                var heart = Math.random() < 0.5;
+                setState(heart ? 'heart' : 'confused');
+                showBubble(pick(heart ? HEART_MESSAGES : CONFUSED_MESSAGES), REACTION_MS);
+                goIdleAfter(REACTION_MS);
+            }
+
+            // ---------- السحب والإفلات (Pointer Events: ماوس + لمس بنفس الكود) ----------
+            var drag = { id: null, sx: 0, sy: 0, ox: 0, oy: 0, moved: false };
+            function startDrag() {
+                clearTimeout(revertTimer);
+                hideBubble();                       // السحب بدون فقاعة وبدون صوت
+                mascot.classList.add('dragging');
+                setState('drag');
+            }
+            function endDrag() {
+                mascot.classList.remove('dragging');
+                setState('idle');
+            }
+            mascot.addEventListener('pointerdown', function (e) {
+                if (drag.id !== null) return;                          // إصبع واحد بس
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                unlockAudio();                                         // لازم يتم جوه لمسة المستخدم
+                drag.id = e.pointerId; drag.sx = e.clientX; drag.sy = e.clientY;
+                drag.ox = posX; drag.oy = posY; drag.moved = false;
+                try { mascot.setPointerCapture(e.pointerId); } catch (err) {}
+            });
+            mascot.addEventListener('pointermove', function (e) {
+                if (e.pointerId !== drag.id) return;
+                var dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+                if (!drag.moved) {
+                    if (Math.sqrt(dx * dx + dy * dy) < TAP_THRESHOLD) return;  // لسه نقر محتمل
+                    drag.moved = true;
+                    startDrag();
+                }
+                setPos(drag.ox + dx, drag.oy + dy);
+            });
+            function release(e, cancelled) {
+                if (e.pointerId !== drag.id) return;
+                var wasDrag = drag.moved;
+                drag.id = null; drag.moved = false;
+                try { mascot.releasePointerCapture(e.pointerId); } catch (err) {}
+                if (wasDrag) endDrag();
+                else if (!cancelled) onTap();
+            }
+            mascot.addEventListener('pointerup', function (e) { release(e, false); });
+            mascot.addEventListener('pointercancel', function (e) { release(e, true); });
+            mascot.addEventListener('contextmenu', function (e) { e.preventDefault(); });   // منع قائمة الضغط المطوّل
+            mascot.addEventListener('dragstart', function (e) { e.preventDefault(); });
+            mascot.addEventListener('keydown', function (e) {                                // إتاحة الكيبورد
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlockAudio(); onTap(); }
+            });
+
+            // ---------- البداية ----------
+            setPos(EDGE_GAP, viewH() - MH - EDGE_GAP);
+            preloadAll().then(function () {
+                applySize();
+                setPos(EDGE_GAP, viewH() - MH - EDGE_GAP);
+                setState('welcome');
+                showBubble(WELCOME_MESSAGE, WELCOME_MS);
+                goIdleAfter(WELCOME_MS);
+            });
+        })();
     </script>
 </body>
 </html>
