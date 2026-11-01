@@ -72,12 +72,39 @@ button.chip{padding:6px 12px;color:var(--mu);cursor:pointer}
 .gi div{position:absolute;inset:auto 0 0;display:flex;background:rgba(0,0,0,.65)}
 .gi button{flex:1;height:34px;border:0;background:none;color:#fff;font-size:16px}
 details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
+
+/* ===== جولة الشرح (المساعدة) ===== */
+#tour{display:none;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.74);touch-action:none}
+#tour.on{display:block}
+.tcard{position:absolute;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:520px;margin:auto;padding:14px 14px 12px;border-radius:20px;background:var(--s1);border:1px solid var(--gd);box-shadow:0 10px 40px rgba(0,0,0,.7);z-index:57;animation:tup .3s ease}
+.tcard.up{bottom:auto;top:calc(12px + env(safe-area-inset-top))}
+.tbody{display:flex;gap:12px;align-items:flex-start}
+#t-mas{width:84px;height:auto;flex:none;align-self:flex-end;margin-bottom:-4px;pointer-events:none;-webkit-user-drag:none}
+#t-mas.pop{animation:tpop .5s cubic-bezier(.3,1.6,.5,1)}
+.tt{flex:1;min-width:0}
+#t-step{color:var(--mu);font-size:12px}
+#t-title{margin:2px 0 6px;font-size:17px;line-height:1.5;color:var(--gd)}
+#t-text{margin:0;font-size:14px;line-height:1.9;color:var(--tx)}
+#t-dots{display:flex;gap:6px;justify-content:center;margin:12px 0 10px}
+#t-dots i{width:7px;height:7px;border-radius:50%;background:#3a3a40;transition:.2s}
+#t-dots i.on{width:20px;border-radius:99px;background:var(--gd)}
+.tfoot{display:flex;gap:8px;align-items:center}
+.tfoot .sp{flex:1}
+.tfoot .btn{min-height:44px}
+#t-skip{border:0;background:none;color:var(--mu);padding:0 10px}
+.tourhl{z-index:56!important;outline:3px solid var(--gd);outline-offset:3px;border-radius:14px;animation:tglow 1.4s ease-in-out infinite;scroll-margin-top:84px;scroll-margin-bottom:260px}
+.tourhl:not(.fab):not(.top){position:relative}
+@keyframes tup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes tpop{0%{transform:scale(.6) translateY(14px);opacity:0}100%{transform:none;opacity:1}}
+@keyframes tglow{50%{outline-color:rgba(212,175,55,.3)}}
+@media (prefers-reduced-motion:reduce){.tcard,#t-mas.pop,.tourhl{animation:none}}
 </style>
 </head>
 <body>
 
 <header class="top">
   <h1>لوحة تحكم نور</h1>
+  <button class="ib" id="hp" aria-label="شرح اللوحة">❓</button>
   <button class="ib" id="rf" aria-label="تحديث">↻</button>
   <button class="ib" id="st" aria-label="الإعدادات">⚙</button>
 </header>
@@ -153,6 +180,27 @@ details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
   </div>
 </div></div>
 
+<!-- جولة الشرح -->
+<div id="tour" role="dialog" aria-modal="true" aria-labelledby="t-title">
+  <div class="tcard" id="t-card">
+    <div class="tbody">
+      <img id="t-mas" alt="" draggable="false">
+      <div class="tt">
+        <div id="t-step"></div>
+        <h3 id="t-title"></h3>
+        <p id="t-text"></p>
+      </div>
+    </div>
+    <div id="t-dots"></div>
+    <div class="tfoot">
+      <button class="btn" id="t-skip" type="button">تخطي</button>
+      <span class="sp"></span>
+      <button class="btn" id="t-back" type="button">السابق</button>
+      <button class="btn p" id="t-next" type="button">التالي</button>
+    </div>
+  </div>
+</div>
+
 <div class="dlg" id="busy"><div class="spin"></div><div id="bm"></div></div>
 <div id="toast"></div>
 
@@ -190,7 +238,7 @@ function parse(f){if(!f)return{banner:'',products:[]};const j=JSON.parse(dec(f.c
 
 async function load(){
   busy('جاري تحميل الموديلات...');
-  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;$('#bt').value=banner;render()}
+  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;$('#bt').value=banner;render();setTimeout(maybeTour,500)}
   catch(e){toast(e.message,1)}finally{busy()}
 }
 /* كل تعديل بيقرأ أحدث نسخة من الملف الأول عشان ميحصلش تعارض */
@@ -387,6 +435,61 @@ $('#sv').onclick=async()=>{
 $('#cc').onclick=()=>$('#cfg').classList.remove('on');
 $('#lo').onclick=()=>{cfg={token:'',owner:cfg.owner,repo:cfg.repo,branch:''};saveCfg();items=[];render();openCfg()};
 $('#st').onclick=openCfg;$('#rf').onclick=load;$('#add').onclick=()=>openForm(0);
+
+/* ===== جولة الشرح: بتظهر أول مرة بعد تسجيل الدخول بالتوكن، وزرار ❓ بيعيدها ===== */
+const TOUR_KEY='noor_tour_v1';
+const TOUR=[
+  {m:'welcome.webp',t:'أهلاً بيك في لوحة تحكم نور 👋',p:'أنا مساعدة المحل، وهشرحلك اللوحة في دقيقة. من هنا بتتحكم في الموقع كله من موبايلك: بتضيف الموديلات والصور، وتغيّر المتاح والمخلص، وتكتب الجملة اللي بتظهر فوق الموقع. من غير ما تحتاج مبرمج.'},
+  {m:'idle.webp',t:'ليه اللوحة دي مهمة؟',p:'الموقع هو واجهة المحل قدام الزبونات. لما الموديلات والصور تبقى محدّثة، الزبونة بتشوف اللي موجود فعلاً وتكلمكم على واتساب. وأي تعديل بتعمله هنا بيتحفظ لوحده، وبيظهر في الموقع بعد دقيقة أو اتنين تقريباً.'},
+  {m:'idle.webp',el:'.bn',t:'النص الموسمي',p:'ده الشريط اللي بيظهر فوق الموقع، زي «🔥 تشكيلة الشتاء وصلت». اكتب الجملة واضغط «حفظ». وسيبه فاضي لو عايز تخفيه.'},
+  {m:'idle.webp',el:()=>document.querySelector('#list .card')||$('#list'),t:'قائمة الموديلات',p:'كل كارت هو موديل ظاهر في الموقع. من الكارت: مفتاح «متوفر» تقفله لما الموديل يخلص وتفتحه لما يرجع، و📌 عشان يظهر في الشريط المميز، و✏️ للتعديل، و🗑️ للحذف.'},
+  {m:'heart.webp',el:'#add',pos:'top',t:'إضافة موديل جديد',p:'من الزرار ده بتضيف موديل: اكتب الاسم والوصف، وضيف الألوان والمقاسات والتصنيف، واختار الصور من الموبايل (لحد 8 صور، والأولى هي الغلاف). الصور بتتصغّر لوحدها قبل الرفع عشان الموقع يفضل سريع.'},
+  {m:'idle.webp',el:'body > header.top',t:'التحديث والإعدادات',p:'↻ بيحمّل آخر نسخة من الموديلات. ⚙ فيها ربط GitHub وتسجيل الخروج، والتوكن بيتحفظ على الجهاز ده بس فماتبعتوش لحد. وزرار ❓ بيعيد الشرح ده في أي وقت.'},
+  {m:'heart.webp',t:'خلصنا! 🎉',p:'كده بقيت عارف كل حاجة. جرّب تضيف أول موديل، ولو احتجت الشرح تاني دوس على ❓ فوق.'}
+];
+let tourI=0,tourHl=null,tourShown=false;
+const tourEl=$('#tour'),tourCard=$('#t-card'),tourImg=$('#t-mas');
+tourImg.onerror=()=>{tourImg.style.display='none'};
+const tourDone=()=>{try{localStorage.setItem(TOUR_KEY,'1')}catch{}};
+function tourStep(i){
+  tourI=Math.max(0,Math.min(TOUR.length-1,i));
+  const st=TOUR[tourI];
+  if(tourHl){tourHl.classList.remove('tourhl');tourHl=null}
+  tourCard.classList.toggle('up',st.pos==='top');
+  $('#t-step').textContent=(tourI+1)+' / '+TOUR.length;
+  $('#t-title').textContent=st.t;$('#t-text').textContent=st.p;
+  tourImg.style.display='';tourImg.src=st.m;
+  tourImg.classList.remove('pop');void tourImg.offsetWidth;tourImg.classList.add('pop');
+  $('#t-dots').innerHTML=TOUR.map((_,k)=>`<i class="${k===tourI?'on':''}"></i>`).join('');
+  $('#t-back').style.visibility=tourI?'visible':'hidden';
+  $('#t-skip').style.visibility=tourI===TOUR.length-1?'hidden':'visible';
+  $('#t-next').textContent=tourI===TOUR.length-1?'إنهاء ✓':'التالي';
+  const el=st.el?(typeof st.el==='function'?st.el():document.querySelector(st.el)):null;
+  if(el){
+    el.classList.add('tourhl');tourHl=el;
+    el.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+  }else window.scrollTo({top:0,behavior:'smooth'});
+}
+function tourStart(){
+  TOUR.forEach(s=>{const im=new Image();im.src=s.m});   // تحميل مسبق للصور
+  tourEl.classList.add('on');tourStep(0);$('#t-next').focus({preventScroll:true});
+}
+function tourEnd(){
+  tourEl.classList.remove('on');
+  if(tourHl){tourHl.classList.remove('tourhl');tourHl=null}
+  tourDone();window.scrollTo({top:0});
+}
+function maybeTour(){
+  if(tourShown)return;
+  let seen=false;try{seen=localStorage.getItem(TOUR_KEY)==='1'}catch{}
+  if(seen||$('#cfg').classList.contains('on')||$('#frm').classList.contains('on'))return;
+  tourShown=true;tourStart();
+}
+$('#t-next').onclick=()=>tourI===TOUR.length-1?tourEnd():tourStep(tourI+1);
+$('#t-back').onclick=()=>tourStep(tourI-1);
+$('#t-skip').onclick=tourEnd;
+$('#hp').onclick=tourStart;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&tourEl.classList.contains('on'))tourEnd()});
 
 render();
 cfg.token&&cfg.owner&&cfg.repo?load():openCfg();
