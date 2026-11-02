@@ -90,7 +90,17 @@
         @keyframes mDoze { from { transform: rotate(-2deg) translateY(0); } to { transform: rotate(2deg) translateY(3px); } }
         @keyframes mFloat { 0% { transform: translate(0,0) scale(.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--dx,0), -70px) scale(1.15); opacity: 0; } }
         @keyframes mPeek { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-        @media (prefers-reduced-motion: reduce) { #mascot-body, #mascot-img, #mascot-bubble { transition: none; } #mascot-fx, #mascot-peek, .mp { animation: none !important; } }
+        #mascot-menu { position: absolute; left: 0; top: 0; width: 214px; display: none; z-index: 4; direction: rtl; background: #fff; color: #1a1a1a;
+            border-radius: 18px; padding: 8px; box-shadow: 0 8px 26px rgba(0,0,0,.55), 0 0 0 2px #d4af37; }
+        #mascot-menu.show { display: block; animation: mMenu .18s ease; }
+        #mascot-menu .mm-head { font-size: 12px; font-weight: 700; color: #7a6a2a; padding: 4px 8px 6px; }
+        #mascot-menu button { display: block; width: 100%; min-height: 44px; padding: 8px 10px; border: 0; border-radius: 12px; background: transparent;
+            color: #1a1a1a; font: inherit; font-weight: 700; font-size: 13px; text-align: right; cursor: pointer; }
+        #mascot-menu button:hover, #mascot-menu button:active { background: #fff2c4; }
+        @keyframes mMenu { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+        .noor-flash { animation: noorFlash 1.8s ease; }
+        @keyframes noorFlash { 0%,100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); } 25%,60% { box-shadow: 0 0 0 4px rgba(212,175,55,.85); } }
+        @media (prefers-reduced-motion: reduce) { #mascot-body, #mascot-img, #mascot-bubble { transition: none; } #mascot-fx, #mascot-peek, .mp, #mascot-menu, .noor-flash { animation: none !important; } }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-accent selection:text-black">
@@ -147,6 +157,14 @@
         <div class="container mx-auto">
             <h3 class="text-lg font-bold mb-3 px-1">📌 مميز عندنا</h3>
             <div id="feat-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
+        </div>
+    </section>
+
+    <!-- Trending (الرائج): الموديلات اللي عليها شارة هوت / تريند من لوحة التحكم -->
+    <section id="trending" class="hidden px-2 md:px-4 pb-8" style="scroll-margin-top:90px">
+        <div class="container mx-auto rounded-2xl">
+            <h3 class="text-lg font-bold mb-3 px-1">🔥 الرائج الآن</h3>
+            <div id="trend-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
         </div>
     </section>
 
@@ -324,6 +342,17 @@
                     <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>
                 </div>`).join('');
         }
+        function renderTrending() {
+            const order = { hot: 0, trend: 1 };
+            const t = products.filter(p => (p.tag === 'hot' || p.tag === 'trend') && p.available !== false)
+                              .sort((a, b) => order[a.tag] - order[b.tag]);
+            document.getElementById('trending').classList.toggle('hidden', !t.length);
+            document.getElementById('trend-track').innerHTML = t.map(p => `
+                <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
+                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}</div>
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>
+                </div>`).join('');
+        }
         const ft = document.getElementById('feat-track');
         let ftPause = 0;
         ['pointerdown', 'touchstart', 'wheel'].forEach(ev => ft.addEventListener(ev, () => { ftPause = Date.now() + 6000; }, { passive: true }));
@@ -362,6 +391,7 @@
             renderProducts();
             renderFilters();
             renderFeatured();
+            renderTrending();
             openFromHash();
         }
         document.getElementById('yr').textContent = new Date().getFullYear();
@@ -505,6 +535,7 @@
             </div>
         </div>
         <div id="mascot-layer"></div>
+        <div id="mascot-menu" role="menu" aria-label="مساعدة سريعة"></div>
         <button id="mascot-close" type="button" aria-label="إخفاء المساعد">×</button>
     </div>
     <button id="mascot-peek" type="button" aria-label="إظهار المساعد"></button>
@@ -518,12 +549,12 @@
             var IMG_CONFUSED = "confused.webp";  // حيرة
             var IMG_DRAG     = "drag.webp";      // مرفوعة في الهواء
 
-            // حركات إضافية اختيارية: اكتبي اسم الملف لما تجهزيه، وسيبيه فاضي "" لو مش موجود.
-            // لو الحركة فاضية بيستخدم الكود حركة قريبة منها تلقائياً.
-            var EXTRA_SLEEP = "";   // نايمة  (بتظهر لما الصفحة تفضل ساكتة فترة)        — بديلها: وقوف + 💤
-            var EXTRA_CHEER = "";   // فرحانة (بتظهر بعد ما الزبونة تكلمكم واتساب)       — بديلها: القلب
-            var EXTRA_THINK = "";   // بتفكر  (بتظهر لو البحث ملقاش نتيجة)               — بديلها: الحيرة
-            var EXTRA_POINT = "";   // بتشاور (بتظهر مع ترشيح منتج)                      — بديلها: الوقوف
+            // حركات إضافية (بتتحمل في الخلفية بعد الترحيب عشان الموقع يفضل سريع).
+            // سيبي الاسم فاضي "" لو مش عايزاها، وساعتها بيستخدم الكود حركة قريبة منها.
+            var EXTRA_SLEEP = "sleep.webp";   // نايمة   (لما الصفحة تفضل ساكتة فترة)              — بديلها: وقوف + 💤
+            var EXTRA_CHEER = "cheer.webp";   // فرحانة  (بعد واتساب، ولما تظهر لها حاجة تعجبها)   — بديلها: القلب
+            var EXTRA_THINK = "think.webp";   // بتدوّر  (بالعدسة: البحث بدون نتيجة، واختيار حاجة)  — بديلها: الحيرة
+            var EXTRA_POINT = "point.webp";   // بتشاور  (مع ترشيح منتج، وعند فتح القائمة)          — بديلها: الوقوف
 
             var MASCOT_HEIGHT    = 128;    // ارتفاع الشخصية بالبكسل (العرض بيتحسب تلقائياً من الصورة)
             var EDGE_GAP         = 14;     // المسافة الابتدائية من حافة الشاشة (يسار/تحت)
@@ -540,6 +571,15 @@
             var TIP_EVERY_MS      = 32000; // الفاصل بين الترشيحات
             var DOZE_AFTER_MS     = 70000; // تنام بعد كام مللي ثانية من السكوت
             var MODAL_REACT_CHANCE = 0.6;  // احتمال التعليق بعد قفل نافذة الموديل
+            var LONG_PRESS_MS     = 550;   // مدة الضغطة الطويلة اللي بتفتح القائمة
+
+            // قائمة الضغطة الطويلة (id ثابت، والاسم تقدري تغيريه): trending / random / taste / whatsapp
+            var MENU_ITEMS = [
+                { id: 'trending', label: '🔥 وديني للرائج' },
+                { id: 'random',   label: '🎲 اختاري لي حاجة عشوائية' },
+                { id: 'taste',    label: '💕 حاجة تناسب ذوقي' },
+                { id: 'whatsapp', label: '💬 كلمي المحل على واتساب' }
+            ];
 
             var WELCOME_MESSAGE = "نورتي محل نور! 😍";
             var RETURN_MESSAGE  = "رجعت! 😍";
@@ -548,10 +588,11 @@
                 "شوفي تريندات الشتاء 🔥",
                 "تشكيلة الشتاء وصلت ❄️",
                 "ألوان وموديلات جديدة كل أسبوع ✨",
-                "شرفينا في الفرع ببني سويف 🛍️"
+                "شرفينا في الفرع ببني سويف 🛍️",
+                "اضغطي عليا ضغطة طويلة وأنا أساعدك تختاري 😉"
             ];
             var CONFUSED_MESSAGES = [
-                "محتاجة مساعدة؟ 💬",
+                "محتاجة مساعدة؟ اضغطي عليا ضغطة طويلة 💬",
                 "مش لاقية اللي بتدوري عليه؟ 🤔",
                 "كلمينا على الواتساب ونرد عليكي فوراً 💚",
                 "شوفي الفيديوهات على التيك توك 🎬"
@@ -604,12 +645,26 @@
             peek.appendChild(peekImg);
 
             // ---------- Preload للصور (لتجنب الوميض عند التبديل) ----------
-            var failed = {}, keepAlive = [], loadedPromise = null;
+            var failed = {}, loaded = {}, keepAlive = [], loadedPromise = null, extrasStarted = false;
+            var CORE = ['welcome', 'idle', 'heart', 'confused', 'drag'];
+            function loadExtras() {                 // الحركات الإضافية بتتحمل بعد الترحيب بدون ما تعطّل الصفحة
+                if (extrasStarted) return;
+                extrasStarted = true;
+                Object.keys(IMAGES).forEach(function (key) {
+                    if (CORE.indexOf(key) !== -1) return;
+                    var im = new Image();
+                    im.onload = function () { loaded[key] = true; };
+                    im.onerror = function () { failed[key] = true; };
+                    im.src = IMAGES[key];
+                    keepAlive.push(im);
+                });
+            }
             function preloadAll() {
-                var jobs = Object.keys(IMAGES).map(function (key) {
+                var jobs = CORE.map(function (key) {
                     return new Promise(function (resolve) {
                         var im = new Image();
                         im.onload = function () {
+                            loaded[key] = true;
                             if (key === 'idle' && im.naturalWidth && im.naturalHeight) {
                                 MW = Math.round(MH * im.naturalWidth / im.naturalHeight);   // نفس نسبة أبعاد الصورة
                             }
@@ -629,7 +684,8 @@
 
             // ---------- State Machine ----------
             var state = null, revertTimer = null;
-            function resolveState(n) { return (FALLBACK[n] && (!IMAGES[n] || failed[n])) ? FALLBACK[n] : n; }
+            function resolveState(n) { return (FALLBACK[n] && (!IMAGES[n] || failed[n] || !loaded[n])) ? FALLBACK[n] : n; }
+            function hasArt(n) { return !!(IMAGES[n] && loaded[n] && !failed[n]); }
             function setState(name) {
                 name = resolveState(name);
                 if (state === name) return;
@@ -772,15 +828,15 @@
             var dozing = false, dozeFx = null, lastActive = Date.now();
             function startDoze() {
                 dozing = true;
-                if (IMAGES.sleep && !failed.sleep) setState('sleep');
-                else if (!reduced) fxEl.className = 'fx-doze';
+                if (hasArt('sleep')) { setState('sleep'); return; }     // الحركة نفسها فيها Zzz
+                if (!reduced) fxEl.className = 'fx-doze';
                 burst(['💤'], 1);
                 dozeFx = setInterval(function () { burst(['💤'], 1); }, 2600);
             }
             function wakeUp() {
                 if (!dozing) return;
                 dozing = false;
-                clearInterval(dozeFx);
+                if (dozeFx) clearInterval(dozeFx);
                 if (fxEl.className === 'fx-doze') fxEl.className = '';
                 if (state === 'sleep') setState('idle');
             }
@@ -796,7 +852,7 @@
             // ---------- ترشيحات تلقائية ----------
             var tips = 0, tipTimer = null;
             function canSpeak() {
-                return !hidden && drag.id === null && !dozing && state === 'idle' && !bubble.classList.contains('show') &&
+                return !hidden && !menuOpen && drag.id === null && !dozing && state === 'idle' && !bubble.classList.contains('show') &&
                        document.visibilityState === 'visible' && !modalOpen();
             }
             function scheduleTips() {
@@ -805,7 +861,7 @@
                 tipTimer = setTimeout(function () {
                     if (canSpeak()) {
                         var m = productMessage();
-                        if (m) { tips++; fx('hop'); showBubble(m.text, 5500, m.id); }
+                        if (m) { tips++; clearTimeout(revertTimer); setState('point'); fx('hop'); showBubble(m.text, 5500, m.id); goIdleAfter(5500); }
                     }
                     scheduleTips();
                 }, tips === 0 ? FIRST_TIP_MS : TIP_EVERY_MS);
@@ -827,12 +883,13 @@
                     goIdleAfter(ms);
                     lastActive = Date.now();
                     scheduleTips();
+                    setTimeout(loadExtras, 1500);
                 });
             }
             function hideMascot() {
                 hidden = true; saveHidden(true);
                 clearTimeout(revertTimer); clearTimeout(tipTimer);
-                wakeUp(); hideBubble();
+                wakeUp(); hideBubble(); closeMenu();
                 mascot.style.display = 'none';
                 peek.style.display = 'block';
                 state = null;
@@ -852,7 +909,7 @@
                 wakeUp();
                 clearTimeout(revertTimer);
                 setState(kind);
-                fx(kind === 'confused' || kind === 'think' ? 'shake' : 'hop');
+                fx(kind === 'confused' ? 'shake' : 'hop');
                 if (hearts) burst(['💗', '💖', '❤️'], 4);
                 showBubble(text, ms);
                 goIdleAfter(Math.max(ms, REACTION_MS));
@@ -860,8 +917,15 @@
             // 1) الزبونة داست واتساب → لما ترجع للصفحة نشكرها
             var pendingWa = false;
             document.addEventListener('click', function (e) {
-                var t = e.target;
-                if (t && t.closest && t.closest('#modal-wa-btn,[onclick^="quickWa"],a[href*="wa.me"]')) pendingWa = true;
+                var t = e.target, el = t && t.closest ? t.closest('#modal-wa-btn,[onclick^="quickWa"],a[href*="wa.me"]') : null;
+                if (!el) return;
+                pendingWa = true;
+                // الاستفسار على واتساب إشارة قوية على ذوق الزبونة
+                if (el.id === 'modal-wa-btn') { if (typeof currentProduct !== 'undefined' && currentProduct) track(currentProduct, 3); }
+                else {
+                    var mm = /quickWa\((\d+)\)/.exec(el.getAttribute('onclick') || '');
+                    if (mm && typeof products !== 'undefined') { var pp = products.filter(function (x) { return Number(x.id) === Number(mm[1]); })[0]; if (pp) track(pp, 3); }
+                }
             }, true);
             document.addEventListener('visibilitychange', function () {
                 if (document.visibilityState === 'visible' && pendingWa) {
@@ -874,6 +938,7 @@
             if (modalEl && window.MutationObserver) {
                 new MutationObserver(function () {
                     var o = modalOpen();
+                    if (!wasOpen && o && typeof currentProduct !== 'undefined' && currentProduct) track(currentProduct, 1);   // بتتفرج على موديل
                     if (wasOpen && !o && Date.now() - lastModalReact > 25000 && Math.random() < MODAL_REACT_CHANCE) {
                         lastModalReact = Date.now();
                         setTimeout(function () { react('heart', pick(MODAL_CLOSE_MESSAGES), 3500, true); }, 350);
@@ -906,14 +971,151 @@
                 if (heart && Math.random() < PRODUCT_CHANCE) m = productMessage();
                 if (!m) m = { text: pick(heart ? HEART_MESSAGES : CONFUSED_MESSAGES) };
                 clearTimeout(revertTimer);
-                setState(heart ? 'heart' : 'confused');
-                if (heart) burst(['💗', '💖', '❤️'], 3); else fx('shake');
+                setState(m.id ? 'point' : (heart ? 'heart' : 'confused'));
+                if (m.id) { /* ترشيح منتج */ } else if (heart) burst(['💗', '💖', '❤️'], 3); else fx('shake');
                 showBubble(m.text, m.id ? 5500 : REACTION_MS, m.id);
                 goIdleAfter(REACTION_MS);
             }
 
+            // ---------- ذوق الزبونة (بيتحفظ على جهازها بس) ----------
+            var TASTE_KEY = 'noor_taste';
+            function loadTaste() {
+                try {
+                    var t = JSON.parse(localStorage.getItem(TASTE_KEY) || '{}');
+                    return { cats: t.cats || {}, tags: t.tags || {}, colors: t.colors || {}, seen: t.seen || {}, n: t.n || 0 };
+                } catch (e) { return { cats: {}, tags: {}, colors: {}, seen: {}, n: 0 }; }
+            }
+            function prune(o, max) {
+                var keys = Object.keys(o);
+                if (keys.length <= max) return;
+                keys.sort(function (a, b) { return o[b] - o[a]; }).slice(max).forEach(function (k) { delete o[k]; });
+            }
+            function track(p, w) {
+                if (!p) return;
+                try {
+                    var t = loadTaste(); w = w || 1;
+                    if (p.category) t.cats[p.category] = (t.cats[p.category] || 0) + w;
+                    if (p.tag) t.tags[p.tag] = (t.tags[p.tag] || 0) + w;
+                    (p.colors || []).forEach(function (c) { t.colors[c] = (t.colors[c] || 0) + w * 0.5; });
+                    t.seen[p.id] = (t.seen[p.id] || 0) + 1;
+                    t.n += w;
+                    prune(t.cats, 30); prune(t.tags, 10); prune(t.colors, 40); prune(t.seen, 80);
+                    localStorage.setItem(TASTE_KEY, JSON.stringify(t));
+                } catch (e) {}
+            }
+            function availableProducts() {
+                var all = (typeof products !== 'undefined' && Array.isArray(products)) ? products : [];
+                return all.filter(function (p) { return p && p.title && p.available !== false; });
+            }
+            function bestForTaste() {
+                var t = loadTaste(), list = availableProducts();
+                if (t.n < 1 || !list.length) return null;
+                var scored = list.map(function (p) {
+                    var s = 0;
+                    if (p.category) s += (t.cats[p.category] || 0) * 2;
+                    if (p.tag) s += (t.tags[p.tag] || 0) * 1.5;
+                    (p.colors || []).forEach(function (c) { s += (t.colors[c] || 0); });
+                    s -= 4 * (t.seen[p.id] || 0);          // نفضّل حاجة لسه ماشافتهاش
+                    s += Math.random() * 0.6;              // عشان النتيجة ماتبقاش ثابتة
+                    return { p: p, s: s };
+                }).sort(function (a, b) { return b.s - a.s; });
+                return scored[0].p;
+            }
+
+            // ---------- قائمة الضغطة الطويلة ----------
+            var menuEl = document.getElementById('mascot-menu'), menuOpen = false, menuTimer = null;
+            (function buildMenu() {
+                var head = document.createElement('div');
+                head.className = 'mm-head'; head.textContent = 'أقدر أساعدك في إيه؟ 😊';
+                menuEl.appendChild(head);
+                MENU_ITEMS.forEach(function (it) {
+                    var b = document.createElement('button');
+                    b.type = 'button'; b.setAttribute('role', 'menuitem'); b.dataset.act = it.id; b.textContent = it.label;
+                    menuEl.appendChild(b);
+                });
+            })();
+            menuEl.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+            menuEl.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var b = e.target.closest ? e.target.closest('button[data-act]') : null;
+                if (b) runMenu(b.dataset.act);
+            });
+            function openMenu() {
+                if (hidden) return;
+                wakeUp(); hideBubble(); clearTimeout(revertTimer);
+                setState('point'); fx('hop');
+                menuEl.classList.add('show'); menuOpen = true;
+                var mw = menuEl.offsetWidth, mh = menuEl.offsetHeight, gap = 10;
+                var above = posY - topLimit() >= mh + gap + 6;
+                var left = clamp(posX + MW / 2 - mw / 2, 8, viewW() - mw - 8);
+                menuEl.style.left = (left - posX) + 'px';
+                menuEl.style.top = (above ? -(mh + gap) : MH + gap) + 'px';
+                clearTimeout(menuTimer); menuTimer = setTimeout(closeMenu, 12000);
+                try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
+            }
+            function closeMenu() {
+                if (!menuOpen) return;
+                menuOpen = false; clearTimeout(menuTimer);
+                menuEl.classList.remove('show');
+                if (state === 'point') goIdleAfter(400);
+            }
+            document.addEventListener('pointerdown', function (e) { if (menuOpen && !menuEl.contains(e.target)) closeMenu(); }, true);
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+
+            function flash(el) {
+                if (!el || reduced) return;
+                el.classList.remove('noor-flash'); void el.offsetWidth; el.classList.add('noor-flash');
+                setTimeout(function () { el.classList.remove('noor-flash'); }, 2000);
+            }
+            function scrollToEl(el) {
+                var y = el.getBoundingClientRect().top + window.pageYOffset - 84;
+                window.scrollTo({ top: Math.max(0, y), behavior: reduced ? 'auto' : 'smooth' });
+            }
+            function goTrending() {
+                var sec = document.getElementById('trending');
+                var has = sec && !sec.classList.contains('hidden');
+                var target = has ? sec : document.getElementById('collection');
+                if (target) scrollToEl(target);
+                if (has) { flash(sec.firstElementChild); react('cheer', 'ده الرائج عندنا 🔥', 3500, true); }
+                else react('think', 'لسه مفيش رائج دلوقتي، اتفرجي على أحدث الموديلات 👇', 4200, false);
+            }
+            function reveal(p, intro, outro) {         // عدسة ثانية وبعدين تفتح الموديل
+                react('think', intro, 1300, false);
+                setTimeout(function () {
+                    if (hidden) return;
+                    react('cheer', outro, 2600, true);
+                    setTimeout(function () { if (typeof openModal === 'function') openModal(Number(p.id)); }, 800);
+                }, 1300);
+            }
+            var lastRandom = null;
+            function pickRandom() {
+                var list = availableProducts();
+                if (!list.length) { react('confused', 'موديلات جديدة قريباً 🤍', 3500, false); return; }
+                var p, tries = 0;
+                do { p = list[Math.floor(Math.random() * list.length)]; tries++; } while (p.id === lastRandom && list.length > 1 && tries < 6);
+                lastRandom = p.id;
+                reveal(p, 'ثواني وأختارلك حاجة... 🎲', 'اخترتلك حاجة حلوة! 🎁');
+            }
+            function pickTaste() {
+                var p = bestForTaste();
+                if (!p) { react('confused', 'لسه معرفش ذوقك 🤔 شوفي كام موديل وأنا أتابع معاكي!', 4800, false); return; }
+                reveal(p, 'بفتّش على اللي يناسب ذوقك... 🔍', 'لقيتلك حاجة على ذوقك! 💕');
+            }
+            function openWa() {
+                if (typeof waNumber === 'undefined') return;
+                pendingWa = true;
+                window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent('السلام عليكم، محتاجة مساعدة في اختيار حاجة من الموقع 🌸'), '_blank');
+            }
+            function runMenu(id) {
+                closeMenu();
+                if (id === 'trending') goTrending();
+                else if (id === 'random') pickRandom();
+                else if (id === 'taste') pickTaste();
+                else if (id === 'whatsapp') openWa();
+            }
+
             // ---------- السحب والإفلات (Pointer Events: ماوس + لمس بنفس الكود) ----------
-            var drag = { id: null, sx: 0, sy: 0, ox: 0, oy: 0, moved: false };
+            var drag = { id: null, sx: 0, sy: 0, ox: 0, oy: 0, moved: false, lp: null, menu: false };
             function startDrag() {
                 clearTimeout(revertTimer);
                 wakeUp();
@@ -932,7 +1134,12 @@
                 if (e.pointerType === 'mouse' && e.button !== 0) return;
                 unlockAudio();                                         // لازم يتم جوه لمسة المستخدم
                 drag.id = e.pointerId; drag.sx = e.clientX; drag.sy = e.clientY;
-                drag.ox = posX; drag.oy = posY; drag.moved = false;
+                drag.ox = posX; drag.oy = posY; drag.moved = false; drag.menu = false;
+                var pid = e.pointerId;
+                clearTimeout(drag.lp);
+                drag.lp = setTimeout(function () {                      // ضغطة طويلة من غير حركة = القائمة
+                    if (drag.id === pid && !drag.moved) { drag.menu = true; openMenu(); }
+                }, LONG_PRESS_MS);
                 try { mascot.setPointerCapture(e.pointerId); } catch (err) {}
             });
             mascot.addEventListener('pointermove', function (e) {
@@ -941,16 +1148,20 @@
                 if (!drag.moved) {
                     if (Math.sqrt(dx * dx + dy * dy) < TAP_THRESHOLD) return;  // لسه نقر محتمل
                     drag.moved = true;
+                    clearTimeout(drag.lp);
+                    closeMenu();
                     startDrag();
                 }
                 setPos(drag.ox + dx, drag.oy + dy);
             });
             function release(e, cancelled) {
                 if (e.pointerId !== drag.id) return;
-                var wasDrag = drag.moved;
-                drag.id = null; drag.moved = false;
+                var wasDrag = drag.moved, wasMenu = drag.menu;
+                clearTimeout(drag.lp);
+                drag.id = null; drag.moved = false; drag.menu = false;
                 try { mascot.releasePointerCapture(e.pointerId); } catch (err) {}
                 if (wasDrag) endDrag();
+                else if (wasMenu) { /* القائمة اتفتحت: مفيش نقر */ }
                 else if (!cancelled) onTap();
             }
             mascot.addEventListener('pointerup', function (e) { release(e, false); });
@@ -959,6 +1170,7 @@
             mascot.addEventListener('dragstart', function (e) { e.preventDefault(); });
             mascot.addEventListener('keydown', function (e) {                                // إتاحة الكيبورد
                 if (e.target !== mascot) return;
+                if (e.key === 'ContextMenu' || (e.key === 'Enter' && e.shiftKey)) { e.preventDefault(); openMenu(); return; }
                 if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlockAudio(); onTap(); }
             });
 
