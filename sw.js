@@ -3,10 +3,10 @@
    - الصور والأيقونات والخطوط: من الكاش وتتحدّث في الخلفية.
    - طلبات GitHub API (لوحة التحكم) مابتعديش من هنا خالص.
    لو غيّرتي في قايمة SHELL، غيّري رقم VERSION. */
-const VERSION = 'noor-pages-v1';
+const VERSION = 'noor-pages-v2';
 const RUNTIME = 'noor-assets-v1';
 const SHELL = ['./', 'index.html', 'admin.html', 'manifest.json', 'admin-manifest.json',
-               'icon-192.png', 'icon-512.png', 'admin-192.png', 'admin-512.png'];
+               'logo.jpg', 'icon-192.png', 'icon-512.png', 'admin-192.png', 'admin-512.png'];
 const CDN = ['cdn.tailwindcss.com', 'fonts.googleapis.com', 'fonts.gstatic.com', 'cdnjs.cloudflare.com'];
 const MAX_RUNTIME = 160;
 
