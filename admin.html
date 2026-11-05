@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#121212">
+<link rel="manifest" href="admin-manifest.json">
+<link rel="apple-touch-icon" href="admin-512.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="لوحة نور">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>لوحة تحكم نور</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -98,6 +104,28 @@ details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
 @keyframes tpop{0%{transform:scale(.6) translateY(14px);opacity:0}100%{transform:none;opacity:1}}
 @keyframes tglow{50%{outline-color:rgba(212,175,55,.3)}}
 @media (prefers-reduced-motion:reduce){.tcard,#t-mas.pop,.tourhl{animation:none}}
+
+/* ===== رسالة اليوم / بيانات المحل / نسخ / تحديد متعدد ===== */
+.sc{margin:0 0 14px;padding:12px;border:1px solid var(--ln);border-radius:16px;background:var(--s1);color:var(--tx);font-size:14px;line-height:1.6}
+.sc summary{cursor:pointer;font-weight:700;color:var(--gd);list-style:none}
+.sc summary::-webkit-details-marker{display:none}
+.sc label{margin:14px 0 6px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 10px}
+.tbar .mu{margin:0}
+.tbar .btn{min-height:38px;padding:0 14px;font-size:13px}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.acts .btn{min-height:42px;padding:0;font-size:17px}
+#list.bk .row,#list.bk .acts{pointer-events:none;opacity:.45}
+#list.bk .card{cursor:pointer}
+#list.bk .th:before{content:"";position:absolute;top:6px;right:6px;z-index:1;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.4)}
+.card.sel{border-color:var(--gd);box-shadow:0 0 0 2px rgba(212,175,55,.5)}
+#list.bk .card.sel .th:before{display:none}
+.card.sel .th:after{content:"✓";position:absolute;top:6px;right:6px;z-index:1;width:24px;height:24px;border-radius:50%;background:var(--gd);color:#1a1405;display:grid;place-items:center;font-weight:900}
+#bkbar{display:none;position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));max-width:688px;margin:auto;z-index:6;padding:10px;gap:8px;align-items:center;background:var(--s1);border:1px solid var(--gd);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+#bkbar.on{display:flex}
+#bkbar .btn{min-height:44px;padding:0 10px;font-size:13px}
+body.bulk #add{display:none}
 </style>
 </head>
 <body>
@@ -112,9 +140,23 @@ details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
   <div class="bn"><label>النص الموسمي (بيظهر فوق الهيرو في الموقع)</label>
     <div><input class="in" id="bt" maxlength="80" placeholder="🔥 تشكيلة الشتاء وصلت"><button class="btn p" id="bs">حفظ</button></div>
     <div class="mu" style="margin-top:6px">سيبه فاضي لو عايز تخفيه.</div></div>
-  <p class="mu" id="sum"></p><div id="list"></div>
+  <details class="sc" id="shopbox"><summary>📣 رسالة اليوم + بيانات المحل (مواعيد وخريطة)</summary>
+    <label>رسالة اليوم (الشخصية بتقولها للزبونة أول ما تدخل الموقع)</label>
+    <input class="in" id="sh_m" maxlength="120" placeholder="خصم 20% على الشتوي النهاردة 🔥">
+    <div class="mu" style="margin-top:6px">سيبها فاضية لو مفيش رسالة.</div>
+    <label>مواعيد الشغل (بتظهر في الموقع مع «مفتوح دلوقتي» أو «مقفول»)</label>
+    <div class="g2"><div><span class="mu">من</span><input class="in" type="time" id="sh_o"></div><div><span class="mu">إلى</span><input class="in" type="time" id="sh_c"></div></div>
+    <label>يوم الإجازة</label>
+    <select class="in" id="sh_x"><option value="">مفيش إجازة</option><option value="5">الجمعة</option><option value="6">السبت</option><option value="0">الأحد</option><option value="1">الاتنين</option><option value="2">التلات</option><option value="3">الأربع</option><option value="4">الخميس</option></select>
+    <label>رابط المحل على خرائط جوجل (لزرار «اتجاهات»)</label>
+    <input class="in ltr" id="sh_l" inputmode="url" placeholder="https://maps.app.goo.gl/...">
+    <div class="mu" style="margin-top:6px">افتحي المحل على خرائط جوجل ← مشاركة ← انسخي الرابط وحطيه هنا.</div>
+    <button class="btn p" id="shs" type="button" style="width:100%;margin-top:14px">حفظ</button>
+  </details>
+  <div class="tbar"><p class="mu" id="sum"></p><button class="btn" id="bk" type="button">☑ تحديد متعدد</button></div><div id="list"></div>
 </main>
 <button class="btn p fab" id="add">+ إضافة موديل جديد</button>
+<div id="bkbar"><span id="bkn" class="mu" style="flex:1">0 محدد</span><button class="btn" id="bka" type="button">الكل</button><button class="btn p" id="bkv" type="button">✓ متوفر</button><button class="btn d" id="bkx" type="button">✕ مخلص</button><button class="btn" id="bkc" type="button">إلغاء</button></div>
 
 <!-- الإعدادات / الربط -->
 <section class="scr" id="cfg"><div class="wrap">
@@ -132,6 +174,8 @@ details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
     GitHub ← Settings ← Developer settings ← Personal access tokens ← Fine-grained tokens ← Generate.<br>
     اختار المستودع بتاع الموقع بس، وفي Permissions خلّي <b>Contents = Read and write</b>.
   </details>
+  <button class="btn" id="pwa" type="button" style="display:none;width:100%;margin-top:16px">📲 تثبيت اللوحة على الشاشة الرئيسية</button>
+  <p class="mu" id="pwa_ios" style="display:none;margin-top:16px">📲 لتثبيت اللوحة على iPhone: دوس زرار المشاركة ⬆️ في سفاري واختار «إضافة إلى الشاشة الرئيسية». وهتدخل التوكن مرة تانية جوه التطبيق.</p>
   <button class="btn p" id="sv" style="width:100%;margin-top:20px">حفظ والاتصال</button>
   <button class="btn" id="cc" style="width:100%;margin-top:10px">رجوع</button>
   <button class="btn d" id="lo" style="width:100%;margin-top:10px">تسجيل الخروج ومسح التوكن</button>
@@ -207,7 +251,7 @@ details{margin-top:14px;color:var(--mu);font-size:13px;line-height:1.9}
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let cfg={token:'',owner:'',repo:'',branch:''},items=[],banner='',prev={},F=null,delId=null,tt;
+let cfg={token:'',owner:'',repo:'',branch:''},items=[],banner='',motd='',shop={open:'',close:'',off:'',map:''},prev={},F=null,delId=null,tt;
 try{Object.assign(cfg,JSON.parse(localStorage.getItem('noor_cfg')||'{}'))}catch{}
 const saveCfg=()=>{try{localStorage.setItem('noor_cfg',JSON.stringify(cfg))}catch{}};
 
@@ -234,18 +278,19 @@ const putF=(p,b64,msg,sha)=>gh(`${R()}/contents/${p}`,{method:'PUT',body:JSON.st
 const delF=async(p,msg)=>{const f=await getF(p);if(f)await gh(`${R()}/contents/${p}`,{method:'DELETE',body:JSON.stringify({message:msg,sha:f.sha,branch:cfg.branch})})};
 
 const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false});
-function parse(f){if(!f)return{banner:'',products:[]};const j=JSON.parse(dec(f.content)),l=Array.isArray(j)?j:j.products;if(!Array.isArray(l))throw new Error('products.json مش بالصيغة المتوقعة');return{banner:Array.isArray(j)?'':(j.banner||''),products:l.map(norm)}}
+const normShop=x=>{x=x||{};const t=v=>/^\d{1,2}:\d{2}$/.test(v||'')?v:'';return{open:t(x.open),close:t(x.close),off:(x.off===0||x.off)?String(x.off):'',map:typeof x.map==='string'?x.map:''}};
+function parse(f){if(!f)return{banner:'',motd:'',shop:normShop(),products:[]};const j=JSON.parse(dec(f.content)),l=Array.isArray(j)?j:j.products;if(!Array.isArray(l))throw new Error('products.json مش بالصيغة المتوقعة');const o=Array.isArray(j)?{}:j;return{banner:o.banner||'',motd:typeof o.motd==='string'?o.motd:'',shop:normShop(o.shop),products:l.map(norm)}}
 
 async function load(){
   busy('جاري تحميل الموديلات...');
-  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;$('#bt').value=banner;render();setTimeout(maybeTour,500)}
+  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;motd=d.motd;shop=d.shop;$('#bt').value=banner;fillShop();render();setTimeout(maybeTour,500)}
   catch(e){toast(e.message,1)}finally{busy()}
 }
 /* كل تعديل بيقرأ أحدث نسخة من الملف الأول عشان ميحصلش تعارض */
-async function mutate(fn,msg,bn){
+async function mutate(fn,msg,bn,ex){
   for(let i=0;i<2;i++){
-    const f=await getF('products.json'),d=parse(f),nx=fn(d.products),b=bn===undefined?d.banner:bn;
-    try{await putF('products.json',enc(JSON.stringify({banner:b,products:nx},null,2)+'\n'),msg,f&&f.sha);items=nx;banner=b;render();return}
+    const f=await getF('products.json'),d=parse(f),nx=fn(d.products),b=bn===undefined?d.banner:bn,x=ex===undefined?{motd:d.motd,shop:d.shop}:ex;
+    try{await putF('products.json',enc(JSON.stringify({banner:b,motd:x.motd,shop:x.shop,products:nx},null,2)+'\n'),msg,f&&f.sha);items=nx;banner=b;motd=x.motd;shop=x.shop;render();return}
     catch(e){if((e.st!==409&&e.st!==422)||i)throw e}
   }
 }
@@ -268,6 +313,7 @@ function shrink(file){return new Promise((ok,no)=>{
 })}
 
 /* ===== القائمة ===== */
+let bulk=false;const sel=new Set();
 const src=p=>prev[p.image]||p.image;
 function render(){
   $('#sum').textContent=items.length?`${items.length} موديل • ${items.filter(p=>p.available).length} متوفر`:'';
@@ -280,18 +326,23 @@ function render(){
       <div class="mu">${p.category?esc(p.category)+' • ':''}${esc(p.colors.join('، '))||'بدون ألوان'}${p.sizes.length?' • '+esc(p.sizes.join(' / ')):''}</div>
       <div class="row">
         <label class="sw"><input type="checkbox" data-a="tg" ${p.available?'checked':''}><i></i>${p.available?'متوفر':'غير متوفر'}</label>
-        <span style="flex:1"></span>
-        <button class="btn sq ${p.featured?'p':''}" data-a="ft" aria-label="تثبيت في الشريط المميز">📌</button>
-        <button class="btn sq" data-a="ed" aria-label="تعديل">✏️</button>
-        <button class="btn sq d" data-a="rm" aria-label="حذف">🗑️</button>
+      </div>
+      <div class="acts">
+        <button class="btn ${p.featured?'p':''}" data-a="ft" aria-label="تثبيت في الشريط المميز">📌</button>
+        <button class="btn" data-a="ed" aria-label="تعديل">✏️</button>
+        <button class="btn" data-a="dp" aria-label="نسخ الموديل">📄</button>
+        <button class="btn d" data-a="rm" aria-label="حذف">🗑️</button>
       </div>
     </div>
   </div>`).join(''):'<p class="mu" style="text-align:center;margin-top:70px">لسه مفيش موديلات. اضغط «إضافة موديل جديد».</p>';
+  if(typeof bulkUI==='function')bulkUI();
 }
 $('#list').addEventListener('click',e=>{
+  if(bulk){const c=e.target.closest('.card');if(c){const k=+c.dataset.id;sel.has(k)?sel.delete(k):sel.add(k);bulkUI()}return}
   const a=e.target.closest('[data-a]');if(!a)return;
   const id=+a.closest('.card').dataset.id;
   if(a.dataset.a==='ed')openForm(id);
+  else if(a.dataset.a==='dp')openForm(0,id);
   else if(a.dataset.a==='ft')feat(id);
   else if(a.dataset.a==='rm'){const p=items.find(x=>x.id===id);delId=id;$('#cft').textContent=p.title;$('#cf').classList.add('on')}
 });
@@ -319,15 +370,16 @@ $('#cy').onclick=async()=>{
 };
 
 /* ===== نموذج الإضافة / التعديل ===== */
-function openForm(id){
-  const p=id?items.find(x=>x.id===id):null;
-  F={id:id||0,colors:[...(p?p.colors:[])],sizes:[...(p?p.sizes:[])],gal:(p?p.images:[]).map(x=>({p:x,url:src({image:x}),b64:''})),oldImgs:p?[...p.images]:[]};
-  $('#ft').textContent=p?'تعديل الموديل':'موديل جديد';
+function openForm(id,dup){
+  const p=(id||dup)?items.find(x=>x.id===(id||dup)):null,cp=!!dup&&!id;
+  F={id:id||0,colors:[...(p?p.colors:[])],sizes:[...(p?p.sizes:[])],gal:(p&&!cp?p.images:[]).map(x=>({p:x,url:src({image:x}),b64:''})),oldImgs:p&&!cp?[...p.images]:[]};
+  $('#ft').textContent=cp?'نسخة من: '+p.title:(id?'تعديل الموديل':'موديل جديد');
   $('#f_t').value=p?p.title:'';$('#f_b').value=p?p.badge:'';$('#f_d').value=p?p.description:'';
-  $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?p.available:true;$('#f_k').value=p?p.category:'';$('#f_g').value=p?p.tag:'';$('#f_f').checked=p?p.featured:false;
+  $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?(cp?true:p.available):true;$('#f_k').value=p?p.category:'';$('#f_g').value=p?p.tag:'';$('#f_f').checked=p&&!cp?p.featured:false;
   $('#cats').innerHTML=[...new Set(['تيشرتات','هوديز','بنطلونات',...items.map(x=>x.category)].filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
   $('#f_s').value='';chips();schips();pickShow();
   $('#frm').classList.add('on');$('#frm').scrollTop=0;document.body.style.overflow='hidden';
+  if(cp){toast('اتنسخت البيانات ✓ عدّل الاسم وضيف صور الموديل الجديد');setTimeout(()=>{$('#f_t').focus();$('#f_t').select()},300)}
 }
 const closeForm=()=>{$('#frm').classList.remove('on');document.body.style.overflow=''};
 const chips=()=>{$('#chips').innerHTML=F.colors.map((c,i)=>`<span class="chip"><button type="button" data-i="${i}" aria-label="حذف اللون">×</button>${esc(c)}</span>`).join('')};
@@ -376,6 +428,37 @@ $('#bs').onclick=async()=>{
   try{await mutate(l=>l,'Update banner',$('#bt').value.trim());toast('✓ تم حفظ النص الموسمي')}
   catch(e){toast(e.message,1)}finally{busy()}
 };
+function fillShop(){
+  $('#sh_m').value=motd;$('#sh_o').value=shop.open;$('#sh_c').value=shop.close;$('#sh_x').value=shop.off;$('#sh_l').value=shop.map;
+}
+$('#shs').onclick=async()=>{
+  const o=$('#sh_o').value,c=$('#sh_c').value;
+  if(!!o!==!!c){toast('اكتب وقت الفتح ووقت القفل مع بعض، أو سيبهم الاتنين فاضيين',1);return}
+  let m=$('#sh_l').value.trim();if(m&&!/^https?:\/\//i.test(m))m='https://'+m;
+  if(m){try{const h=new URL(m).hostname;if(!/(^|\.)(google\.[a-z.]+|goo\.gl|g\.co)$/i.test(h))throw 0}catch{toast('رابط الخريطة لازم يكون من خرائط جوجل (maps.app.goo.gl أو google.com/maps)',1);return}}
+  busy('جاري الحفظ...');
+  try{await mutate(l=>l,'Update shop info',undefined,{motd:$('#sh_m').value.trim(),shop:{open:o,close:c,off:$('#sh_x').value,map:m}});fillShop();toast('✓ تم الحفظ — بيظهر في الموقع خلال دقيقة أو اتنين')}
+  catch(e){toast(e.message,1)}finally{busy()}
+};
+
+/* ===== تحديد متعدد (تعديل التوفر لأكتر من موديل مرة واحدة) ===== */
+function bulkUI(){
+  document.body.classList.toggle('bulk',bulk);$('#list').classList.toggle('bk',bulk);
+  $('#bk').textContent=bulk?'✕ إلغاء التحديد':'☑ تحديد متعدد';
+  $('#bkbar').classList.toggle('on',bulk);$('#bkn').textContent=sel.size+' محدد';
+  document.querySelectorAll('#list .card').forEach(c=>c.classList.toggle('sel',sel.has(+c.dataset.id)));
+}
+$('#bk').onclick=()=>{bulk=!bulk;sel.clear();bulkUI()};
+$('#bkc').onclick=()=>{bulk=false;sel.clear();bulkUI()};
+$('#bka').onclick=()=>{if(sel.size===items.length)sel.clear();else items.forEach(p=>sel.add(p.id));bulkUI()};
+async function bulkSet(v){
+  if(!sel.size){toast('حدّد موديل واحد على الأقل',1);return}
+  const ids=new Set(sel);busy('جاري تحديث '+ids.size+' موديل...');
+  try{await mutate(l=>l.map(p=>ids.has(p.id)?{...p,available:v}:p),'Bulk availability '+(v?'on':'off')+': '+ids.size);bulk=false;sel.clear();bulkUI();toast(v?'✓ الموديلات المحددة بقت متوفرة':'✓ الموديلات المحددة بقت غير متوفرة')}
+  catch(e){toast(e.message,1)}finally{busy()}
+}
+$('#bkv').onclick=()=>bulkSet(true);$('#bkx').onclick=()=>bulkSet(false);
+
 $('#fx').onclick=$('#fc').onclick=closeForm;
 
 $('#fs').onclick=async()=>{
@@ -442,9 +525,10 @@ const TOUR=[
   {m:'welcome.webp',t:'أهلاً بيك في لوحة تحكم نور 👋',p:'أنا مساعدة المحل، وهشرحلك اللوحة في دقيقة. من هنا بتتحكم في الموقع كله من موبايلك: بتضيف الموديلات والصور، وتغيّر المتاح والمخلص، وتكتب الجملة اللي بتظهر فوق الموقع. من غير ما تحتاج مبرمج.'},
   {m:'idle.webp',t:'ليه اللوحة دي مهمة؟',p:'الموقع هو واجهة المحل قدام الزبونات. لما الموديلات والصور تبقى محدّثة، الزبونة بتشوف اللي موجود فعلاً وتكلمكم على واتساب. وأي تعديل بتعمله هنا بيتحفظ لوحده، وبيظهر في الموقع بعد دقيقة أو اتنين تقريباً.'},
   {m:'idle.webp',el:'.bn',t:'النص الموسمي',p:'ده الشريط اللي بيظهر فوق الموقع، زي «🔥 تشكيلة الشتاء وصلت». اكتب الجملة واضغط «حفظ». وسيبه فاضي لو عايز تخفيه.'},
-  {m:'idle.webp',el:()=>document.querySelector('#list .card')||$('#list'),t:'قائمة الموديلات',p:'كل كارت هو موديل ظاهر في الموقع. من الكارت: مفتاح «متوفر» تقفله لما الموديل يخلص وتفتحه لما يرجع، و📌 عشان يظهر في الشريط المميز، و✏️ للتعديل، و🗑️ للحذف.'},
+  {m:'point.webp',el:'#shopbox',t:'رسالة اليوم وبيانات المحل',p:'اضغط على الصندوق ده يتفتح. «رسالة اليوم» الشخصية بتقولها للزبونة أول ما تدخل الموقع، زي «خصم 20% النهاردة». وهنا كمان مواعيد الشغل ويوم الإجازة، فالموقع بيكتب «مفتوح دلوقتي» أو «مقفول»، ورابط المحل على الخريطة لزرار «اتجاهات».'},
+  {m:'idle.webp',el:()=>document.querySelector('#list .card')||$('#list'),t:'قائمة الموديلات',p:'كل كارت هو موديل ظاهر في الموقع. فيه مفتاح «متوفر» تقفله لما الموديل يخلص، وتحته 📌 للتثبيت في الشريط المميز، و✏️ للتعديل، و📄 لعمل نسخة منه (مفيدة لما يكون شبه موديل تاني)، و🗑️ للحذف. وزرار «تحديد متعدد» فوق القائمة بيخليك تعدّل التوفر لكذا موديل مرة واحدة.'},
   {m:'heart.webp',el:'#add',pos:'top',t:'إضافة موديل جديد',p:'من الزرار ده بتضيف موديل: اكتب الاسم والوصف، وضيف الألوان والمقاسات والتصنيف، واختار الصور من الموبايل (لحد 8 صور، والأولى هي الغلاف). الصور بتتصغّر لوحدها قبل الرفع عشان الموقع يفضل سريع. ولو اخترت شارة 🔥 هوت أو ⭐ تريند، الموديل بيظهر في قسم «الرائج الآن» وبترشحه الشخصية للزبونات.'},
-  {m:'idle.webp',el:'body > header.top',t:'التحديث والإعدادات',p:'↻ بيحمّل آخر نسخة من الموديلات. ⚙ فيها ربط GitHub وتسجيل الخروج، والتوكن بيتحفظ على الجهاز ده بس فماتبعتوش لحد. وزرار ❓ بيعيد الشرح ده في أي وقت.'},
+  {m:'idle.webp',el:'body > header.top',t:'التحديث والإعدادات',p:'↻ بيحمّل آخر نسخة من الموديلات. ⚙ فيها ربط GitHub وتسجيل الخروج، والتوكن بيتحفظ على الجهاز ده بس فماتبعتوش لحد. وزرار ❓ بيعيد الشرح ده في أي وقت. ومن ⚙ تقدر تثبّت اللوحة على الشاشة الرئيسية كأنها تطبيق.'},
   {m:'heart.webp',t:'خلصنا! 🎉',p:'كده بقيت عارف كل حاجة. جرّب تضيف أول موديل، ولو احتجت الشرح تاني دوس على ❓ فوق.'}
 ];
 let tourI=0,tourHl=null,tourShown=false;
@@ -493,6 +577,20 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&tourEl.classList.co
 
 render();
 cfg.token&&cfg.owner&&cfg.repo?load():openCfg();
+</script>
+
+<!-- تثبيت اللوحة كتطبيق + Service Worker -->
+<script>
+(function(){
+  const b=document.getElementById('pwa'),h=document.getElementById('pwa_ios');let dp=null;
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;if(!standalone)b.style.display='block'});
+  addEventListener('appinstalled',()=>{dp=null;b.style.display='none'});
+  if(ios&&!standalone)h.style.display='block';
+  b.onclick=()=>{if(!dp)return;dp.prompt();dp.userChoice.then(()=>{dp=null;b.style.display='none'})};
+  if('serviceWorker' in navigator)addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+})();
 </script>
 </body>
 </html>

@@ -16,6 +16,15 @@
     <!-- اللوجو اللي بيظهر في المتصفح وجوجل -->
     <link rel="icon" href="logo.jpg">
 
+    <!-- تثبيت الموقع كتطبيق (PWA) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121212">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="محل نور">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -101,6 +110,43 @@
         .noor-flash { animation: noorFlash 1.8s ease; }
         @keyframes noorFlash { 0%,100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); } 25%,60% { box-shadow: 0 0 0 4px rgba(212,175,55,.85); } }
         @media (prefers-reduced-motion: reduce) { #mascot-body, #mascot-img, #mascot-bubble { transition: none; } #mascot-fx, #mascot-peek, .mp, #mascot-menu, .noor-flash { animation: none !important; } }
+
+        /* ===== المفضلة + بيانات المحل ===== */
+        .fav-btn { position: absolute; bottom: 8px; left: 8px; width: 34px; height: 34px; padding: 0; border-radius: 50%; z-index: 2; cursor: pointer;
+            background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.28); color: #fff; font-size: 19px; line-height: 1;
+            display: flex; align-items: center; justify-content: center; transition: transform .15s ease; }
+        .fav-btn:active { transform: scale(.85); }
+        .fav-btn.on { color: #ff4d6d; border-color: #ff4d6d; background: rgba(0,0,0,.78); }
+        .fav-btn.pop { animation: favPop .35s ease; }
+        @keyframes favPop { 0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); } }
+        #fav-open { position: relative; }
+        #fav-count { position: absolute; top: -4px; left: -4px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 99px; background: #ff4d6d; color: #fff;
+            font-size: 10px; font-weight: 800; line-height: 1; display: none; align-items: center; justify-content: center; }
+        #fav-panel { display: none; position: fixed; inset: 0; z-index: 90; align-items: flex-end; justify-content: center; background: rgba(0,0,0,.78); }
+        #fav-panel.on { display: flex; }
+        .fv-sheet { width: 100%; max-width: 520px; max-height: 86vh; display: flex; flex-direction: column; direction: rtl; background: #161616;
+            border: 1px solid #333; border-bottom: 0; border-radius: 22px 22px 0 0; }
+        .fv-head { display: flex; align-items: center; gap: 10px; padding: 16px 18px 10px; }
+        .fv-head h3 { flex: 1; margin: 0; font-size: 18px; font-weight: 800; color: #ff8fa3; }
+        .fv-x { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #2a2a2a; color: #fff; font-size: 18px; cursor: pointer; }
+        .fv-list { overflow-y: auto; padding: 4px 14px 8px; flex: 1; }
+        .fv-item { display: flex; align-items: center; gap: 10px; padding: 8px; margin-bottom: 8px; border-radius: 14px; background: #1f1f1f; border: 1px solid #2c2c2c; cursor: pointer; }
+        .fv-item img, .fv-ph { width: 52px; height: 66px; border-radius: 10px; object-fit: cover; background: #2a2a2a; flex: none; display: flex; align-items: center; justify-content: center; color: #666; }
+        .fv-t { flex: 1; min-width: 0; }
+        .fv-t b { display: block; font-size: 14px; line-height: 1.5; }
+        .fv-t small { color: #9a9aa2; font-size: 11px; }
+        .fv-t small.off { color: #ef5350; }
+        .fv-rm { width: 36px; height: 36px; border-radius: 50%; border: 0; background: transparent; color: #ff4d6d; font-size: 18px; cursor: pointer; flex: none; }
+        .fv-empty { padding: 34px 10px; text-align: center; color: #9a9aa2; font-size: 14px; line-height: 2; }
+        .fv-foot { display: flex; gap: 8px; padding: 10px 14px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid #2a2a2a; }
+        .fv-wa { flex: 1; min-height: 48px; border: 0; border-radius: 14px; background: #25d366; color: #fff; font: inherit; font-weight: 800; font-size: 14px; cursor: pointer; }
+        .fv-clear { min-height: 48px; padding: 0 14px; border: 1px solid #444; border-radius: 14px; background: transparent; color: #bbb; font: inherit; font-size: 13px; cursor: pointer; }
+        .st-chip { display: inline-block; padding: 3px 12px; border-radius: 99px; font-size: 12px; font-weight: 800; }
+        .st-open { background: rgba(37,211,102,.15); color: #4ade80; border: 1px solid rgba(74,222,128,.4); }
+        .st-closed { background: rgba(239,83,80,.12); color: #ff8a80; border: 1px solid rgba(255,138,128,.4); }
+        @media (prefers-reduced-motion: reduce) { .fav-btn.pop { animation: none; } }
+        #pwa-help { display: none; position: fixed; inset: 0; z-index: 95; align-items: flex-end; justify-content: center; background: rgba(0,0,0,.78); }
+        #pwa-help.on { display: flex; }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-accent selection:text-black">
@@ -117,6 +163,7 @@
                 </div>
             </div>
             <div class="flex gap-2">
+                <button id="fav-open" type="button" onclick="openFav()" aria-label="المفضلة" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-800 text-pink-400 border border-pink-500/60 flex items-center justify-center text-lg hover:scale-110 transition">♥<span id="fav-count"></span></button>
                 <a href="https://wa.me/201271425089" target="_blank" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-brand-whatsapp text-white flex items-center justify-center hover:scale-110 transition shadow-lg shadow-green-900/50">
                     <i class="fab fa-whatsapp text-lg"></i>
                 </a>
@@ -199,6 +246,15 @@
                     <h3 class="text-xl md:text-2xl font-bold mb-2">عنواننا منور بيكِ</h3>
                     <p class="text-gray-300 mb-3 text-sm md:text-lg">بني سويف - منتصف شارع الجبالي أمام سعد فرغلي للأقمشة (تحت أولاد مصطفى علي)</p>
                     <p class="text-brand-accent font-bold text-sm md:text-base"><i class="fas fa-store mr-1"></i> تشرفينا بالزيارة للمعاينة والقياس!</p>
+                    <div id="shop-info" class="hidden mt-4">
+                        <p id="shop-hours" class="text-gray-300 text-sm md:text-base mb-2"></p>
+                        <span id="shop-status" class="st-chip"></span>
+                    </div>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-5">
+                        <button type="button" onclick="openDirections()" class="bg-brand-accent text-black font-bold py-2.5 px-6 rounded-full hover:bg-yellow-400 transition text-sm md:text-base"><i class="fas fa-location-arrow ml-1"></i> اتجاهات للمحل</button>
+                        <a href="https://wa.me/201271425089" target="_blank" class="glass-panel text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition text-sm md:text-base"><i class="fab fa-whatsapp ml-1 text-brand-whatsapp"></i> كلمينا واتساب</a>
+                        <button id="pwa-install" type="button" onclick="installApp()" class="hidden glass-panel text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition text-sm md:text-base">📲 ثبّتي التطبيق</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -209,12 +265,39 @@
         <p class="text-gray-500 text-sm">جميع الحقوق محفوظة © محل نور <span id="yr">2026</span></p>
     </footer>
 
+    <!-- تعليمات التثبيت على iPhone -->
+    <div id="pwa-help" role="dialog" aria-modal="true" aria-label="تثبيت التطبيق" onclick="if(event.target===this)this.classList.remove('on')">
+        <div class="fv-sheet" style="padding-bottom:calc(18px + env(safe-area-inset-bottom))">
+            <div class="fv-head"><h3 style="color:#d4af37">📲 تثبيت تطبيق محل نور</h3><button type="button" class="fv-x" onclick="document.getElementById('pwa-help').classList.remove('on')" aria-label="إغلاق">✕</button></div>
+            <div style="padding:6px 20px 12px;color:#ddd;font-size:14px;line-height:2.1">
+                على iPhone أو iPad:<br>
+                1. دوسي على زرار المشاركة ⬆️ في سفاري<br>
+                2. اختاري «إضافة إلى الشاشة الرئيسية»<br>
+                3. دوسي «إضافة»<br>
+                <span style="color:#9a9aa2">وهتلاقي أيقونة محل نور على شاشتك زي أي تطبيق ✨</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- المفضلة -->
+    <div id="fav-panel" role="dialog" aria-modal="true" aria-label="المفضلة" onclick="if(event.target===this)closeFav()">
+        <div class="fv-sheet">
+            <div class="fv-head"><h3 id="fv-title">❤️ المفضلة</h3><button type="button" class="fv-x" onclick="closeFav()" aria-label="إغلاق">✕</button></div>
+            <div class="fv-list" id="fv-list"></div>
+            <div class="fv-foot" id="fv-foot">
+                <button type="button" class="fv-wa" id="fav-wa" onclick="sendFavs()">💬 ابعتيها للمحل على واتساب</button>
+                <button type="button" class="fv-clear" onclick="clearFavs()">مسح الكل</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Product Modal -->
     <div id="product-modal" class="modal fixed inset-0 z-[100] items-center justify-center px-4 bg-black/90 backdrop-blur-sm">
         <div class="bg-[#1a1a1a] border border-gray-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
             <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-red-500 z-10 transition">
                 <i class="fas fa-times"></i>
             </button>
+            <button id="modal-fav" type="button" class="fav-btn" style="top:12px;left:12px;bottom:auto;width:36px;height:36px" aria-label="المفضلة" onclick="toggleFav(currentProduct && currentProduct.id)">♡</button>
             
             <div class="w-full h-56 md:h-64 bg-gray-800 relative overflow-hidden" id="modal-image-container">
                 <!-- Image goes here -->
@@ -297,6 +380,7 @@
                         ${imageHtml}
                         ${p.badge ? `<div class="absolute top-2 left-2 bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">${esc(p.badge)}</div>` : ''}
                         ${tagHtml(p)}
+                        ${typeof favBtn === 'function' ? favBtn(p.id) : ''}
                         ${off ? '<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-bold">غير متوفر حالياً</div>' : ''}
                     </div>
                     <div class="p-3 md:p-4 flex flex-col flex-1">
@@ -383,6 +467,11 @@
                 const list = Array.isArray(d) ? d : d.products;
                 if (!Array.isArray(list)) throw 0;
                 products = prep(list);
+                window.noorShop = {
+                    fromFile: true,
+                    motd: (!Array.isArray(d) && typeof d.motd === 'string') ? d.motd.trim() : '',
+                    shop: (!Array.isArray(d) && d.shop && typeof d.shop === 'object') ? d.shop : null
+                };
                 if (!Array.isArray(d) && typeof d.banner === 'string') {
                     const b = document.getElementById('season-banner');
                     if (d.banner.trim()) b.textContent = d.banner; else b.style.display = 'none';
@@ -392,6 +481,8 @@
             renderFilters();
             renderFeatured();
             renderTrending();
+            window.noorProductsLoaded = true;
+            if (window.noorAfterProducts) window.noorAfterProducts();
             openFromHash();
         }
         document.getElementById('yr').textContent = new Date().getFullYear();
@@ -446,6 +537,7 @@
             updateModalWaButton();
             
             renderGallery();
+            if (typeof syncModalFav === 'function') syncModalFav();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -525,6 +617,179 @@
         }
     </script>
 
+    <!-- المفضلة + بيانات المحل -->
+    <script>
+        (function () {
+            // ====== عدّلي من هنا ======
+            var SHOP_QUERY = 'محل نور شارع الجبالي بني سويف';   // لو مفيش رابط خريطة في لوحة التحكم بيدوّر بالعنوان ده
+            // ==========================
+            var FKEY = 'noor_favs';
+            var DAYS = ['الأحد', 'الاتنين', 'التلات', 'الأربع', 'الخميس', 'الجمعة', 'السبت'];
+            window.noorShop = window.noorShop || {};
+
+            // ---------- المفضلة (على موبايل الزبونة بس) ----------
+            function readFavs() {
+                try { var a = JSON.parse(localStorage.getItem(FKEY) || '[]'); return Array.isArray(a) ? a.map(Number).filter(Boolean) : []; }
+                catch (e) { return []; }
+            }
+            var favs = readFavs();
+            function saveFavs() { try { localStorage.setItem(FKEY, JSON.stringify(favs.slice(0, 60))); } catch (e) {} }
+            function prod(id) { return (typeof products !== 'undefined' ? products : []).filter(function (p) { return p.id === Number(id); })[0]; }
+            function favList() { return favs.map(prod).filter(Boolean); }
+            window.isFav = function (id) { return favs.indexOf(Number(id)) !== -1; };
+            window.favBtn = function (id) {
+                var on = isFav(id);
+                return '<button type="button" class="fav-btn' + (on ? ' on' : '') + '" data-fav="' + Number(id) + '" aria-pressed="' + on +
+                    '" aria-label="' + (on ? 'شيلي من المفضلة' : 'ضيفي للمفضلة') + '" onclick="event.stopPropagation();toggleFav(' + Number(id) + ')">' + (on ? '♥' : '♡') + '</button>';
+            };
+            function paint(b, on, animate) {
+                b.classList.toggle('on', on);
+                b.textContent = on ? '♥' : '♡';
+                b.setAttribute('aria-pressed', on);
+                b.setAttribute('aria-label', on ? 'شيلي من المفضلة' : 'ضيفي للمفضلة');
+                if (animate) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+            }
+            window.syncModalFav = function () {
+                var b = document.getElementById('modal-fav');
+                if (b && typeof currentProduct !== 'undefined' && currentProduct) paint(b, isFav(currentProduct.id), false);
+            };
+            window.updateFavUI = function (changedId, animate) {
+                var n = favList().length, c = document.getElementById('fav-count');
+                if (c) { c.textContent = n; c.style.display = n ? 'flex' : 'none'; }
+                document.querySelectorAll('[data-fav]').forEach(function (b) {
+                    var id = Number(b.getAttribute('data-fav'));
+                    paint(b, isFav(id), animate && id === changedId);
+                });
+                var m = document.getElementById('modal-fav');
+                if (m && typeof currentProduct !== 'undefined' && currentProduct) paint(m, isFav(currentProduct.id), animate && currentProduct.id === changedId);
+            };
+            window.toggleFav = function (id) {
+                id = Number(id);
+                if (!id) return;
+                var i = favs.indexOf(id), on = i === -1;
+                if (on) favs.unshift(id); else favs.splice(i, 1);
+                saveFavs();
+                updateFavUI(id, true);
+                renderFavPanel();
+                document.dispatchEvent(new CustomEvent('noor:fav', { detail: { id: id, on: on } }));
+            };
+
+            // ---------- لوحة المفضلة ----------
+            var panel = document.getElementById('fav-panel');
+            function renderFavPanel() {
+                var list = favList(), box = document.getElementById('fv-list');
+                document.getElementById('fv-title').textContent = '❤️ المفضلة' + (list.length ? ' (' + list.length + ')' : '');
+                document.getElementById('fv-foot').style.display = list.length ? 'flex' : 'none';
+                if (!list.length) {
+                    box.innerHTML = '<div class="fv-empty">لسه مفيش موديلات في المفضلة 🤍<br>دوسي على ♡ في أي موديل يعجبك وهتلاقيه هنا.</div>';
+                    return;
+                }
+                box.innerHTML = list.map(function (p) {
+                    var off = p.available === false;
+                    return '<div class="fv-item" data-id="' + p.id + '">' +
+                        (p.image ? '<img loading="lazy" alt="" src="' + esc(p.image) + '">' : '<div class="fv-ph">👗</div>') +
+                        '<div class="fv-t"><b>' + esc(p.title) + '</b><small class="' + (off ? 'off' : '') + '">' + (off ? 'غير متاح حالياً' : 'متاح للمعاينة بالفرع') + '</small></div>' +
+                        '<button type="button" class="fv-rm" data-rm="' + p.id + '" aria-label="شيلي من المفضلة">✕</button></div>';
+                }).join('');
+            }
+            document.getElementById('fv-list').addEventListener('click', function (e) {
+                var rm = e.target.closest ? e.target.closest('[data-rm]') : null;
+                if (rm) { e.stopPropagation(); toggleFav(Number(rm.getAttribute('data-rm'))); return; }
+                var it = e.target.closest ? e.target.closest('.fv-item') : null;
+                if (it && typeof openModal === 'function') openModal(Number(it.getAttribute('data-id')));
+            });
+            window.openFav = function () {
+                renderFavPanel();
+                panel.classList.add('on');
+                document.body.style.overflow = 'hidden';
+            };
+            window.closeFav = function () {
+                panel.classList.remove('on');
+                document.body.style.overflow = 'auto';
+            };
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && panel.classList.contains('on') && !document.getElementById('product-modal').classList.contains('active')) closeFav();
+            });
+            window.clearFavs = function () {
+                if (!favs.length || !confirm('تمسحي كل المفضلة؟')) return;
+                favs = []; saveFavs(); updateFavUI(0, false); renderFavPanel();
+            };
+            window.sendFavs = function () {
+                var list = favList();
+                if (!list.length) return;
+                var base = location.origin + location.pathname;
+                var head = 'السلام عليكم، أنا مهتمة بالموديلات دي من الموقع 🌸\n', tail = '\nممكن تفاصيل التوفر والأسعار؟';
+                var lines = [], len = encodeURIComponent(head + tail).length;
+                for (var i = 0; i < list.length; i++) {
+                    var p = list[i];
+                    var line = (i + 1) + ') ' + p.title + (p.available === false ? ' (غير متاح)' : '') + '\n' + base + '#p' + p.id;
+                    var l = encodeURIComponent(line + '\n').length;
+                    if (len + l > 3200) break;
+                    lines.push(line); len += l;
+                }
+                if (lines.length < list.length) lines.push('+ ' + (list.length - lines.length) + ' موديلات تانية في المفضلة');
+                window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent(head + lines.join('\n') + tail), '_blank');
+            };
+
+            // ---------- مواعيد المحل + الاتجاهات ----------
+            function fmt(t) {
+                var a = t.split(':'), h = +a[0], m = +a[1] || 0, s = h >= 12 ? 'م' : 'ص';
+                h = h % 12 || 12;
+                return h + ':' + (m < 10 ? '0' : '') + m + ' ' + s;
+            }
+            function mins(t) { var a = t.split(':'); return (+a[0]) * 60 + (+a[1] || 0); }
+            window.renderShopInfo = function () {
+                var s = window.noorShop && window.noorShop.shop, box = document.getElementById('shop-info');
+                if (!box) return;
+                var ok = s && /^\d{1,2}:\d{2}$/.test(s.open || '') && /^\d{1,2}:\d{2}$/.test(s.close || '');
+                box.classList.toggle('hidden', !ok);
+                if (!ok) return;
+                var off = (s.off === '' || s.off == null) ? -1 : Number(s.off);
+                if (off < 0 || off > 6 || isNaN(off)) off = -1;
+                var o = mins(s.open), c = mins(s.close), cross = c <= o;
+                var now = new Date(), day = now.getDay(), m = now.getHours() * 60 + now.getMinutes();
+                var openDay = function (d) { return d !== off; };
+                var isOpen = (openDay(day) && m >= o && (cross || m < c)) || (cross && openDay((day + 6) % 7) && m < c);
+                document.getElementById('shop-hours').textContent = '🕘 مواعيد الشغل: ' + (off < 0 ? 'يومياً' : 'كل يوم') + ' من ' + fmt(s.open) + ' إلى ' + fmt(s.close) + (off >= 0 ? ' (' + DAYS[off] + ' إجازة)' : '');
+                var chip = document.getElementById('shop-status'), txt;
+                if (isOpen) txt = '🟢 مفتوح دلوقتي — بنقفل الساعة ' + fmt(s.close);
+                else {
+                    var when = '';
+                    if (openDay(day) && m < o) when = 'النهاردة';
+                    else for (var i = 1; i <= 7; i++) { var d = (day + i) % 7; if (openDay(d)) { when = i === 1 ? 'بكرة' : 'يوم ' + DAYS[d]; break; } }
+                    txt = '🔴 مقفول دلوقتي — بنفتح ' + when + ' الساعة ' + fmt(s.open);
+                }
+                chip.textContent = txt;
+                chip.className = 'st-chip ' + (isOpen ? 'st-open' : 'st-closed');
+            };
+            setInterval(function () { if (window.noorShop && window.noorShop.shop) renderShopInfo(); }, 60000);
+            window.openDirections = function () {
+                var s = window.noorShop && window.noorShop.shop, url = s && s.map, ok = false;
+                try { var u = new URL(url); ok = u.protocol === 'https:' && /(^|\.)(google\.[a-z.]+|goo\.gl|g\.co)$/i.test(u.hostname); } catch (e) {}
+                if (!ok) url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(SHOP_QUERY);
+                window.open(url, '_blank', 'noopener');
+            };
+
+            // بعد ما الموديلات تتحمل
+            window.noorAfterProducts = function () {
+                if (window.noorShop && window.noorShop.fromFile) {            // نشيل المفضلة اللي الموديل بتاعها اتحذف
+                    var ids = products.map(function (p) { return p.id; });
+                    var kept = favs.filter(function (id) { return ids.indexOf(id) !== -1; });
+                    if (kept.length !== favs.length) { favs = kept; saveFavs(); }
+                }
+                renderShopInfo();
+                updateFavUI(0, false);
+                window.noorProductsReady = true;
+                document.dispatchEvent(new CustomEvent('noor:products'));
+            };
+            // لو الموديلات خلصت تحميل قبل ما السكريبت ده يشتغل
+            if (window.noorProductsLoaded) {
+                if (!document.querySelector('[data-fav]') && typeof renderProducts === 'function') renderProducts();
+                window.noorAfterProducts();
+            }
+        })();
+    </script>
+
     <!-- المساعد التفاعلي (Mascot) -->
     <div id="mascot" role="group" tabindex="0" aria-label="مساعد محل نور" style="display:none">
         <div id="mascot-bubble" role="status" aria-live="polite"></div>
@@ -573,11 +838,12 @@
             var MODAL_REACT_CHANCE = 0.6;  // احتمال التعليق بعد قفل نافذة الموديل
             var LONG_PRESS_MS     = 550;   // مدة الضغطة الطويلة اللي بتفتح القائمة
 
-            // قائمة الضغطة الطويلة (id ثابت، والاسم تقدري تغيريه): trending / random / taste / whatsapp
+            // قائمة الضغطة الطويلة (id ثابت، والاسم تقدري تغيريه): trending / random / taste / directions / whatsapp
             var MENU_ITEMS = [
                 { id: 'trending', label: '🔥 وديني للرائج' },
                 { id: 'random',   label: '🎲 اختاري لي حاجة عشوائية' },
                 { id: 'taste',    label: '💕 حاجة تناسب ذوقي' },
+                { id: 'directions', label: '📍 اتجاهات للمحل' },
                 { id: 'whatsapp', label: '💬 كلمي المحل على واتساب' }
             ];
 
@@ -881,6 +1147,7 @@
                     fx('pop'); burst(['✨', '⭐'], 4);
                     showBubble(text, ms);
                     goIdleAfter(ms);
+                    setTimeout(function () { welcomeDone = true; maybeMotd(); }, ms + 300);
                     lastActive = Date.now();
                     scheduleTips();
                     setTimeout(loadExtras, 1500);
@@ -917,7 +1184,7 @@
             // 1) الزبونة داست واتساب → لما ترجع للصفحة نشكرها
             var pendingWa = false;
             document.addEventListener('click', function (e) {
-                var t = e.target, el = t && t.closest ? t.closest('#modal-wa-btn,[onclick^="quickWa"],a[href*="wa.me"]') : null;
+                var t = e.target, el = t && t.closest ? t.closest('#modal-wa-btn,#fav-wa,[onclick^="quickWa"],a[href*="wa.me"]') : null;
                 if (!el) return;
                 pendingWa = true;
                 // الاستفسار على واتساب إشارة قوية على ذوق الزبونة
@@ -962,18 +1229,46 @@
                 });
             }
 
+            // ---------- رسالة اليوم (من لوحة التحكم) + المفضلة ----------
+            var motdText = '', motdShown = false, welcomeDone = false, favCool = 0;
+            var FAV_MESSAGES = ['اتحفظ في المفضلة ❤️', 'حلو اختيارك! 😍', 'ابعتيهم لنا على واتساب من زرار ♥ فوق 💬'];
+            function maybeMotd() {
+                if (!motdText || hidden || !welcomeDone || motdShown) return;
+                var key = 'noor_motd_seen', seen = '';
+                try { seen = sessionStorage.getItem(key) || ''; } catch (e) {}
+                motdShown = true;
+                if (seen === motdText) return;                      // اتقالت قبل كده في الزيارة دي
+                try { sessionStorage.setItem(key, motdText); } catch (e) {}
+                react('point', motdText, Math.min(9000, Math.max(5000, motdText.length * 90)), false);
+            }
+            function readMotd() { motdText = (window.noorShop && window.noorShop.motd) || ''; }
+            if (window.noorProductsReady) readMotd();
+            document.addEventListener('noor:products', function () { readMotd(); maybeMotd(); });
+            document.addEventListener('noor:fav', function (e) {
+                var d = e.detail || {};
+                if (!d.on) return;
+                var p = (typeof products !== 'undefined') ? products.filter(function (x) { return x.id === d.id; })[0] : null;
+                if (p) track(p, 2);                                  // القلب إشارة قوية على الذوق
+                var fp = document.getElementById('fav-panel');
+                if (Date.now() > favCool && !modalOpen() && !(fp && fp.classList.contains('on'))) {
+                    favCool = Date.now() + 8000;
+                    react('heart', pick(FAV_MESSAGES), 2500, true);
+                }
+            });
+
             // ---------- النقر ----------
             function onTap() {
                 wakeUp();
                 playPop();
                 fx('hop');
                 var heart = Math.random() < 0.5, m = null;
-                if (heart && Math.random() < PRODUCT_CHANCE) m = productMessage();
+                if (motdText && Math.random() < 0.25) { m = { text: motdText, motd: true }; heart = true; }   // أحياناً تكرر رسالة اليوم
+                else if (heart && Math.random() < PRODUCT_CHANCE) m = productMessage();
                 if (!m) m = { text: pick(heart ? HEART_MESSAGES : CONFUSED_MESSAGES) };
                 clearTimeout(revertTimer);
-                setState(m.id ? 'point' : (heart ? 'heart' : 'confused'));
-                if (m.id) { /* ترشيح منتج */ } else if (heart) burst(['💗', '💖', '❤️'], 3); else fx('shake');
-                showBubble(m.text, m.id ? 5500 : REACTION_MS, m.id);
+                setState((m.id || m.motd) ? 'point' : (heart ? 'heart' : 'confused'));
+                if (m.id || m.motd) { /* ترشيح أو رسالة اليوم */ } else if (heart) burst(['💗', '💖', '❤️'], 3); else fx('shake');
+                showBubble(m.text, m.id ? 5500 : (m.motd ? 6500 : REACTION_MS), m.id);
                 goIdleAfter(REACTION_MS);
             }
 
@@ -1016,6 +1311,7 @@
                     if (p.tag) s += (t.tags[p.tag] || 0) * 1.5;
                     (p.colors || []).forEach(function (c) { s += (t.colors[c] || 0); });
                     s -= 4 * (t.seen[p.id] || 0);          // نفضّل حاجة لسه ماشافتهاش
+                    if (typeof isFav === 'function' && isFav(p.id)) s -= 3;   // ومش اللي هي حافظاها أصلاً
                     s += Math.random() * 0.6;              // عشان النتيجة ماتبقاش ثابتة
                     return { p: p, s: s };
                 }).sort(function (a, b) { return b.s - a.s; });
@@ -1111,6 +1407,7 @@
                 if (id === 'trending') goTrending();
                 else if (id === 'random') pickRandom();
                 else if (id === 'taste') pickTaste();
+                else if (id === 'directions') { if (typeof openDirections === 'function') openDirections(); react('point', 'ده الطريق للمحل 📍 هنستناكي!', 3500, false); }
                 else if (id === 'whatsapp') openWa();
             }
 
@@ -1177,6 +1474,26 @@
             // ---------- البداية ----------
             if (hidden) { peek.style.display = 'block'; }
             else { appear(WELCOME_MESSAGE, WELCOME_MS); }
+        })();
+    </script>
+
+    <!-- تثبيت التطبيق + تسجيل الـ Service Worker -->
+    <script>
+        (function () {
+            var btn = document.getElementById('pwa-install'), dp = null;
+            var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+            var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            function show() { if (btn && !standalone) btn.classList.remove('hidden'); }
+            window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); dp = e; show(); });
+            window.addEventListener('appinstalled', function () { dp = null; if (btn) btn.classList.add('hidden'); });
+            if (ios && !standalone) show();                      // iPhone: بنعرض التعليمات بدل نافذة التثبيت
+            window.installApp = function () {
+                if (dp) { dp.prompt(); dp.userChoice.then(function () { dp = null; if (btn) btn.classList.add('hidden'); }); }
+                else document.getElementById('pwa-help').classList.add('on');
+            };
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+            }
         })();
     </script>
 </body>
