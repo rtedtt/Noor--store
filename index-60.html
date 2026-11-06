@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محل نور | أحدث كولكشن ملابس نسائية في بني سويف</title>
+    
+    <!-- أكواد الـ SEO لفهرسة جوجل -->
+    <meta name="description" content="محل نور للملابس النسائية (DS Branhami) - أحدث صيحات الموضة والتريندات في بني سويف، شارع الجبالي. تيشرتات، هوديز، وبنطلونات بأفضل الأسعار.">
+    <meta name="keywords" content="محل نور, ملابس حريمي, ملابس نسائية, بني سويف, شارع الجبالي, تيشرتات, هوديز, ملابس شتوي, DS Branhami">
+    <meta property="og:image" content="logo.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="محل نور | أحدث كولكشن ملابس">
+    <meta property="og:description" content="شرفنا في فرع بني سويف وشوف أحدث التريندات بنفسك.">
+    
+    <!-- اللوجو اللي بيظهر في المتصفح وجوجل -->
+    <link rel="icon" href="logo.jpg">
+
+    <!-- تثبيت الموقع كتطبيق (PWA) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#17151C">
+    <link rel="apple-touch-icon" href="icon-maskable-512.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="محل نور">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#1a1a1a',
+                            light: '#f5f5f5',
+                            accent: '#d4af37', // ذهبي
+                            whatsapp: '#25D366',
+                            tiktok: '#000000'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #121212; color: #ffffff; scroll-behavior: smooth; }
+        .glass-panel { background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .product-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+        .modal { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .modal.active { display: flex; opacity: 1; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+
+        /* ===== المساعد التفاعلي (Mascot) ===== */
+        #mascot { position: fixed; left: 0; top: 0; z-index: 40; width: 96px; height: 128px; direction: rtl;
+            touch-action: none; /* يمنع تمرير الصفحة أثناء سحب الشخصية */
+            user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+            cursor: grab; will-change: transform; outline: none; }
+        #mascot:focus-visible #mascot-body { outline: 2px solid #d4af37; outline-offset: 4px; border-radius: 16px; }
+        #mascot.dragging { cursor: grabbing; }
+        #mascot-body { width: 100%; height: 100%; transform-origin: 50% 90%; transition: transform .18s ease; }
+        #mascot-fx { width: 100%; height: 100%; transform-origin: 50% 100%; }
+        #mascot-img, #mascot-fallback { width: 100%; height: 100%; display: block; pointer-events: none; -webkit-user-drag: none;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,.35)); transition: filter .18s ease; }
+        #mascot-img { object-fit: contain; }
+        #mascot-fallback { display: none; text-align: center; }
+        #mascot.dragging #mascot-body { transform: scale(1.15); }
+        #mascot.dragging #mascot-img, #mascot.dragging #mascot-fallback { filter: drop-shadow(0 18px 12px rgba(0,0,0,.6)); }
+        #mascot-bubble { position: absolute; left: 0; top: 0; width: max-content; max-width: 220px; background: #fff; color: #1a1a1a;
+            font-weight: 700; font-size: 13px; line-height: 1.6; padding: 9px 14px; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,.45);
+            opacity: 0; transform: scale(.85); pointer-events: none; transition: opacity .25s ease, transform .25s ease; z-index: 2; }
+        #mascot-bubble.show { opacity: 1; transform: scale(1); }
+        #mascot-bubble.clickable { pointer-events: auto; cursor: pointer; background: #fff7d6; box-shadow: 0 6px 18px rgba(0,0,0,.45), 0 0 0 2px #d4af37; }
+        #mascot-layer { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 1; }
+        .mp { position: absolute; font-size: 18px; line-height: 1; opacity: 0; animation: mFloat 1.7s ease-out forwards; }
+        #mascot-close { position: absolute; top: 0; left: 0; width: 24px; height: 24px; padding: 0; border-radius: 50%; z-index: 3;
+            border: 1px solid rgba(255,255,255,.3); background: rgba(0,0,0,.55); color: #fff; font-size: 15px; line-height: 1;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: .75; }
+        #mascot-peek { position: fixed; left: 10px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 40; width: 50px; height: 50px;
+            padding: 0; border-radius: 50%; border: 2px solid #d4af37; background: #1a1a1a; overflow: hidden; display: none; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0,0,0,.5); animation: mPeek 2.8s ease-in-out infinite; -webkit-tap-highlight-color: transparent; font-size: 24px; line-height: 46px; }
+        #mascot-peek img { position: absolute; width: 60px; left: -5px; top: 1px; pointer-events: none; }
+        #mascot-fx.fx-hop   { animation: mHop .6s ease; }
+        #mascot-fx.fx-shake { animation: mShake .55s ease; }
+        #mascot-fx.fx-land  { animation: mLand .4s ease; }
+        #mascot-fx.fx-pop   { animation: mPop .55s cubic-bezier(.3,1.6,.5,1); }
+        #mascot-fx.fx-doze  { animation: mDoze 2.4s ease-in-out infinite alternate; }
+        @keyframes mHop { 0% { transform: scale(1,1); } 18% { transform: translateY(0) scale(1.08,.9); } 45% { transform: translateY(-22px) scale(.95,1.06); } 70% { transform: translateY(0) scale(1.06,.92); } 100% { transform: scale(1,1); } }
+        @keyframes mShake { 0%,100% { transform: translateX(0) rotate(0); } 20% { transform: translateX(-6px) rotate(-4deg); } 40% { transform: translateX(6px) rotate(4deg); } 60% { transform: translateX(-4px) rotate(-3deg); } 80% { transform: translateX(3px) rotate(2deg); } }
+        @keyframes mLand { 0% { transform: scale(1.06,.88); } 60% { transform: scale(.97,1.04); } 100% { transform: scale(1,1); } }
+        @keyframes mPop { 0% { transform: translateY(30px) scale(.3); opacity: 0; } 60% { transform: translateY(0) scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes mDoze { from { transform: rotate(-2deg) translateY(0); } to { transform: rotate(2deg) translateY(3px); } }
+        @keyframes mFloat { 0% { transform: translate(0,0) scale(.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--dx,0), -70px) scale(1.15); opacity: 0; } }
+        @keyframes mPeek { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        #mascot-menu { position: absolute; left: 0; top: 0; width: 214px; display: none; z-index: 4; direction: rtl; background: #fff; color: #1a1a1a;
+            border-radius: 18px; padding: 8px; box-shadow: 0 8px 26px rgba(0,0,0,.55), 0 0 0 2px #d4af37; }
+        #mascot-menu.show { display: block; animation: mMenu .18s ease; }
+        #mascot-menu .mm-head { font-size: 12px; font-weight: 700; color: #7a6a2a; padding: 4px 8px 6px; }
+        #mascot-menu button { display: block; width: 100%; min-height: 44px; padding: 8px 10px; border: 0; border-radius: 12px; background: transparent;
+            color: #1a1a1a; font: inherit; font-weight: 700; font-size: 13px; text-align: right; cursor: pointer; }
+        #mascot-menu button:hover, #mascot-menu button:active { background: #fff2c4; }
+        @keyframes mMenu { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: scale(1); } }
+        .noor-flash { animation: noorFlash 1.8s ease; }
+        @keyframes noorFlash { 0%,100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); } 25%,60% { box-shadow: 0 0 0 4px rgba(212,175,55,.85); } }
+        @media (prefers-reduced-motion: reduce) { #mascot-body, #mascot-img, #mascot-bubble { transition: none; } #mascot-fx, #mascot-peek, .mp, #mascot-menu, .noor-flash { animation: none !important; } }
+
+        /* ===== المفضلة + بيانات المحل ===== */
+        .fav-btn { position: absolute; bottom: 8px; left: 8px; width: 34px; height: 34px; padding: 0; border-radius: 50%; z-index: 2; cursor: pointer;
+            background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.28); color: #fff; font-size: 19px; line-height: 1;
+            display: flex; align-items: center; justify-content: center; transition: transform .15s ease; }
+        .fav-btn:active { transform: scale(.85); }
+        .fav-btn.on { color: #ff4d6d; border-color: #ff4d6d; background: rgba(0,0,0,.78); }
+        .fav-btn.pop { animation: favPop .35s ease; }
+        @keyframes favPop { 0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); } }
+        #fav-open { position: relative; }
+        #fav-count { position: absolute; top: -4px; left: -4px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 99px; background: #ff4d6d; color: #fff;
+            font-size: 10px; font-weight: 800; line-height: 1; display: none; align-items: center; justify-content: center; }
+        #fav-panel { display: none; position: fixed; inset: 0; z-index: 90; align-items: flex-end; justify-content: center; background: rgba(0,0,0,.78); }
+        #fav-panel.on { display: flex; }
+        .fv-sheet { width: 100%; max-width: 520px; max-height: 86vh; display: flex; flex-direction: column; direction: rtl; background: #161616;
+            border: 1px solid #333; border-bottom: 0; border-radius: 22px 22px 0 0; }
+        .fv-head { display: flex; align-items: center; gap: 10px; padding: 16px 18px 10px; }
+        .fv-head h3 { flex: 1; margin: 0; font-size: 18px; font-weight: 800; color: #ff8fa3; }
+        .fv-x { width: 36px; height: 36px; border-radius: 50%; border: 0; background: #2a2a2a; color: #fff; font-size: 18px; cursor: pointer; }
+        .fv-list { overflow-y: auto; padding: 4px 14px 8px; flex: 1; }
+        .fv-item { display: flex; align-items: center; gap: 10px; padding: 8px; margin-bottom: 8px; border-radius: 14px; background: #1f1f1f; border: 1px solid #2c2c2c; cursor: pointer; }
+        .fv-item img, .fv-ph { width: 52px; height: 66px; border-radius: 10px; object-fit: cover; background: #2a2a2a; flex: none; display: flex; align-items: center; justify-content: center; color: #666; }
+        .fv-t { flex: 1; min-width: 0; }
+        .fv-t b { display: block; font-size: 14px; line-height: 1.5; }
+        .fv-t small { color: #9a9aa2; font-size: 11px; }
+        .fv-t small.off { color: #ef5350; }
+        .fv-rm { width: 36px; height: 36px; border-radius: 50%; border: 0; background: transparent; color: #ff4d6d; font-size: 18px; cursor: pointer; flex: none; }
+        .fv-empty { padding: 34px 10px; text-align: center; color: #9a9aa2; font-size: 14px; line-height: 2; }
+        .fv-foot { display: flex; gap: 8px; padding: 10px 14px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid #2a2a2a; }
+        .fv-wa { flex: 1; min-height: 48px; border: 0; border-radius: 14px; background: #25d366; color: #fff; font: inherit; font-weight: 800; font-size: 14px; cursor: pointer; }
+        .fv-clear { min-height: 48px; padding: 0 14px; border: 1px solid #444; border-radius: 14px; background: transparent; color: #bbb; font: inherit; font-size: 13px; cursor: pointer; }
+        .st-chip { display: inline-block; padding: 3px 12px; border-radius: 99px; font-size: 12px; font-weight: 800; }
+        .st-open { background: rgba(37,211,102,.15); color: #4ade80; border: 1px solid rgba(74,222,128,.4); }
+        .st-closed { background: rgba(239,83,80,.12); color: #ff8a80; border: 1px solid rgba(255,138,128,.4); }
+        @media (prefers-reduced-motion: reduce) { .fav-btn.pop { animation: none; } }
+        #pwa-help { display: none; position: fixed; inset: 0; z-index: 95; align-items: flex-end; justify-content: center; background: rgba(0,0,0,.78); }
+        #pwa-help.on { display: flex; }
+
+
+        /* ===== NOOR STORE — Feminine Luxury visual refresh ===== */
+        :root{color-scheme:dark;--noor-bg:#17151c;--noor-panel:#211b28;--noor-panel2:#2b2232;--noor-line:rgba(216,190,145,.20);--noor-gold:#d8be91;--noor-pink:#f078b5;--noor-purple:#6e3b83}
+        body{background:radial-gradient(ellipse at 82% -8%,rgba(110,59,131,.26),transparent 38%),radial-gradient(ellipse at 5% 30%,rgba(240,120,181,.08),transparent 32%),var(--noor-bg);color:#f8f2f7}
+        .glass-panel{background:rgba(33,27,40,.82);backdrop-filter:blur(16px);border:1px solid var(--noor-line);box-shadow:0 12px 34px rgba(0,0,0,.18)}
+        header.glass-panel{background:rgba(23,21,28,.88);border-color:rgba(216,190,145,.22);box-shadow:0 8px 28px rgba(0,0,0,.24)}
+        header img{border-color:var(--noor-gold)!important;box-shadow:0 0 0 3px rgba(216,190,145,.08),0 0 22px rgba(240,120,181,.12)}
+        .product-card{border-radius:20px!important;border-color:rgba(216,190,145,.18)!important;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+        .product-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(110,59,131,.25),0 0 0 1px rgba(240,120,181,.22)}
+        #collection{background:linear-gradient(180deg,rgba(39,27,47,.75),rgba(23,21,28,.98))!important;border-top:1px solid rgba(216,190,145,.12);border-bottom:1px solid rgba(216,190,145,.12)}
+        #collection h3,.container h3{letter-spacing:.1px}
+        #collection .w-16{background:linear-gradient(90deg,var(--noor-gold),var(--noor-pink))!important}
+        #search{background:rgba(33,27,40,.9)!important;border-color:rgba(216,190,145,.25)!important;color:#fff;min-height:48px}
+        #search:focus{border-color:var(--noor-pink)!important;box-shadow:0 0 0 3px rgba(240,120,181,.12)}
+        .fav-btn{border-color:rgba(240,120,181,.55);background:rgba(31,23,38,.86)}
+        .fv-sheet{background:#211b28;border-color:rgba(216,190,145,.24)}
+        .fv-item{background:#2b2232;border-color:rgba(216,190,145,.14)}
+        .fv-head h3{color:var(--noor-pink)}
+        #mascot-peek{border-color:var(--noor-gold);background:#241b2c;box-shadow:0 5px 20px rgba(0,0,0,.45),0 0 18px rgba(240,120,181,.16)}
+        #mascot-bubble{border:1px solid rgba(216,190,145,.65);background:#2b2232;color:#fff}
+        #mascot-bubble.clickable{background:#392641;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.45),0 0 0 2px rgba(240,120,181,.65)}
+        #mascot-menu{background:#241b2c;color:#fff;border-color:var(--noor-gold)}
+        #mascot-menu button{color:#fff}
+        #mascot-menu button:hover,#mascot-menu button:active{background:#392641}
+        #mascot-menu .mm-head{color:var(--noor-gold)}
+        #mascot-close{border-color:rgba(216,190,145,.5)}
+        #pwa-install{border:1px solid rgba(216,190,145,.42);background:linear-gradient(110deg,#392641,#241b2c);box-shadow:0 8px 24px rgba(110,59,131,.18)}
+        #pwa-help>div{background:#211b28!important;border-color:rgba(216,190,145,.25)!important}
+        a.bg-brand-accent,button.bg-brand-accent{background:linear-gradient(110deg,#d8be91,#f0c5d9)!important;color:#211722!important;box-shadow:0 8px 22px rgba(216,190,145,.18)!important}
+        .text-brand-accent{color:var(--noor-gold)!important}
+        .border-brand-accent{border-color:var(--noor-gold)!important}
+        @media(max-width:640px){#mascot{width:82px;height:112px}.product-card .h-44{height:190px}header .container{padding-top:10px;padding-bottom:10px}}
+        @media(prefers-reduced-motion:reduce){.product-card{transition:none}}
+
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-accent selection:text-black">
+
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 glass-panel border-b border-gray-800">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <!-- صورة اللوجو -->
+                <img src="logo.jpg" alt="محل نور" class="w-12 h-12 rounded-full border-2 border-brand-accent object-cover bg-black">
+                <div>
+                    <h1 class="font-bold text-lg md:text-xl leading-tight text-brand-accent">محل نور <span class="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded ml-1">الجبالي</span></h1>
+                    <p class="text-[10px] md:text-xs text-gray-400">Noor Store • Fashion For You</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button id="fav-open" type="button" onclick="openFav()" aria-label="المفضلة" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-800 text-pink-400 border border-pink-500/60 flex items-center justify-center text-lg hover:scale-110 transition">♥<span id="fav-count"></span></button>
+                <a href="https://wa.me/201271425089" target="_blank" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-brand-whatsapp text-white flex items-center justify-center hover:scale-110 transition shadow-lg shadow-green-900/50">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                </a>
+                <button onclick="sharePage()" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-800 text-brand-accent border border-brand-accent flex items-center justify-center hover:bg-brand-accent hover:text-black transition">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 px-4 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-accent/10 to-transparent opacity-50"></div>
+        <div class="container mx-auto text-center relative z-10 animate-fade-in">
+            <span id="season-banner" class="inline-block py-1 px-3 rounded-full bg-gray-800 border border-gray-700 text-brand-accent text-sm mb-4">
+                🔥 تشكيلة الشتاء وصلت
+            </span>
+            <h2 class="text-3xl md:text-5xl font-black mb-4 leading-tight">
+                أناقتك تبدأ من هنا <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-pink-200">أحدث إطلالات الأزياء النسائية</span>
+            </h2>
+            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-base md:text-lg px-2">
+                اختيارات أنيقة تناسب ذوقك في كل وقت. اكتشفي الموديلات الجديدة وزورينا في فرعنا!
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-10 px-4">
+                <a href="#collection" class="bg-brand-accent text-black font-bold py-3 px-8 rounded-full hover:bg-yellow-400 transition transform hover:scale-105 shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+                    <i class="fas fa-tshirt mr-2"></i> تصفح الكولكشن
+                </a>
+                <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="glass-panel text-white font-bold py-3 px-8 rounded-full hover:bg-gray-800 transition flex items-center justify-center gap-2">
+                    <i class="fab fa-tiktok"></i> تابعنا على تيك توك
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Slider -->
+    <section id="featured" class="hidden px-2 md:px-4 pb-8">
+        <div class="container mx-auto">
+            <h3 class="text-lg font-bold mb-3 px-1">📌 مميز عندنا</h3>
+            <div id="feat-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
+        </div>
+    </section>
+
+    <!-- Trending (الرائج): الموديلات اللي عليها شارة هوت / تريند من لوحة التحكم -->
+    <section id="trending" class="hidden px-2 md:px-4 pb-8" style="scroll-margin-top:90px">
+        <div class="container mx-auto rounded-2xl">
+            <h3 class="text-lg font-bold mb-3 px-1">🔥 الرائج الآن</h3>
+            <div id="trend-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
+        </div>
+    </section>
+
+    <!-- Collection Section -->
+    <section id="collection" class="py-12 px-2 md:px-4 bg-[#0a0a0a]">
+        <div class="container mx-auto">
+            <div class="text-center mb-10">
+                <h3 class="text-2xl md:text-3xl font-bold mb-2">أحدث الموديلات</h3>
+                <div class="w-16 h-1 bg-brand-accent mx-auto rounded"></div>
+                <p class="text-gray-400 mt-3 text-sm">اكتشفي اختيارات Noor Store النسائية</p>
+            </div>
+
+            <!-- الكلاس هنا اتغير لـ grid-cols-2 عشان يبقوا كارتين جنب بعض في الموبايل -->
+            <div class="mb-5 px-1">
+                <input id="search" type="search" placeholder="🔍 ابحثي بالاسم أو الوصف..." class="w-full bg-[#1a1a1a] border border-gray-700 rounded-full px-5 py-2.5 text-sm outline-none focus:border-brand-accent mb-3">
+                <div id="filters" class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none"></div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6" id="products-grid">
+                <!-- Products will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="py-16 px-4 border-t border-gray-800">
+        <div class="container mx-auto max-w-4xl">
+            <div class="glass-panel rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-accent/20 text-brand-accent flex items-center justify-center text-2xl md:text-3xl shrink-0">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="text-center md:text-right flex-1">
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">عنواننا منور بيكِ</h3>
+                    <p class="text-gray-300 mb-3 text-sm md:text-lg">بني سويف - منتصف شارع الجبالي أمام سعد فرغلي للأقمشة (تحت أولاد مصطفى علي)</p>
+                    <p class="text-brand-accent font-bold text-sm md:text-base"><i class="fas fa-store mr-1"></i> تشرفينا بالزيارة للمعاينة والقياس!</p>
+                    <div id="shop-info" class="hidden mt-4">
+                        <p id="shop-hours" class="text-gray-300 text-sm md:text-base mb-2"></p>
+                        <span id="shop-status" class="st-chip"></span>
+                    </div>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-5">
+                        <button type="button" onclick="openDirections()" class="bg-brand-accent text-black font-bold py-2.5 px-6 rounded-full hover:bg-yellow-400 transition text-sm md:text-base"><i class="fas fa-location-arrow ml-1"></i> اتجاهات للمحل</button>
+                        <a href="https://wa.me/201271425089" target="_blank" class="glass-panel text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition text-sm md:text-base"><i class="fab fa-whatsapp ml-1 text-brand-whatsapp"></i> كلمينا واتساب</a>
+                        <button id="pwa-install" type="button" onclick="installApp()" class="hidden glass-panel text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition text-sm md:text-base">📲 ثبّتي التطبيق</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8 border-t border-gray-900 text-center">
+        <p class="text-gray-500 text-sm">جميع الحقوق محفوظة © محل نور <span id="yr">2026</span></p>
+    </footer>
+
+    <!-- تعليمات التثبيت على iPhone -->
+    <div id="pwa-help" role="dialog" aria-modal="true" aria-label="تثبيت التطبيق" onclick="if(event.target===this)this.classList.remove('on')">
+        <div class="fv-sheet" style="padding-bottom:calc(18px + env(safe-area-inset-bottom))">
+            <div class="fv-head"><h3 style="color:#d4af37">📲 تثبيت تطبيق محل نور</h3><button type="button" class="fv-x" onclick="document.getElementById('pwa-help').classList.remove('on')" aria-label="إغلاق">✕</button></div>
+            <div style="padding:6px 20px 12px;color:#ddd;font-size:14px;line-height:2.1">
+                على iPhone أو iPad:<br>
+                1. دوسي على زرار المشاركة ⬆️ في سفاري<br>
+                2. اختاري «إضافة إلى الشاشة الرئيسية»<br>
+                3. دوسي «إضافة»<br>
+                <span style="color:#9a9aa2">وهتلاقي أيقونة محل نور على شاشتك زي أي تطبيق ✨</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- المفضلة -->
+    <div id="fav-panel" role="dialog" aria-modal="true" aria-label="المفضلة" onclick="if(event.target===this)closeFav()">
+        <div class="fv-sheet">
+            <div class="fv-head"><h3 id="fv-title">❤️ المفضلة</h3><button type="button" class="fv-x" onclick="closeFav()" aria-label="إغلاق">✕</button></div>
+            <div class="fv-list" id="fv-list"></div>
+            <div class="fv-foot" id="fv-foot">
+                <button type="button" class="fv-wa" id="fav-wa" onclick="sendFavs()">💬 ابعتيها للمحل على واتساب</button>
+                <button type="button" class="fv-clear" onclick="clearFavs()">مسح الكل</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal fixed inset-0 z-[100] items-center justify-center px-4 bg-black/90 backdrop-blur-sm">
+        <div class="bg-[#1a1a1a] border border-gray-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl relative" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="absolute top-3 right-3 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-red-500 z-10 transition">
+                <i class="fas fa-times"></i>
+            </button>
+            <button id="modal-fav" type="button" class="fav-btn" style="top:12px;left:12px;bottom:auto;width:36px;height:36px" aria-label="المفضلة" onclick="toggleFav(currentProduct && currentProduct.id)">♡</button>
+            
+            <div class="w-full h-56 md:h-64 bg-gray-800 relative overflow-hidden" id="modal-image-container">
+                <!-- Image goes here -->
+            </div>
+            
+            <div class="p-5">
+                <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-white mb-2"></h3>
+                <p id="modal-status" class="text-brand-accent font-bold mb-3 text-sm md:text-base"><i class="fas fa-tag"></i> متاح للمعاينة بالفرع</p>
+                
+                <p id="modal-desc" class="text-gray-300 mb-5 text-xs md:text-sm leading-relaxed"></p>
+                
+                <div class="mb-5">
+                    <p class="text-xs md:text-sm text-gray-400 mb-2">حددي اللون للاستفسار:</p>
+                    <div id="modal-colors" class="flex gap-2 flex-wrap">
+                        <!-- Colors go here -->
+                    </div>
+                </div>
+                <div id="modal-sizes-wrap" class="mb-5 hidden">
+                    <p class="text-xs md:text-sm text-gray-400 mb-2">حددي المقاس:</p>
+                    <div id="modal-sizes" class="flex gap-2 flex-wrap"></div>
+                </div>
+                
+                <div class="flex flex-col gap-2">
+                    <button id="modal-wa-btn" class="w-full bg-brand-whatsapp text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-600 transition text-sm md:text-base">
+                        <i class="fab fa-whatsapp text-lg"></i> استفسري عن الموديل
+                    </button>
+                    <a id="modal-tiktok-btn" href="#" target="_blank" class="w-full glass-panel text-white border border-gray-600 font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition text-sm md:text-base">
+                        <i class="fab fa-tiktok"></i> شوفيه فيديو على تيك توك
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // التعديل هنا لرقم الواتساب الخاص بك
+        const waNumber = "201271425089"; 
+        
+        const defaultProducts = [
+            {
+                id: 1,
+                title: "تشكيلة السويت شيرت والجينز",
+                badge: "تريند التيك توك",
+                image: "447959.webp", 
+                description: "أطقم سويت شيرت شتوية خامة تقيلة بتصميمات تريندي، متناسقة مع بنطلونات جينز واسعة ثلجي تقطيعات جبارة.",
+                colors: ["نبيتي", "أبيض", "بينك", "جينز فاتح"],
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            },
+            {
+                id: 2,
+                title: "سديري مخطط وبلوفرات",
+                badge: "كولكشن جديد ❄️",
+                image: "447961.webp", 
+                description: "سديري صوف مخطط شيك جداً، متوفر مع كولكشن بلوفرات تريكو بألوان هادية وتطريز راقي وجواكت جينز مميزة.",
+                colors: ["بينك مخطط", "سماوي", "جينز أزرق"],
+                tiktokUrl: "https://www.tiktok.com/@noorstore11"
+            }
+        ];
+
+        let products = [];
+        let selectedColor = "";
+        let selectedSize = "";
+
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        const grid = document.getElementById('products-grid');
+
+        function renderProducts() {
+            const shown = products.filter(matches);
+            grid.innerHTML = shown.length ? shown.map(p => {
+                const off = p.available === false;
+                const colors = p.colors || [];
+                const colorsHtml = colors.slice(0,3).map(c => `<span class="w-2.5 h-2.5 rounded-full bg-gray-400 inline-block border border-gray-600" title="${esc(c)}"></span>`).join('');
+                const plus = colors.length > 3 ? `<span class="text-[10px] text-gray-500">+${colors.length - 3}</span>` : '';
+                const imageHtml = p.image
+                    ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover ${off ? 'opacity-40' : ''}">`
+                    : `<div class="w-full h-full flex items-center justify-center text-3xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
+                return `
+                <div class="glass-panel rounded-xl overflow-hidden product-card group flex flex-col">
+                    <div class="h-44 md:h-56 bg-gray-800 relative overflow-hidden cursor-pointer shrink-0" onclick="openModal(${Number(p.id)})">
+                        ${imageHtml}
+                        ${p.badge ? `<div class="absolute top-2 left-2 bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">${esc(p.badge)}</div>` : ''}
+                        ${tagHtml(p)}
+                        ${typeof favBtn === 'function' ? favBtn(p.id) : ''}
+                        ${off ? '<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-bold">غير متوفر حالياً</div>' : ''}
+                    </div>
+                    <div class="p-3 md:p-4 flex flex-col flex-1">
+                        <h4 class="text-sm md:text-lg font-bold mb-1 truncate">${esc(p.title)}</h4>
+                        <p class="text-gray-400 text-[10px] md:text-sm mb-3 line-clamp-2 flex-1">${esc(p.description)}</p>
+                        <div class="flex justify-between items-center mt-auto pt-2 border-t border-gray-700/50">
+                            <button onclick="quickWa(${Number(p.id)})" class="text-brand-whatsapp hover:text-green-400 transition bg-green-900/20 w-8 h-8 rounded-full flex items-center justify-center">
+                                <i class="fab fa-whatsapp text-sm md:text-lg"></i>
+                            </button>
+                            <button onclick="shareProduct(${Number(p.id)})" aria-label="مشاركة الموديل" class="text-brand-accent bg-gray-800 w-8 h-8 rounded-full flex items-center justify-center"><i class="fas fa-share-alt text-sm"></i></button>
+                            <div class="flex items-center gap-1">${colorsHtml} ${plus}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('') : `<p class="col-span-full text-center text-gray-500 py-10">${products.length ? 'مفيش نتايج للبحث ده 🔍' : (window.noorShopLoadError ? 'مش قادرين نحمّل الموديلات دلوقتي. حاولي تحديث الصفحة 🤍' : 'قريباً... بنجهز لكِ اختيارات Noor الجديدة ✨')}</p>`;
+        }
+
+        const TAGS = { hot: ['🔥 هوت', 'from-red-600 to-orange-500'], trend: ['⭐ تريند', 'from-fuchsia-600 to-purple-600'] };
+        const tagHtml = p => TAGS[p.tag] ? `<div class="absolute top-2 right-2 bg-gradient-to-r ${TAGS[p.tag][1]} text-white text-[10px] md:text-xs font-black px-2 py-0.5 rounded-full shadow-lg">${TAGS[p.tag][0]}</div>` : '';
+        const norm = x => String(x || '').toLowerCase().replace(/[\u064B-\u065F\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+        let curCat = '', q = '';
+        const matches = p => (!curCat || p.category === curCat) && (!q || norm(p.title + ' ' + p.description + ' ' + (p.category || '')).includes(q));
+        const prep = list => list.map(p => ({ ...p, images: (p.images && p.images.length) ? p.images : (p.image ? [p.image] : []) }));
+
+        function renderFilters() {
+            const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+            const box = document.getElementById('filters');
+            box.classList.toggle('hidden', !cats.length);
+            box.innerHTML = ['', ...cats].map(c => `<button data-c="${esc(c)}" class="shrink-0 px-4 py-1.5 rounded-full text-xs md:text-sm border transition ${curCat === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'border-gray-600 text-gray-300'}">${c ? esc(c) : 'الكل'}</button>`).join('');
+        }
+        document.getElementById('filters').addEventListener('click', e => {
+            const b = e.target.closest('button'); if (!b) return;
+            curCat = b.dataset.c; renderFilters(); renderProducts();
+        });
+        document.getElementById('search').addEventListener('input', e => { q = norm(e.target.value.trim()); renderProducts(); });
+
+        function renderFeatured() {
+            const f = products.filter(p => p.featured && p.available !== false);
+            document.getElementById('featured').classList.toggle('hidden', !f.length);
+            document.getElementById('feat-track').innerHTML = f.map(p => `
+                <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
+                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}</div>
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>
+                </div>`).join('');
+        }
+        function renderTrending() {
+            const order = { hot: 0, trend: 1 };
+            const t = products.filter(p => (p.tag === 'hot' || p.tag === 'trend') && p.available !== false)
+                              .sort((a, b) => order[a.tag] - order[b.tag]);
+            document.getElementById('trending').classList.toggle('hidden', !t.length);
+            document.getElementById('trend-track').innerHTML = t.map(p => `
+                <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
+                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}</div>
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>
+                </div>`).join('');
+        }
+        const ft = document.getElementById('feat-track');
+        let ftPause = 0;
+        ['pointerdown', 'touchstart', 'wheel'].forEach(ev => ft.addEventListener(ev, () => { ftPause = Date.now() + 6000; }, { passive: true }));
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => {
+            if (Date.now() < ftPause || !ft.firstElementChild || ft.scrollWidth <= ft.clientWidth + 4) return;
+            const end = Math.abs(ft.scrollLeft) + ft.clientWidth >= ft.scrollWidth - 4;
+            end ? ft.scrollTo({ left: 0, behavior: 'smooth' }) : ft.scrollBy({ left: -(ft.firstElementChild.offsetWidth + 12), behavior: 'smooth' });
+        }, 3500);
+
+        function renderGallery() {
+            const imgs = currentProduct.images || [];
+            if (!imgs.length) return;
+            const c = document.getElementById('modal-image-container');
+            c.innerHTML = `<div id="gal-track" class="flex h-full overflow-x-auto snap-x snap-mandatory" style="scrollbar-width:none">${imgs.map(s => `<img loading="lazy" src="${esc(s)}" alt="${esc(currentProduct.title)}" class="w-full h-full object-cover shrink-0 snap-center">`).join('')}</div>`
+                + (imgs.length > 1 ? `<div class="absolute bottom-2 inset-x-0 flex justify-center gap-1.5 pointer-events-none">${imgs.map((_, i) => `<span class="gal-dot w-1.5 h-1.5 rounded-full ${i ? 'bg-white/40' : 'bg-white'}"></span>`).join('')}</div>` : '');
+            const t = document.getElementById('gal-track');
+            t.onscroll = () => {
+                const i = Math.round(Math.abs(t.scrollLeft) / t.clientWidth);
+                c.querySelectorAll('.gal-dot').forEach((d, k) => d.className = `gal-dot w-1.5 h-1.5 rounded-full ${k === i ? 'bg-white' : 'bg-white/40'}`);
+            };
+        }
+
+        async function loadProducts() {
+            try {
+                const r = await fetch('products.json?v=' + Date.now(), { cache: 'no-store' });
+                if (!r.ok) throw 0;
+                const d = await r.json();
+                const list = Array.isArray(d) ? d : d.products;
+                if (!Array.isArray(list)) throw 0;
+                products = prep(list);
+                window.noorShop = {
+                    fromFile: true,
+                    motd: (!Array.isArray(d) && typeof d.motd === 'string') ? d.motd.trim() : '',
+                    shop: (!Array.isArray(d) && d.shop && typeof d.shop === 'object') ? d.shop : null
+                };
+                if (!Array.isArray(d) && typeof d.banner === 'string') {
+                    const b = document.getElementById('season-banner');
+                    if (d.banner.trim()) b.textContent = d.banner; else b.style.display = 'none';
+                }
+            } catch (e) { products = []; window.noorShopLoadError = true; }
+            renderProducts();
+            renderFilters();
+            renderFeatured();
+            renderTrending();
+            window.noorProductsLoaded = true;
+            if (window.noorAfterProducts) window.noorAfterProducts();
+            openFromHash();
+        }
+        document.getElementById('yr').textContent = new Date().getFullYear();
+
+        function shareProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+            const url = location.origin + location.pathname + '#p' + id;
+            const text = `شوفي الموديل ده من محل نور: ${p.title}`;
+            if (navigator.share) {
+                navigator.share({ title: p.title, text, url }).catch(() => {});
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => alert('تم نسخ رابط الموديل ✓'));
+            } else {
+                prompt('انسخي رابط الموديل:', url);
+            }
+        }
+
+        function openFromHash() {
+            const m = location.hash.match(/^#p(\d+)$/);
+            if (m && products.some(p => p.id === +m[1])) openModal(+m[1]);
+        }
+        window.addEventListener('hashchange', openFromHash);
+        loadProducts();
+
+        const modal = document.getElementById('product-modal');
+        let currentProduct = null;
+
+        function openModal(id) {
+            currentProduct = products.find(p => p.id === id);
+            selectedColor = (currentProduct.colors || [])[0] || '';
+            selectedSize = '';
+            renderSizes(); 
+            
+            document.getElementById('modal-title').innerText = currentProduct.title;
+            document.getElementById('modal-desc').innerText = currentProduct.description;
+            const tk = document.getElementById('modal-tiktok-btn');
+            tk.href = currentProduct.tiktokUrl || '#';
+            tk.style.display = currentProduct.tiktokUrl ? '' : 'none';
+            document.getElementById('modal-status').innerHTML = currentProduct.available === false
+                ? '<i class="fas fa-ban"></i> غير متوفر حالياً'
+                : '<i class="fas fa-tag"></i> متاح للمعاينة بالفرع';
+            
+            const imgContainer = document.getElementById('modal-image-container');
+            if(currentProduct.image) {
+                imgContainer.innerHTML = `<img loading="lazy" src="${currentProduct.image}" class="w-full h-full object-cover">`;
+            } else {
+                imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
+            }
+
+            renderColors();
+            updateModalWaButton();
+            
+            renderGallery();
+            if (typeof syncModalFav === 'function') syncModalFav();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderColors() {
+            const container = document.getElementById('modal-colors');
+            container.innerHTML = (currentProduct.colors || []).map(c => `
+                <button data-c="${esc(c)}" onclick="selectColor(this.dataset.c)" class="px-2 py-1 text-[11px] md:text-sm rounded-full border ${selectedColor === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">
+                    ${esc(c)}
+                </button>
+            `).join('');
+        }
+
+        function renderSizes() {
+            const sizes = currentProduct.sizes || [];
+            document.getElementById('modal-sizes-wrap').classList.toggle('hidden', !sizes.length);
+            document.getElementById('modal-sizes').innerHTML = sizes.map(s => `
+                <button data-s="${esc(s)}" onclick="selectSize(this.dataset.s)" class="min-w-[42px] px-3 py-1 text-[11px] md:text-sm rounded-lg border ${selectedSize === s ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">${esc(s)}</button>
+            `).join('');
+        }
+
+        function selectSize(s) {
+            selectedSize = selectedSize === s ? '' : s;
+            renderSizes();
+            updateModalWaButton();
+        }
+
+        function selectColor(color) {
+            selectedColor = color;
+            renderColors();
+            updateModalWaButton();
+        }
+
+        function updateModalWaButton() {
+            const btn = document.getElementById('modal-wa-btn');
+            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title} ${(d => d.length ? '(' + d.join('، ') + ')' : '')([selectedSize && 'المقاس: ' + selectedSize, selectedColor && 'اللون: ' + selectedColor].filter(Boolean))}، هل لسه متاح في المحل؟`);
+            btn.onclick = () => window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+        }
+
+        function quickWa(id) {
+            const p = products.find(x => x.id === id);
+            const msg = encodeURIComponent(`السلام عليكم، كنت بسأل عن ( ${p.title} )، متاح أجربه في المحل امتى؟`);
+            window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+        }
+
+        function closeModal() {
+            if (location.hash.startsWith('#p')) history.replaceState(null, '', location.pathname + location.search);
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        modal.addEventListener('click', function(e) {
+            if(e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        function sharePage() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'محل نور - بني سويف',
+                    text: 'شوفي أحدث كولكشن شتوي من محل نور للملابس التريندي في بني سويف 🔥',
+                    url: window.location.href,
+                });
+            } else {
+                alert('انسخي الرابط ده وشاركيه مع صاحباتك: ' + window.location.href);
+            }
+        }
+    </script>
+
+    <!-- المفضلة + بيانات المحل -->
+    <script>
+        (function () {
+            // ====== عدّلي من هنا ======
+            var SHOP_QUERY = 'محل نور شارع الجبالي بني سويف';   // لو مفيش رابط خريطة في لوحة التحكم بيدوّر بالعنوان ده
+            // ==========================
+            var FKEY = 'noor_favs';
+            var DAYS = ['الأحد', 'الاتنين', 'التلات', 'الأربع', 'الخميس', 'الجمعة', 'السبت'];
+            window.noorShop = window.noorShop || {};
+
+            // ---------- المفضلة (على موبايل الزبونة بس) ----------
+            function readFavs() {
+                try { var a = JSON.parse(localStorage.getItem(FKEY) || '[]'); return Array.isArray(a) ? a.map(Number).filter(Boolean) : []; }
+                catch (e) { return []; }
+            }
+            var favs = readFavs();
+            function saveFavs() { try { localStorage.setItem(FKEY, JSON.stringify(favs.slice(0, 60))); } catch (e) {} }
+            function prod(id) { return (typeof products !== 'undefined' ? products : []).filter(function (p) { return p.id === Number(id); })[0]; }
+            function favList() { return favs.map(prod).filter(Boolean); }
+            window.isFav = function (id) { return favs.indexOf(Number(id)) !== -1; };
+            window.favBtn = function (id) {
+                var on = isFav(id);
+                return '<button type="button" class="fav-btn' + (on ? ' on' : '') + '" data-fav="' + Number(id) + '" aria-pressed="' + on +
+                    '" aria-label="' + (on ? 'شيلي من المفضلة' : 'ضيفي للمفضلة') + '" onclick="event.stopPropagation();toggleFav(' + Number(id) + ')">' + (on ? '♥' : '♡') + '</button>';
+            };
+            function paint(b, on, animate) {
+                b.classList.toggle('on', on);
+                b.textContent = on ? '♥' : '♡';
+                b.setAttribute('aria-pressed', on);
+                b.setAttribute('aria-label', on ? 'شيلي من المفضلة' : 'ضيفي للمفضلة');
+                if (animate) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+            }
+            window.syncModalFav = function () {
+                var b = document.getElementById('modal-fav');
+                if (b && typeof currentProduct !== 'undefined' && currentProduct) paint(b, isFav(currentProduct.id), false);
+            };
+            window.updateFavUI = function (changedId, animate) {
+                var n = favList().length, c = document.getElementById('fav-count');
+                if (c) { c.textContent = n; c.style.display = n ? 'flex' : 'none'; }
+                document.querySelectorAll('[data-fav]').forEach(function (b) {
+                    var id = Number(b.getAttribute('data-fav'));
+                    paint(b, isFav(id), animate && id === changedId);
+                });
+                var m = document.getElementById('modal-fav');
+                if (m && typeof currentProduct !== 'undefined' && currentProduct) paint(m, isFav(currentProduct.id), animate && currentProduct.id === changedId);
+            };
+            window.toggleFav = function (id) {
+                id = Number(id);
+                if (!id) return;
+                var i = favs.indexOf(id), on = i === -1;
+                if (on) favs.unshift(id); else favs.splice(i, 1);
+                saveFavs();
+                updateFavUI(id, true);
+                renderFavPanel();
+                document.dispatchEvent(new CustomEvent('noor:fav', { detail: { id: id, on: on } }));
+            };
+
+            // ---------- لوحة المفضلة ----------
+            var panel = document.getElementById('fav-panel');
+            function renderFavPanel() {
+                var list = favList(), box = document.getElementById('fv-list');
+                document.getElementById('fv-title').textContent = '❤️ المفضلة' + (list.length ? ' (' + list.length + ')' : '');
+                document.getElementById('fv-foot').style.display = list.length ? 'flex' : 'none';
+                if (!list.length) {
+                    box.innerHTML = '<div class="fv-empty">لسه مفيش موديلات في المفضلة 🤍<br>دوسي على ♡ في أي موديل يعجبك وهتلاقيه هنا.</div>';
+                    return;
+                }
+                box.innerHTML = list.map(function (p) {
+                    var off = p.available === false;
+                    return '<div class="fv-item" data-id="' + p.id + '">' +
+                        (p.image ? '<img loading="lazy" alt="" src="' + esc(p.image) + '">' : '<div class="fv-ph">👗</div>') +
+                        '<div class="fv-t"><b>' + esc(p.title) + '</b><small class="' + (off ? 'off' : '') + '">' + (off ? 'غير متاح حالياً' : 'متاح للمعاينة بالفرع') + '</small></div>' +
+                        '<button type="button" class="fv-rm" data-rm="' + p.id + '" aria-label="شيلي من المفضلة">✕</button></div>';
+                }).join('');
+            }
+            document.getElementById('fv-list').addEventListener('click', function (e) {
+                var rm = e.target.closest ? e.target.closest('[data-rm]') : null;
+                if (rm) { e.stopPropagation(); toggleFav(Number(rm.getAttribute('data-rm'))); return; }
+                var it = e.target.closest ? e.target.closest('.fv-item') : null;
+                if (it && typeof openModal === 'function') openModal(Number(it.getAttribute('data-id')));
+            });
+            window.openFav = function () {
+                renderFavPanel();
+                panel.classList.add('on');
+                document.body.style.overflow = 'hidden';
+            };
+            window.closeFav = function () {
+                panel.classList.remove('on');
+                document.body.style.overflow = 'auto';
+            };
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && panel.classList.contains('on') && !document.getElementById('product-modal').classList.contains('active')) closeFav();
+            });
+            window.clearFavs = function () {
+                if (!favs.length || !confirm('تمسحي كل المفضلة؟')) return;
+                favs = []; saveFavs(); updateFavUI(0, false); renderFavPanel();
+            };
+            window.sendFavs = function () {
+                var list = favList();
+                if (!list.length) return;
+                var base = location.origin + location.pathname;
+                var head = 'السلام عليكم، أنا مهتمة بالموديلات دي من الموقع 🌸\n', tail = '\nممكن تفاصيل التوفر والأسعار؟';
+                var lines = [], len = encodeURIComponent(head + tail).length;
+                for (var i = 0; i < list.length; i++) {
+                    var p = list[i];
+                    var line = (i + 1) + ') ' + p.title + (p.available === false ? ' (غير متاح)' : '') + '\n' + base + '#p' + p.id;
+                    var l = encodeURIComponent(line + '\n').length;
+                    if (len + l > 3200) break;
+                    lines.push(line); len += l;
+                }
+                if (lines.length < list.length) lines.push('+ ' + (list.length - lines.length) + ' موديلات تانية في المفضلة');
+                window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent(head + lines.join('\n') + tail), '_blank');
+            };
+
+            // ---------- مواعيد المحل + الاتجاهات ----------
+            function fmt(t) {
+                var a = t.split(':'), h = +a[0], m = +a[1] || 0, s = h >= 12 ? 'م' : 'ص';
+                h = h % 12 || 12;
+                return h + ':' + (m < 10 ? '0' : '') + m + ' ' + s;
+            }
+            function mins(t) { var a = t.split(':'); return (+a[0]) * 60 + (+a[1] || 0); }
+            window.renderShopInfo = function () {
+                var s = window.noorShop && window.noorShop.shop, box = document.getElementById('shop-info');
+                if (!box) return;
+                var ok = s && /^\d{1,2}:\d{2}$/.test(s.open || '') && /^\d{1,2}:\d{2}$/.test(s.close || '');
+                box.classList.toggle('hidden', !ok);
+                if (!ok) return;
+                var off = (s.off === '' || s.off == null) ? -1 : Number(s.off);
+                if (off < 0 || off > 6 || isNaN(off)) off = -1;
+                var o = mins(s.open), c = mins(s.close), cross = c <= o;
+                var now = new Date(), day = now.getDay(), m = now.getHours() * 60 + now.getMinutes();
+                var openDay = function (d) { return d !== off; };
+                var isOpen = (openDay(day) && m >= o && (cross || m < c)) || (cross && openDay((day + 6) % 7) && m < c);
+                document.getElementById('shop-hours').textContent = '🕘 مواعيد الشغل: ' + (off < 0 ? 'يومياً' : 'كل يوم') + ' من ' + fmt(s.open) + ' إلى ' + fmt(s.close) + (off >= 0 ? ' (' + DAYS[off] + ' إجازة)' : '');
+                var chip = document.getElementById('shop-status'), txt;
+                if (isOpen) txt = '🟢 مفتوح دلوقتي — بنقفل الساعة ' + fmt(s.close);
+                else {
+                    var when = '';
+                    if (openDay(day) && m < o) when = 'النهاردة';
+                    else for (var i = 1; i <= 7; i++) { var d = (day + i) % 7; if (openDay(d)) { when = i === 1 ? 'بكرة' : 'يوم ' + DAYS[d]; break; } }
+                    txt = '🔴 مقفول دلوقتي — بنفتح ' + when + ' الساعة ' + fmt(s.open);
+                }
+                chip.textContent = txt;
+                chip.className = 'st-chip ' + (isOpen ? 'st-open' : 'st-closed');
+            };
+            setInterval(function () { if (window.noorShop && window.noorShop.shop) renderShopInfo(); }, 60000);
+            window.openDirections = function () {
+                var s = window.noorShop && window.noorShop.shop, url = s && s.map, ok = false;
+                try { var u = new URL(url); ok = u.protocol === 'https:' && /(^|\.)(google\.[a-z.]+|goo\.gl|g\.co)$/i.test(u.hostname); } catch (e) {}
+                if (!ok) url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(SHOP_QUERY);
+                window.open(url, '_blank', 'noopener');
+            };
+
+            // بعد ما الموديلات تتحمل
+            window.noorAfterProducts = function () {
+                if (window.noorShop && window.noorShop.fromFile) {            // نشيل المفضلة اللي الموديل بتاعها اتحذف
+                    var ids = products.map(function (p) { return p.id; });
+                    var kept = favs.filter(function (id) { return ids.indexOf(id) !== -1; });
+                    if (kept.length !== favs.length) { favs = kept; saveFavs(); }
+                }
+                renderShopInfo();
+                updateFavUI(0, false);
+                window.noorProductsReady = true;
+                document.dispatchEvent(new CustomEvent('noor:products'));
+            };
+            // لو الموديلات خلصت تحميل قبل ما السكريبت ده يشتغل
+            if (window.noorProductsLoaded) {
+                if (!document.querySelector('[data-fav]') && typeof renderProducts === 'function') renderProducts();
+                window.noorAfterProducts();
+            }
+        })();
+    </script>
+
+    <!-- المساعد التفاعلي (Mascot) -->
+    <div id="mascot" role="group" tabindex="0" aria-label="مساعد محل نور" style="display:none">
+        <div id="mascot-bubble" role="status" aria-live="polite"></div>
+        <div id="mascot-body">
+            <div id="mascot-fx">
+                <img id="mascot-img" alt="" draggable="false" decoding="async">
+                <div id="mascot-fallback">⭐</div>
+            </div>
+        </div>
+        <div id="mascot-layer"></div>
+        <div id="mascot-menu" role="menu" aria-label="مساعدة سريعة"></div>
+        <button id="mascot-close" type="button" aria-label="إخفاء المساعد">×</button>
+    </div>
+    <button id="mascot-peek" type="button" aria-label="إظهار المساعد"></button>
+
+    <script>
+        (function () {
+            // ================== إعدادات المساعد (عدّلي من هنا) ==================
+            var IMG_WELCOME  = "welcome.webp";   // تلويح
+            var IMG_IDLE     = "idle.webp";      // وقوف طبيعي (الوضع الافتراضي)
+            var IMG_HEART    = "heart.webp";     // عمل قلب
+            var IMG_CONFUSED = "confused.webp";  // حيرة
+            var IMG_DRAG     = "drag.webp";      // مرفوعة في الهواء
+
+            // حركات إضافية (بتتحمل في الخلفية بعد الترحيب عشان الموقع يفضل سريع).
+            // سيبي الاسم فاضي "" لو مش عايزاها، وساعتها بيستخدم الكود حركة قريبة منها.
+            var EXTRA_SLEEP = "sleep.webp";   // نايمة   (لما الصفحة تفضل ساكتة فترة)              — بديلها: وقوف + 💤
+            var EXTRA_CHEER = "cheer.webp";   // فرحانة  (بعد واتساب، ولما تظهر لها حاجة تعجبها)   — بديلها: القلب
+            var EXTRA_THINK = "think.webp";   // بتدوّر  (بالعدسة: البحث بدون نتيجة، واختيار حاجة)  — بديلها: الحيرة
+            var EXTRA_POINT = "point.webp";   // بتشاور  (مع ترشيح منتج، وعند فتح القائمة)          — بديلها: الوقوف
+
+            var MASCOT_HEIGHT    = 128;    // ارتفاع الشخصية بالبكسل (العرض بيتحسب تلقائياً من الصورة)
+            var EDGE_GAP         = 14;     // المسافة الابتدائية من حافة الشاشة (يسار/تحت)
+            var TAP_THRESHOLD    = 5;      // أقل من كده (بكسل) = نقر، أكتر = سحب
+            var WELCOME_MS       = 3000;   // مدة صورة الترحيب
+            var REACTION_MS      = 3000;   // مدة صورة القلب/الحيرة بعد النقر
+            var PRELOAD_TIMEOUT  = 4000;   // أقصى انتظار لتحميل الصور قبل البدء
+            var SOUND_ON         = true;   // false لإيقاف الصوت
+            var REMEMBER_HIDDEN  = true;   // تفتكر لو الزبونة أخفتها
+
+            var PRODUCT_CHANCE    = 0.45;  // احتمال إن رسالة النقر تكون ترشيح منتج
+            var AUTO_TIPS_MAX     = 2;     // أقصى عدد ترشيحات تلقائية في الزيارة الواحدة
+            var FIRST_TIP_MS      = 18000; // أول ترشيح تلقائي بعد كام مللي ثانية
+            var TIP_EVERY_MS      = 32000; // الفاصل بين الترشيحات
+            var DOZE_AFTER_MS     = 70000; // تنام بعد كام مللي ثانية من السكوت
+            var MODAL_REACT_CHANCE = 0.6;  // احتمال التعليق بعد قفل نافذة الموديل
+            var LONG_PRESS_MS     = 550;   // مدة الضغطة الطويلة اللي بتفتح القائمة
+
+            // قائمة الضغطة الطويلة (id ثابت، والاسم تقدري تغيريه): trending / random / taste / directions / whatsapp
+            var MENU_ITEMS = [
+                { id: 'trending', label: '🔥 وديني للرائج' },
+                { id: 'random',   label: '🎲 اختاري لي حاجة عشوائية' },
+                { id: 'taste',    label: '💕 حاجة تناسب ذوقي' },
+                { id: 'directions', label: '📍 اتجاهات للمحل' },
+                { id: 'whatsapp', label: '💬 كلمي المحل على واتساب' }
+            ];
+
+            var WELCOME_MESSAGE = "نورتي محل نور! 😍";
+            var RETURN_MESSAGE  = "رجعت! 😍";
+            var HEART_MESSAGES = [
+                "نورتي محل نور! 😍",
+                "شوفي تريندات الشتاء 🔥",
+                "تشكيلة الشتاء وصلت ❄️",
+                "ألوان وموديلات جديدة كل أسبوع ✨",
+                "شرفينا في الفرع ببني سويف 🛍️",
+                "اضغطي عليا ضغطة طويلة وأنا أساعدك تختاري 😉"
+            ];
+            var CONFUSED_MESSAGES = [
+                "محتاجة مساعدة؟ اضغطي عليا ضغطة طويلة 💬",
+                "مش لاقية اللي بتدوري عليه؟ 🤔",
+                "كلمينا على الواتساب ونرد عليكي فوراً 💚",
+                "شوفي الفيديوهات على التيك توك 🎬"
+            ];
+            // ترشيحات المنتجات (بتتاخد من products.json) — {t} مكان اسم الموديل
+            var PRODUCT_TEMPLATES = [
+                "شوفي «{t}» 😍 👆",
+                "عندنا «{t}» ✨ دوسي تشوفيه 👆",
+                "ممكن يعجبكي «{t}» 💕 👆",
+                "ترشيحي النهاردة: «{t}» 🔥 👆"
+            ];
+            var THANKS_MESSAGES      = ["شكراً إنك كلمتينا! 💚", "هنرد عليكي في أقرب وقت 💬", "بنستناكي في المحل 🛍️"];
+            var MODAL_CLOSE_MESSAGES = ["عجبكي الموديل؟ 😍", "ابعتيلنا على واتساب لو حبيتي تسألي 💬", "جربيه في المحل وقيسيه بنفسك 🛍️"];
+            var NO_RESULT_MESSAGES   = ["مش لاقية اللي بتدوري عليه؟ 🤔", "اسألينا على واتساب، يمكن متوفر عندنا 💬", "جربي كلمة تانية أو كلمينا 💚"];
+            // =====================================================================
+
+            var KEY_HIDDEN = 'noor_mascot_hidden';
+            var IMAGES = { welcome: IMG_WELCOME, idle: IMG_IDLE, heart: IMG_HEART, confused: IMG_CONFUSED, drag: IMG_DRAG };
+            if (EXTRA_SLEEP) IMAGES.sleep = EXTRA_SLEEP;
+            if (EXTRA_CHEER) IMAGES.cheer = EXTRA_CHEER;
+            if (EXTRA_THINK) IMAGES.think = EXTRA_THINK;
+            if (EXTRA_POINT) IMAGES.point = EXTRA_POINT;
+            var FALLBACK = { sleep: 'idle', cheer: 'heart', think: 'confused', point: 'idle' };
+
+            var mascot = document.getElementById('mascot');
+            var fxEl = document.getElementById('mascot-fx');
+            var imgEl = document.getElementById('mascot-img');
+            var fallbackEl = document.getElementById('mascot-fallback');
+            var bubble = document.getElementById('mascot-bubble');
+            var layer = document.getElementById('mascot-layer');
+            var closeBtn = document.getElementById('mascot-close');
+            var peek = document.getElementById('mascot-peek');
+            if (!mascot || !imgEl || !bubble || !peek) return;
+
+            var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var MH = MASCOT_HEIGHT, MW = Math.round(MASCOT_HEIGHT * 190 / 257);   // العرض يتظبط تلقائياً بعد تحميل الصور
+            function applySize() {
+                mascot.style.width = MW + 'px';
+                mascot.style.height = MH + 'px';
+                fallbackEl.style.lineHeight = MH + 'px';
+                fallbackEl.style.fontSize = Math.round(MH * 0.5) + 'px';
+            }
+            applySize();
+
+            // صورة زر الإظهار (وش الشخصية)
+            var peekImg = new Image();
+            peekImg.alt = ''; peekImg.draggable = false;
+            peekImg.onerror = function () { peek.textContent = '⭐'; };
+            peekImg.src = IMG_IDLE;
+            peek.appendChild(peekImg);
+
+            // ---------- Preload للصور (لتجنب الوميض عند التبديل) ----------
+            var failed = {}, loaded = {}, keepAlive = [], loadedPromise = null, extrasStarted = false;
+            var CORE = ['welcome', 'idle', 'heart', 'confused', 'drag'];
+            function loadExtras() {                 // الحركات الإضافية بتتحمل بعد الترحيب بدون ما تعطّل الصفحة
+                if (extrasStarted) return;
+                extrasStarted = true;
+                Object.keys(IMAGES).forEach(function (key) {
+                    if (CORE.indexOf(key) !== -1) return;
+                    var im = new Image();
+                    im.onload = function () { loaded[key] = true; };
+                    im.onerror = function () { failed[key] = true; };
+                    im.src = IMAGES[key];
+                    keepAlive.push(im);
+                });
+            }
+            function preloadAll() {
+                var jobs = CORE.map(function (key) {
+                    return new Promise(function (resolve) {
+                        var im = new Image();
+                        im.onload = function () {
+                            loaded[key] = true;
+                            if (key === 'idle' && im.naturalWidth && im.naturalHeight) {
+                                MW = Math.round(MH * im.naturalWidth / im.naturalHeight);   // نفس نسبة أبعاد الصورة
+                            }
+                            resolve();
+                        };
+                        im.onerror = function () { failed[key] = true; resolve(); };
+                        im.src = IMAGES[key];
+                        keepAlive.push(im); // نحتفظ بالمرجع عشان الصورة تفضل في الكاش
+                    });
+                });
+                return Promise.race([
+                    Promise.all(jobs),
+                    new Promise(function (resolve) { setTimeout(resolve, PRELOAD_TIMEOUT); })
+                ]);
+            }
+            function ensureLoaded() { return loadedPromise || (loadedPromise = preloadAll()); }
+
+            // ---------- State Machine ----------
+            var state = null, revertTimer = null;
+            function resolveState(n) { return (FALLBACK[n] && (!IMAGES[n] || failed[n] || !loaded[n])) ? FALLBACK[n] : n; }
+            function hasArt(n) { return !!(IMAGES[n] && loaded[n] && !failed[n]); }
+            function setState(name) {
+                name = resolveState(name);
+                if (state === name) return;
+                state = name;
+                mascot.setAttribute('data-state', name);
+                if (failed[name]) {                // لو الصورة مش موجودة نعرض الإيموجي بدل مربع فاضي
+                    imgEl.style.display = 'none';
+                    fallbackEl.style.display = 'block';
+                } else {
+                    fallbackEl.style.display = 'none';
+                    imgEl.style.display = 'block';
+                    imgEl.src = IMAGES[name];
+                }
+            }
+            function goIdleAfter(ms) {
+                clearTimeout(revertTimer);
+                revertTimer = setTimeout(function () { setState('idle'); }, ms);
+            }
+
+            // ---------- حركات إضافية (CSS) + جسيمات ----------
+            function fx(name) {
+                if (reduced) return;
+                fxEl.className = '';
+                void fxEl.offsetWidth;
+                fxEl.className = 'fx-' + name;
+            }
+            fxEl.addEventListener('animationend', function () { if (fxEl.className !== 'fx-doze') fxEl.className = ''; });
+            function burst(chars, n) {
+                if (reduced || !layer) return;
+                for (var i = 0; i < n; i++) {
+                    if (layer.childElementCount > 12) return;
+                    (function (i) {
+                        var sp = document.createElement('span');
+                        sp.className = 'mp';
+                        sp.textContent = chars[Math.floor(Math.random() * chars.length)];
+                        sp.style.left = (20 + Math.random() * 60) + '%';
+                        sp.style.top = (4 + Math.random() * 22) + '%';
+                        sp.style.setProperty('--dx', Math.round(Math.random() * 40 - 20) + 'px');
+                        sp.style.animationDelay = (i * 0.12) + 's';
+                        layer.appendChild(sp);
+                        sp.addEventListener('animationend', function () { sp.remove(); });
+                    })(i);
+                }
+            }
+
+            // ---------- الموضع + حدود الشاشة ----------
+            var posX = 0, posY = 0, placed = false;
+            function viewW() { return document.documentElement.clientWidth || window.innerWidth; }
+            function viewH() { return window.innerHeight; }
+            function clamp(v, min, max) { return Math.min(Math.max(v, min), Math.max(min, max)); }
+            function topLimit() {                      // ماتدخلش تحت الهيدر الثابت
+                var h = document.querySelector('header');
+                if (!h) return 0;
+                var pos = getComputedStyle(h).position;
+                return (pos === 'fixed' || pos === 'sticky') ? Math.max(0, h.getBoundingClientRect().bottom) : 0;
+            }
+            function setPos(x, y) {
+                posX = clamp(x, 0, viewW() - MW);
+                posY = clamp(y, topLimit(), viewH() - MH);
+                mascot.style.transform = 'translate3d(' + posX + 'px,' + posY + 'px,0)';
+            }
+            window.addEventListener('resize', function () { hideBubble(); setPos(posX, posY); });
+
+            // ---------- فقاعة الكلام (بتتموضع جوه حدود الشاشة) ----------
+            var bubbleTimer = null;
+            function showBubble(text, ms, pid) {
+                bubble.textContent = text;
+                bubble.dataset.pid = pid || '';
+                bubble.classList.toggle('clickable', !!pid);
+                var bw = bubble.offsetWidth, bh = bubble.offsetHeight, gap = 10;
+                var above = posY - topLimit() >= bh + gap + 6;
+                var desiredLeft = posX + MW / 2 - bw / 2;
+                var left = clamp(desiredLeft, 8, viewW() - bw - 8);
+                bubble.style.left = (left - posX) + 'px';
+                bubble.style.top = (above ? -(bh + gap) : MH + gap) + 'px';
+                bubble.classList.add('show');
+                clearTimeout(bubbleTimer);
+                bubbleTimer = setTimeout(hideBubble, ms);
+            }
+            function hideBubble() { clearTimeout(bubbleTimer); bubble.classList.remove('show', 'clickable'); }
+            // دوسة على فقاعة ترشيح = تفتح الموديل
+            bubble.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+            bubble.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var id = Number(bubble.dataset.pid);
+                if (id && typeof openModal === 'function') { hideBubble(); openModal(id); }
+            });
+
+            // ---------- صوت Pop (Web Audio API) ----------
+            var audioCtx = null;
+            function unlockAudio() {
+                if (!SOUND_ON) return;
+                try {
+                    var AC = window.AudioContext || window.webkitAudioContext;
+                    if (!AC) return;
+                    if (!audioCtx) audioCtx = new AC();
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+                } catch (e) {}
+            }
+            function playPop() {
+                if (!SOUND_ON || !audioCtx) return;
+                try {
+                    var t = audioCtx.currentTime;
+                    var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, t);
+                    osc.frequency.exponentialRampToValueAtTime(1100, t + 0.09);
+                    gain.gain.setValueAtTime(0.0001, t);
+                    gain.gain.exponentialRampToValueAtTime(0.25, t + 0.015);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(t); osc.stop(t + 0.18);
+                } catch (e) {}
+            }
+
+            // ---------- الرسائل + ترشيح المنتجات ----------
+            var lastMsg = '', lastPid = null;
+            function pick(list) {
+                var m, tries = 0;
+                do { m = list[Math.floor(Math.random() * list.length)]; tries++; } while (m === lastMsg && list.length > 1 && tries < 6);
+                lastMsg = m;
+                return m;
+            }
+            function productMessage() {
+                var all = (typeof products !== 'undefined' && Array.isArray(products)) ? products : [];
+                var list = all.filter(function (p) { return p && p.title && p.available !== false; });
+                if (!list.length) return null;
+                var pool = list.filter(function (p) { return p.featured; });
+                if (!pool.length || Math.random() < 0.4) pool = list;
+                var p, tries = 0;
+                do { p = pool[Math.floor(Math.random() * pool.length)]; tries++; } while (p.id === lastPid && pool.length > 1 && tries < 6);
+                lastPid = p.id;
+                var t = String(p.title);
+                if (t.length > 26) t = t.slice(0, 25) + '…';
+                return { text: pick(PRODUCT_TEMPLATES).replace('{t}', t), id: Number(p.id) };
+            }
+            function modalOpen() { var m = document.getElementById('product-modal'); return !!(m && m.classList.contains('active')); }
+
+            // ---------- النوم (لما الصفحة تسكت فترة) ----------
+            var dozing = false, dozeFx = null, lastActive = Date.now();
+            function startDoze() {
+                dozing = true;
+                if (hasArt('sleep')) { setState('sleep'); return; }     // الحركة نفسها فيها Zzz
+                if (!reduced) fxEl.className = 'fx-doze';
+                burst(['💤'], 1);
+                dozeFx = setInterval(function () { burst(['💤'], 1); }, 2600);
+            }
+            function wakeUp() {
+                if (!dozing) return;
+                dozing = false;
+                if (dozeFx) clearInterval(dozeFx);
+                if (fxEl.className === 'fx-doze') fxEl.className = '';
+                if (state === 'sleep') setState('idle');
+            }
+            function activity() { lastActive = Date.now(); if (dozing) wakeUp(); }
+            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
+                window.addEventListener(ev, activity, { passive: true, capture: true });
+            });
+            setInterval(function () {
+                if (hidden || dozing || drag.id !== null || document.visibilityState !== 'visible' || modalOpen()) return;
+                if (state === 'idle' && Date.now() - lastActive > DOZE_AFTER_MS) startDoze();
+            }, 5000);
+
+            // ---------- ترشيحات تلقائية ----------
+            var tips = 0, tipTimer = null;
+            function canSpeak() {
+                return !hidden && !menuOpen && drag.id === null && !dozing && state === 'idle' && !bubble.classList.contains('show') &&
+                       document.visibilityState === 'visible' && !modalOpen();
+            }
+            function scheduleTips() {
+                clearTimeout(tipTimer);
+                if (hidden || tips >= AUTO_TIPS_MAX) return;
+                tipTimer = setTimeout(function () {
+                    if (canSpeak()) {
+                        var m = productMessage();
+                        if (m) { tips++; clearTimeout(revertTimer); setState('point'); fx('hop'); showBubble(m.text, 5500, m.id); goIdleAfter(5500); }
+                    }
+                    scheduleTips();
+                }, tips === 0 ? FIRST_TIP_MS : TIP_EVERY_MS);
+            }
+
+            // ---------- إخفاء / إظهار ----------
+            var hidden = false;
+            try { hidden = REMEMBER_HIDDEN && localStorage.getItem(KEY_HIDDEN) === '1'; } catch (e) {}
+            function saveHidden(v) { try { if (REMEMBER_HIDDEN) localStorage.setItem(KEY_HIDDEN, v ? '1' : '0'); } catch (e) {} }
+            function appear(text, ms) {
+                ensureLoaded().then(function () {
+                    if (hidden) return;
+                    applySize();
+                    if (!placed) { placed = true; setPos(EDGE_GAP, viewH() - MH - EDGE_GAP); } else { setPos(posX, posY); }
+                    mascot.style.display = '';
+                    state = null; setState('welcome');
+                    fx('pop'); burst(['✨', '⭐'], 4);
+                    showBubble(text, ms);
+                    goIdleAfter(ms);
+                    setTimeout(function () { welcomeDone = true; maybeMotd(); }, ms + 300);
+                    lastActive = Date.now();
+                    scheduleTips();
+                    setTimeout(loadExtras, 1500);
+                });
+            }
+            function hideMascot() {
+                hidden = true; saveHidden(true);
+                clearTimeout(revertTimer); clearTimeout(tipTimer);
+                wakeUp(); hideBubble(); closeMenu();
+                mascot.style.display = 'none';
+                peek.style.display = 'block';
+                state = null;
+            }
+            function showMascot() {
+                hidden = false; saveHidden(false);
+                peek.style.display = 'none';
+                appear(RETURN_MESSAGE, 2600);
+            }
+            closeBtn.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+            closeBtn.addEventListener('click', function (e) { e.stopPropagation(); hideMascot(); });
+            peek.addEventListener('click', showMascot);
+
+            // ---------- تفاعل مع أحداث الموقع ----------
+            function react(kind, text, ms, hearts) {
+                if (hidden || drag.id !== null) return;
+                wakeUp();
+                clearTimeout(revertTimer);
+                setState(kind);
+                fx(kind === 'confused' ? 'shake' : 'hop');
+                if (hearts) burst(['💗', '💖', '❤️'], 4);
+                showBubble(text, ms);
+                goIdleAfter(Math.max(ms, REACTION_MS));
+            }
+            // 1) الزبونة داست واتساب → لما ترجع للصفحة نشكرها
+            var pendingWa = false;
+            document.addEventListener('click', function (e) {
+                var t = e.target, el = t && t.closest ? t.closest('#modal-wa-btn,#fav-wa,[onclick^="quickWa"],a[href*="wa.me"]') : null;
+                if (!el) return;
+                pendingWa = true;
+                // الاستفسار على واتساب إشارة قوية على ذوق الزبونة
+                if (el.id === 'modal-wa-btn') { if (typeof currentProduct !== 'undefined' && currentProduct) track(currentProduct, 3); }
+                else {
+                    var mm = /quickWa\((\d+)\)/.exec(el.getAttribute('onclick') || '');
+                    if (mm && typeof products !== 'undefined') { var pp = products.filter(function (x) { return Number(x.id) === Number(mm[1]); })[0]; if (pp) track(pp, 3); }
+                }
+            }, true);
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'visible' && pendingWa) {
+                    pendingWa = false;
+                    setTimeout(function () { react('cheer', pick(THANKS_MESSAGES), 4000, true); }, 600);
+                }
+            });
+            // 2) قفلت نافذة الموديل → تعليق خفيف (مش كل مرة)
+            var modalEl = document.getElementById('product-modal'), wasOpen = false, lastModalReact = 0;
+            if (modalEl && window.MutationObserver) {
+                new MutationObserver(function () {
+                    var o = modalOpen();
+                    if (!wasOpen && o && typeof currentProduct !== 'undefined' && currentProduct) track(currentProduct, 1);   // بتتفرج على موديل
+                    if (wasOpen && !o && Date.now() - lastModalReact > 25000 && Math.random() < MODAL_REACT_CHANCE) {
+                        lastModalReact = Date.now();
+                        setTimeout(function () { react('heart', pick(MODAL_CLOSE_MESSAGES), 3500, true); }, 350);
+                    }
+                    wasOpen = o;
+                }).observe(modalEl, { attributes: true, attributeFilter: ['class'] });
+            }
+            // 3) البحث ملقاش نتيجة → تساعد
+            var searchEl = document.getElementById('search'), searchTimer = null, lastSearchReact = 0;
+            if (searchEl) {
+                searchEl.addEventListener('input', function () {
+                    clearTimeout(searchTimer);
+                    searchTimer = setTimeout(function () {
+                        if (searchEl.value.trim().length < 2) return;
+                        if (typeof matches !== 'function' || typeof products === 'undefined' || !products.length) return;
+                        if (!products.some(matches) && Date.now() - lastSearchReact > 15000) {
+                            lastSearchReact = Date.now();
+                            react('think', pick(NO_RESULT_MESSAGES), 4500, false);
+                        }
+                    }, 900);
+                });
+            }
+
+            // ---------- رسالة اليوم (من لوحة التحكم) + المفضلة ----------
+            var motdText = '', motdShown = false, welcomeDone = false, favCool = 0;
+            var FAV_MESSAGES = ['اتحفظ في المفضلة ❤️', 'حلو اختيارك! 😍', 'ابعتيهم لنا على واتساب من زرار ♥ فوق 💬'];
+            function maybeMotd() {
+                if (!motdText || hidden || !welcomeDone || motdShown) return;
+                var key = 'noor_motd_seen', seen = '';
+                try { seen = sessionStorage.getItem(key) || ''; } catch (e) {}
+                motdShown = true;
+                if (seen === motdText) return;                      // اتقالت قبل كده في الزيارة دي
+                try { sessionStorage.setItem(key, motdText); } catch (e) {}
+                react('point', motdText, Math.min(9000, Math.max(5000, motdText.length * 90)), false);
+            }
+            function readMotd() { motdText = (window.noorShop && window.noorShop.motd) || ''; }
+            if (window.noorProductsReady) readMotd();
+            document.addEventListener('noor:products', function () { readMotd(); maybeMotd(); });
+            document.addEventListener('noor:fav', function (e) {
+                var d = e.detail || {};
+                if (!d.on) return;
+                var p = (typeof products !== 'undefined') ? products.filter(function (x) { return x.id === d.id; })[0] : null;
+                if (p) track(p, 2);                                  // القلب إشارة قوية على الذوق
+                var fp = document.getElementById('fav-panel');
+                if (Date.now() > favCool && !modalOpen() && !(fp && fp.classList.contains('on'))) {
+                    favCool = Date.now() + 8000;
+                    react('heart', pick(FAV_MESSAGES), 2500, true);
+                }
+            });
+
+            // ---------- النقر ----------
+            function onTap() {
+                wakeUp();
+                playPop();
+                fx('hop');
+                var heart = Math.random() < 0.5, m = null;
+                if (motdText && Math.random() < 0.25) { m = { text: motdText, motd: true }; heart = true; }   // أحياناً تكرر رسالة اليوم
+                else if (heart && Math.random() < PRODUCT_CHANCE) m = productMessage();
+                if (!m) m = { text: pick(heart ? HEART_MESSAGES : CONFUSED_MESSAGES) };
+                clearTimeout(revertTimer);
+                setState((m.id || m.motd) ? 'point' : (heart ? 'heart' : 'confused'));
+                if (m.id || m.motd) { /* ترشيح أو رسالة اليوم */ } else if (heart) burst(['💗', '💖', '❤️'], 3); else fx('shake');
+                showBubble(m.text, m.id ? 5500 : (m.motd ? 6500 : REACTION_MS), m.id);
+                goIdleAfter(REACTION_MS);
+            }
+
+            // ---------- ذوق الزبونة (بيتحفظ على جهازها بس) ----------
+            var TASTE_KEY = 'noor_taste';
+            function loadTaste() {
+                try {
+                    var t = JSON.parse(localStorage.getItem(TASTE_KEY) || '{}');
+                    return { cats: t.cats || {}, tags: t.tags || {}, colors: t.colors || {}, seen: t.seen || {}, n: t.n || 0 };
+                } catch (e) { return { cats: {}, tags: {}, colors: {}, seen: {}, n: 0 }; }
+            }
+            function prune(o, max) {
+                var keys = Object.keys(o);
+                if (keys.length <= max) return;
+                keys.sort(function (a, b) { return o[b] - o[a]; }).slice(max).forEach(function (k) { delete o[k]; });
+            }
+            function track(p, w) {
+                if (!p) return;
+                try {
+                    var t = loadTaste(); w = w || 1;
+                    if (p.category) t.cats[p.category] = (t.cats[p.category] || 0) + w;
+                    if (p.tag) t.tags[p.tag] = (t.tags[p.tag] || 0) + w;
+                    (p.colors || []).forEach(function (c) { t.colors[c] = (t.colors[c] || 0) + w * 0.5; });
+                    t.seen[p.id] = (t.seen[p.id] || 0) + 1;
+                    t.n += w;
+                    prune(t.cats, 30); prune(t.tags, 10); prune(t.colors, 40); prune(t.seen, 80);
+                    localStorage.setItem(TASTE_KEY, JSON.stringify(t));
+                } catch (e) {}
+            }
+            function availableProducts() {
+                var all = (typeof products !== 'undefined' && Array.isArray(products)) ? products : [];
+                return all.filter(function (p) { return p && p.title && p.available !== false; });
+            }
+            function bestForTaste() {
+                var t = loadTaste(), list = availableProducts();
+                if (t.n < 1 || !list.length) return null;
+                var scored = list.map(function (p) {
+                    var s = 0;
+                    if (p.category) s += (t.cats[p.category] || 0) * 2;
+                    if (p.tag) s += (t.tags[p.tag] || 0) * 1.5;
+                    (p.colors || []).forEach(function (c) { s += (t.colors[c] || 0); });
+                    s -= 4 * (t.seen[p.id] || 0);          // نفضّل حاجة لسه ماشافتهاش
+                    if (typeof isFav === 'function' && isFav(p.id)) s -= 3;   // ومش اللي هي حافظاها أصلاً
+                    s += Math.random() * 0.6;              // عشان النتيجة ماتبقاش ثابتة
+                    return { p: p, s: s };
+                }).sort(function (a, b) { return b.s - a.s; });
+                return scored[0].p;
+            }
+
+            // ---------- قائمة الضغطة الطويلة ----------
+            var menuEl = document.getElementById('mascot-menu'), menuOpen = false, menuTimer = null;
+            (function buildMenu() {
+                var head = document.createElement('div');
+                head.className = 'mm-head'; head.textContent = 'أقدر أساعدك في إيه؟ 😊';
+                menuEl.appendChild(head);
+                MENU_ITEMS.forEach(function (it) {
+                    var b = document.createElement('button');
+                    b.type = 'button'; b.setAttribute('role', 'menuitem'); b.dataset.act = it.id; b.textContent = it.label;
+                    menuEl.appendChild(b);
+                });
+            })();
+            menuEl.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+            menuEl.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var b = e.target.closest ? e.target.closest('button[data-act]') : null;
+                if (b) runMenu(b.dataset.act);
+            });
+            function openMenu() {
+                if (hidden) return;
+                wakeUp(); hideBubble(); clearTimeout(revertTimer);
+                setState('point'); fx('hop');
+                menuEl.classList.add('show'); menuOpen = true;
+                var mw = menuEl.offsetWidth, mh = menuEl.offsetHeight, gap = 10;
+                var above = posY - topLimit() >= mh + gap + 6;
+                var left = clamp(posX + MW / 2 - mw / 2, 8, viewW() - mw - 8);
+                menuEl.style.left = (left - posX) + 'px';
+                menuEl.style.top = (above ? -(mh + gap) : MH + gap) + 'px';
+                clearTimeout(menuTimer); menuTimer = setTimeout(closeMenu, 12000);
+                try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
+            }
+            function closeMenu() {
+                if (!menuOpen) return;
+                menuOpen = false; clearTimeout(menuTimer);
+                menuEl.classList.remove('show');
+                if (state === 'point') goIdleAfter(400);
+            }
+            document.addEventListener('pointerdown', function (e) { if (menuOpen && !menuEl.contains(e.target)) closeMenu(); }, true);
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+
+            function flash(el) {
+                if (!el || reduced) return;
+                el.classList.remove('noor-flash'); void el.offsetWidth; el.classList.add('noor-flash');
+                setTimeout(function () { el.classList.remove('noor-flash'); }, 2000);
+            }
+            function scrollToEl(el) {
+                var y = el.getBoundingClientRect().top + window.pageYOffset - 84;
+                window.scrollTo({ top: Math.max(0, y), behavior: reduced ? 'auto' : 'smooth' });
+            }
+            function goTrending() {
+                var sec = document.getElementById('trending');
+                var has = sec && !sec.classList.contains('hidden');
+                var target = has ? sec : document.getElementById('collection');
+                if (target) scrollToEl(target);
+                if (has) { flash(sec.firstElementChild); react('cheer', 'ده الرائج عندنا 🔥', 3500, true); }
+                else react('think', 'لسه مفيش رائج دلوقتي، اتفرجي على أحدث الموديلات 👇', 4200, false);
+            }
+            function reveal(p, intro, outro) {         // عدسة ثانية وبعدين تفتح الموديل
+                react('think', intro, 1300, false);
+                setTimeout(function () {
+                    if (hidden) return;
+                    react('cheer', outro, 2600, true);
+                    setTimeout(function () { if (typeof openModal === 'function') openModal(Number(p.id)); }, 800);
+                }, 1300);
+            }
+            var lastRandom = null;
+            function pickRandom() {
+                var list = availableProducts();
+                if (!list.length) { react('confused', 'موديلات جديدة قريباً 🤍', 3500, false); return; }
+                var p, tries = 0;
+                do { p = list[Math.floor(Math.random() * list.length)]; tries++; } while (p.id === lastRandom && list.length > 1 && tries < 6);
+                lastRandom = p.id;
+                reveal(p, 'ثواني وأختارلك حاجة... 🎲', 'اخترتلك حاجة حلوة! 🎁');
+            }
+            function pickTaste() {
+                var p = bestForTaste();
+                if (!p) { react('confused', 'لسه معرفش ذوقك 🤔 شوفي كام موديل وأنا أتابع معاكي!', 4800, false); return; }
+                reveal(p, 'بفتّش على اللي يناسب ذوقك... 🔍', 'لقيتلك حاجة على ذوقك! 💕');
+            }
+            function openWa() {
+                if (typeof waNumber === 'undefined') return;
+                pendingWa = true;
+                window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent('السلام عليكم، محتاجة مساعدة في اختيار حاجة من الموقع 🌸'), '_blank');
+            }
+            function runMenu(id) {
+                closeMenu();
+                if (id === 'trending') goTrending();
+                else if (id === 'random') pickRandom();
+                else if (id === 'taste') pickTaste();
+                else if (id === 'directions') { if (typeof openDirections === 'function') openDirections(); react('point', 'ده الطريق للمحل 📍 هنستناكي!', 3500, false); }
+                else if (id === 'whatsapp') openWa();
+            }
+
+            // ---------- السحب والإفلات (Pointer Events: ماوس + لمس بنفس الكود) ----------
+            var drag = { id: null, sx: 0, sy: 0, ox: 0, oy: 0, moved: false, lp: null, menu: false };
+            function startDrag() {
+                clearTimeout(revertTimer);
+                wakeUp();
+                hideBubble();                       // السحب بدون فقاعة وبدون صوت
+                fxEl.className = '';
+                mascot.classList.add('dragging');
+                setState('drag');
+            }
+            function endDrag() {
+                mascot.classList.remove('dragging');
+                setState('idle');
+                fx('land');
+            }
+            mascot.addEventListener('pointerdown', function (e) {
+                if (drag.id !== null) return;                          // إصبع واحد بس
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                unlockAudio();                                         // لازم يتم جوه لمسة المستخدم
+                drag.id = e.pointerId; drag.sx = e.clientX; drag.sy = e.clientY;
+                drag.ox = posX; drag.oy = posY; drag.moved = false; drag.menu = false;
+                var pid = e.pointerId;
+                clearTimeout(drag.lp);
+                drag.lp = setTimeout(function () {                      // ضغطة طويلة من غير حركة = القائمة
+                    if (drag.id === pid && !drag.moved) { drag.menu = true; openMenu(); }
+                }, LONG_PRESS_MS);
+                try { mascot.setPointerCapture(e.pointerId); } catch (err) {}
+            });
+            mascot.addEventListener('pointermove', function (e) {
+                if (e.pointerId !== drag.id) return;
+                var dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+                if (!drag.moved) {
+                    if (Math.sqrt(dx * dx + dy * dy) < TAP_THRESHOLD) return;  // لسه نقر محتمل
+                    drag.moved = true;
+                    clearTimeout(drag.lp);
+                    closeMenu();
+                    startDrag();
+                }
+                setPos(drag.ox + dx, drag.oy + dy);
+            });
+            function release(e, cancelled) {
+                if (e.pointerId !== drag.id) return;
+                var wasDrag = drag.moved, wasMenu = drag.menu;
+                clearTimeout(drag.lp);
+                drag.id = null; drag.moved = false; drag.menu = false;
+                try { mascot.releasePointerCapture(e.pointerId); } catch (err) {}
+                if (wasDrag) endDrag();
+                else if (wasMenu) { /* القائمة اتفتحت: مفيش نقر */ }
+                else if (!cancelled) onTap();
+            }
+            mascot.addEventListener('pointerup', function (e) { release(e, false); });
+            mascot.addEventListener('pointercancel', function (e) { release(e, true); });
+            mascot.addEventListener('contextmenu', function (e) { e.preventDefault(); });   // منع قائمة الضغط المطوّل
+            mascot.addEventListener('dragstart', function (e) { e.preventDefault(); });
+            mascot.addEventListener('keydown', function (e) {                                // إتاحة الكيبورد
+                if (e.target !== mascot) return;
+                if (e.key === 'ContextMenu' || (e.key === 'Enter' && e.shiftKey)) { e.preventDefault(); openMenu(); return; }
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlockAudio(); onTap(); }
+            });
+
+            // ---------- البداية ----------
+            if (hidden) { peek.style.display = 'block'; }
+            else { appear(WELCOME_MESSAGE, WELCOME_MS); }
+        })();
+    </script>
+
+    <!-- تثبيت التطبيق + تسجيل الـ Service Worker -->
+    <script>
+        (function () {
+            var btn = document.getElementById('pwa-install'), dp = null;
+            var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+            var ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            function show() { if (btn && !standalone) btn.classList.remove('hidden'); }
+            window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); dp = e; show(); });
+            window.addEventListener('appinstalled', function () { dp = null; if (btn) btn.classList.add('hidden'); });
+            if (ios && !standalone) show();                      // iPhone: بنعرض التعليمات بدل نافذة التثبيت
+            window.installApp = function () {
+                if (dp) { dp.prompt(); dp.userChoice.then(function () { dp = null; if (btn) btn.classList.add('hidden'); }); }
+                else document.getElementById('pwa-help').classList.add('on');
+            };
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+            }
+        })();
+    </script>
+</body>
+</html>
