@@ -18,15 +18,29 @@
 
     <!-- تثبيت الموقع كتطبيق (PWA) -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#17151C">
+    <meta name="theme-color" content="#0a0a0d" id="meta-theme">
     <link rel="apple-touch-icon" href="icon-maskable-512.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="محل نور">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
+    <!-- تطبيق الثيم المحفوظ قبل ما الصفحة تترسم (عشان مفيش وميض) -->
+    <script>
+        (function () {
+            try {
+                var d = document.documentElement, nav = navigator, conn = nav.connection || {};
+                var t = localStorage.getItem('noor_theme'), l = localStorage.getItem('noor_lite'), c = localStorage.getItem('noor_cards');
+                d.setAttribute('data-theme', /^(luxe|violet|light)$/.test(t) ? t : 'luxe');   // الثيم الافتراضي: luxe
+                d.classList.add('js');
+                if (l === '1' || (l === null && (conn.saveData || (nav.deviceMemory && nav.deviceMemory <= 2) || (nav.hardwareConcurrency && nav.hardwareConcurrency <= 2)))) d.classList.add('lite');
+                if (c === 'big') d.setAttribute('data-cards', 'big');
+            } catch (e) { document.documentElement.setAttribute('data-theme', 'luxe'); document.documentElement.classList.add('js'); }
+        })();
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Amiri:wght@700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -39,7 +53,7 @@
                         brand: {
                             dark: '#1a1a1a',
                             light: '#f5f5f5',
-                            accent: '#d4af37', // ذهبي
+                            accent: 'rgb(var(--accent-rgb) / <alpha-value>)', // لون الثيم المختار
                             whatsapp: '#25D366',
                             tiktok: '#000000'
                         }
@@ -149,103 +163,380 @@
         #pwa-help.on { display: flex; }
 
 
-        /* ===== NOOR STORE — Feminine Luxury visual refresh ===== */
-        :root{color-scheme:dark;--noor-bg:#17151c;--noor-panel:#211b28;--noor-panel2:#2b2232;--noor-line:rgba(216,190,145,.20);--noor-gold:#d8be91;--noor-pink:#f078b5;--noor-purple:#6e3b83}
-        body{background:radial-gradient(ellipse at 82% -8%,rgba(110,59,131,.26),transparent 38%),radial-gradient(ellipse at 5% 30%,rgba(240,120,181,.08),transparent 32%),var(--noor-bg);color:#f8f2f7}
-        .glass-panel{background:rgba(33,27,40,.82);backdrop-filter:blur(16px);border:1px solid var(--noor-line);box-shadow:0 12px 34px rgba(0,0,0,.18)}
-        header.glass-panel{background:rgba(23,21,28,.88);border-color:rgba(216,190,145,.22);box-shadow:0 8px 28px rgba(0,0,0,.24)}
-        header img{border-color:var(--noor-gold)!important;box-shadow:0 0 0 3px rgba(216,190,145,.08),0 0 22px rgba(240,120,181,.12)}
-        .product-card{border-radius:20px!important;border-color:rgba(216,190,145,.18)!important;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.18)}
-        .product-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(110,59,131,.25),0 0 0 1px rgba(240,120,181,.22)}
-        #collection{background:linear-gradient(180deg,rgba(39,27,47,.75),rgba(23,21,28,.98))!important;border-top:1px solid rgba(216,190,145,.12);border-bottom:1px solid rgba(216,190,145,.12)}
-        #collection h3,.container h3{letter-spacing:.1px}
-        #collection .w-16{background:linear-gradient(90deg,var(--noor-gold),var(--noor-pink))!important}
-        #search{background:rgba(33,27,40,.9)!important;border-color:rgba(216,190,145,.25)!important;color:#fff;min-height:48px}
-        #search:focus{border-color:var(--noor-pink)!important;box-shadow:0 0 0 3px rgba(240,120,181,.12)}
-        .fav-btn{border-color:rgba(240,120,181,.55);background:rgba(31,23,38,.86)}
-        .fv-sheet{background:#211b28;border-color:rgba(216,190,145,.24)}
-        .fv-item{background:#2b2232;border-color:rgba(216,190,145,.14)}
-        .fv-head h3{color:var(--noor-pink)}
-        #mascot-peek{border-color:var(--noor-gold);background:#241b2c;box-shadow:0 5px 20px rgba(0,0,0,.45),0 0 18px rgba(240,120,181,.16)}
-        #mascot-bubble{border:1px solid rgba(216,190,145,.65);background:#2b2232;color:#fff}
-        #mascot-bubble.clickable{background:#392641;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.45),0 0 0 2px rgba(240,120,181,.65)}
-        #mascot-menu{background:#241b2c;color:#fff;border-color:var(--noor-gold)}
-        #mascot-menu button{color:#fff}
-        #mascot-menu button:hover,#mascot-menu button:active{background:#392641}
-        #mascot-menu .mm-head{color:var(--noor-gold)}
-        #mascot-close{border-color:rgba(216,190,145,.5)}
-        #pwa-install{border:1px solid rgba(216,190,145,.42);background:linear-gradient(110deg,#392641,#241b2c);box-shadow:0 8px 24px rgba(110,59,131,.18)}
-        #pwa-help>div{background:#211b28!important;border-color:rgba(216,190,145,.25)!important}
-        a.bg-brand-accent,button.bg-brand-accent{background:linear-gradient(110deg,#d8be91,#f0c5d9)!important;color:#211722!important;box-shadow:0 8px 22px rgba(216,190,145,.18)!important}
-        .text-brand-accent{color:var(--noor-gold)!important}
-        .border-brand-accent{border-color:var(--noor-gold)!important}
-        @media(max-width:640px){#mascot{width:82px;height:112px}.product-card .h-44{height:190px}header .container{padding-top:10px;padding-bottom:10px}}
-        @media(prefers-reduced-motion:reduce){.product-card{transition:none}}
+        
+        /* =====================================================================
+           NOOR STORE — الشكل النهائي: ثيمات (luxe / violet / light) + هولوجرام
+           ===================================================================== */
+        :root, html[data-theme="luxe"] {
+            --bg:#0a0a0d; --bg2:#121217; --w1:rgba(255,255,255,.05); --w2:rgba(255,255,255,.085);
+            --text:#f7f1ee; --muted:#a8a8b2; --faint:#8f8f99;
+            --accent:#e8b4a0; --accent-rgb:232 180 160; --accent-soft:#f6c6b3; --accent2:#d4af37; --champ:#f3dca3;
+            --line:rgba(232,180,160,.22); --line2:rgba(232,180,160,.45);
+            --glow:#ff7eb3; --glow-rgb:255 126 179; --sale:#ff4f93; --sale2:#ff8a5c;
+            --on-accent:#1a0f0a; --hdr:rgba(10,10,13,.76); --modal:#131318; --sheet:#16161b; --card-img:#17171d;
+            --bg-g1:rgba(255,126,179,.15); --bg-g2:rgba(212,175,55,.09);
+            --pop-bg:#fff; --pop-text:#1a1a1a; --pop-hover:#fff2c4; --pop-head:#7a6a2a; --pop-ring:#d4af37; --pop-click:#fff7d6;
+            color-scheme:dark;
+        }
+        html[data-theme="violet"] {
+            --bg:#17151c; --bg2:#211b28; --w1:rgba(255,255,255,.05); --w2:rgba(255,255,255,.085);
+            --text:#f8f2f7; --muted:#b7aaba; --faint:#9a8ca0;
+            --accent:#d8be91; --accent-rgb:216 190 145; --accent-soft:#ead3a6; --accent2:#f0c5d9; --champ:#f0c5d9;
+            --line:rgba(216,190,145,.22); --line2:rgba(216,190,145,.5);
+            --glow:#f078b5; --glow-rgb:240 120 181; --sale:#f078b5; --sale2:#c77dff;
+            --on-accent:#241a27; --hdr:rgba(23,21,28,.88); --modal:#211b28; --sheet:#211b28; --card-img:#2b2232;
+            --bg-g1:rgba(110,59,131,.30); --bg-g2:rgba(240,120,181,.09);
+            --pop-bg:#241b2c; --pop-text:#fff; --pop-hover:#392641; --pop-head:#d8be91; --pop-ring:#d8be91; --pop-click:#392641;
+            color-scheme:dark;
+        }
+        html[data-theme="light"] {
+            --bg:#faf5f1; --bg2:#ffffff; --w1:rgba(42,33,39,.045); --w2:rgba(42,33,39,.08);
+            --text:#2a2127; --muted:#6f6169; --faint:#8b7d85;
+            --accent:#b8715a; --accent-rgb:184 113 90; --accent-soft:#c98a74; --accent2:#a9801f; --champ:#c9a14a;
+            --line:rgba(184,113,90,.28); --line2:rgba(184,113,90,.55);
+            --glow:#e0709f; --glow-rgb:224 112 159; --sale:#d6336c; --sale2:#e8590c;
+            --on-accent:#ffffff; --hdr:rgba(250,245,241,.86); --modal:#ffffff; --sheet:#ffffff; --card-img:#f0e6e0;
+            --bg-g1:rgba(224,112,159,.14); --bg-g2:rgba(212,175,55,.12);
+            --pop-bg:#fff; --pop-text:#2a2127; --pop-hover:#f7e8e1; --pop-head:#b8715a; --pop-ring:#b8715a; --pop-click:#fdeee8;
+            color-scheme:light;
+        }
+        html.js .nz-reveal { opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+        html.js .nz-reveal.in { opacity:1; transform:none; }
+        body { background:var(--bg) !important; color:var(--text) !important; }
+        body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+            background:radial-gradient(900px 520px at 88% -8%, var(--bg-g1), transparent 60%), radial-gradient(760px 520px at -12% 40%, var(--bg-g2), transparent 60%); }
+        .glass-panel { background:var(--w1); border:1px solid var(--line); backdrop-filter:blur(8px); }
 
+        /* ---------- الهيدر ---------- */
+        .nz-hdr { position:fixed; top:0; left:0; right:0; z-index:50; background:var(--hdr); backdrop-filter:blur(14px); transition:transform .32s ease;
+            border-bottom:1px solid transparent; border-image:linear-gradient(90deg, transparent, var(--line2), transparent) 1; }
+        .nz-hdr.nz-hide { transform:translateY(-112%); }
+        .nz-hdr-in { max-width:1100px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
+        .nz-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
+        .nz-logo { width:46px; height:46px; border-radius:50%; object-fit:cover; background:#000;
+            box-shadow:0 0 0 1.5px var(--line2), 0 0 18px rgba(var(--glow-rgb)/.28); }
+        .nz-name { font:700 22px/1.1 'Amiri','Cairo',serif; background:linear-gradient(90deg,var(--accent-soft),var(--accent2));
+            -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .nz-name small { font:700 10px 'Cairo',sans-serif; padding:1px 7px; margin-right:5px; border-radius:99px; background:var(--w2); -webkit-text-fill-color:var(--muted); }
+        .nz-sub { font:600 9.5px/1.3 'Playfair Display',serif; letter-spacing:.2em; color:var(--faint); text-transform:uppercase; white-space:nowrap; }
+        .nz-sub .lg { display:none; }
+        @media (min-width:480px) { .nz-sub .lg { display:inline; } }
+        .nz-tools { display:flex; gap:7px; }
+        .nz-ic { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; cursor:pointer; text-decoration:none; position:relative;
+            background:var(--w1); border:1px solid var(--line2); color:var(--accent-soft); font-size:17px; transition:transform .2s; }
+        .nz-ic:active { transform:scale(.9); }
+        .nz-ic.nz-wa { color:#25d366; border-color:rgba(37,211,102,.45); }
+        #fav-open { color:var(--glow); border-color:rgba(var(--glow-rgb)/.5); }
+
+        /* ---------- نافذة اختيار الشكل ---------- */
+        #theme-pop { display:none; position:fixed; top:62px; left:12px; width:min(300px, calc(100vw - 24px)); z-index:60; padding:14px; border-radius:20px; direction:rtl;
+            background:var(--sheet); border:1px solid var(--line2); box-shadow:0 20px 50px rgba(0,0,0,.45); }
+        #theme-pop.on { display:block; animation:nzPop .2s ease; }
+        .tp-h { margin:0 0 8px; font-size:12px; font-weight:700; color:var(--faint); }
+        .tp-opt { display:flex; align-items:center; gap:12px; width:100%; padding:9px 10px; margin-bottom:6px; border-radius:14px; border:1px solid transparent; background:var(--w1);
+            color:var(--text); font:700 13px 'Cairo',sans-serif; cursor:pointer; text-align:right; }
+        .tp-opt i { width:30px; height:30px; border-radius:50%; flex:none; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25); }
+        .tp-opt.on { border-color:var(--accent); background:var(--w2); }
+        .tp-opt.on::after { content:"✓"; margin-right:auto; color:var(--accent); font-weight:900; }
+        .tp-sep { height:1px; background:var(--line); margin:12px 0; }
+        .tp-row { display:flex; gap:8px; }
+        .tp-row button { flex:1; padding:9px 6px; border-radius:12px; border:1px solid var(--line); background:var(--w1); color:var(--text); font:700 12px 'Cairo',sans-serif; cursor:pointer; }
+        .tp-row button.on { border-color:var(--accent); background:var(--w2); color:var(--accent); }
+        .tp-sw { display:flex; align-items:center; gap:10px; margin-top:12px; font-size:12.5px; color:var(--muted); cursor:pointer; }
+        .tp-sw input { width:18px; height:18px; accent-color:var(--accent); }
+        @keyframes nzPop { from { opacity:0; transform:translateY(-6px) scale(.97); } to { opacity:1; transform:none; } }
+
+        /* ---------- الهيرو ---------- */
+        .nz-hero { position:relative; padding:92px 16px 14px; overflow:hidden; }
+        .nz-hero-grid { max-width:1100px; margin:0 auto; display:grid; gap:14px; align-items:center; }
+        .nz-hero-head, .nz-hero-foot { text-align:center; }
+        .nz-chip { display:inline-block; padding:5px 14px; border-radius:99px; background:var(--w1); border:1px solid var(--line2); color:var(--accent-soft); font-size:13px; margin:0 0 10px; }
+        .nz-eyebrow { font:600 11px/1 'Playfair Display',serif; letter-spacing:.34em; color:var(--accent); text-transform:uppercase; margin:0 0 8px; }
+        .nz-title { font-weight:900; font-size:clamp(26px,7.2vw,46px); line-height:1.3; margin:0; }
+        .nz-grad { background:linear-gradient(90deg,var(--accent-soft),var(--accent2) 55%,var(--champ)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .nz-lead { color:var(--muted); max-width:34rem; font-size:15px; line-height:1.9; margin:6px auto 16px; }
+        .nz-cta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+        .nz-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:13px 26px; border-radius:99px; border:0; cursor:pointer;
+            font:800 14px 'Cairo',sans-serif; text-decoration:none; transition:transform .2s ease, box-shadow .2s ease; }
+        .nz-btn:active { transform:scale(.96); }
+        .nz-btn.p { color:var(--on-accent); background:linear-gradient(135deg,var(--accent-soft),var(--accent) 45%,var(--accent2)); box-shadow:0 0 22px rgba(var(--accent-rgb)/.35); }
+        .nz-btn.g { color:var(--text); background:var(--w1); border:1px solid var(--line2); }
+        .nz-btn.sm { padding:8px 16px; font-size:12px; }
+        @media (min-width:900px) {
+            .nz-hero { padding-top:120px; }
+            .nz-hero-grid { grid-template-columns:1.1fr .9fr; grid-template-rows:auto auto; column-gap:40px; row-gap:0; align-content:center; }
+            .nz-hero-head { grid-column:1; grid-row:1; text-align:right; align-self:end; }
+            .nz-hero-foot { grid-column:1; grid-row:2; text-align:right; align-self:start; }
+            .nz-hero-vis { grid-column:2; grid-row:1 / span 2; }
+            .nz-lead { margin-right:0; }
+            .nz-cta { justify-content:flex-start; }
+        }
+
+        /* ---------- الهولوجرام ---------- */
+        #holo { display:flex; flex-direction:column; align-items:center; gap:12px; }
+        .holo-stage { position:relative; width:min(66vw,270px); aspect-ratio:3/4; margin:12px 0 20px; touch-action:pan-y; }
+        .holo-ring { position:absolute; inset:-9% -22%; border-radius:50%; border:1.5px solid rgba(var(--glow-rgb)/.42);
+            box-shadow:0 0 46px rgba(var(--glow-rgb)/.28), inset 0 0 46px rgba(var(--glow-rgb)/.12); pointer-events:none; }
+        .holo-ring::after { content:""; position:absolute; inset:-2px; border-radius:50%; padding:2px; pointer-events:none;
+            background:conic-gradient(from 0deg, rgba(var(--glow-rgb)/0) 0deg, rgba(var(--glow-rgb)/.95) 70deg, var(--champ) 120deg, rgba(var(--glow-rgb)/0) 190deg);
+            -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:holoSpin 8s linear infinite; }
+        .holo-slide { position:absolute; inset:0; opacity:0; transition:opacity .9s ease; cursor:pointer; animation:holoFloat 6s ease-in-out infinite; }
+        .holo-slide.on { opacity:1; }
+        .holo-ghost { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:22px; pointer-events:none;
+            filter:blur(1.5px) saturate(1.9) hue-rotate(-28deg) brightness(.85); mix-blend-mode:screen; }
+        html[data-theme="light"] .holo-ghost { mix-blend-mode:multiply; filter:blur(2px) saturate(1.4) hue-rotate(-28deg) brightness(1.05); }
+        .holo-ghost.g1 { transform:translate(-14%,-4%) scale(.96) rotate(-4deg); opacity:.5; }
+        .holo-ghost.g2 { transform:translate(-25%,-8%) scale(.9) rotate(-8deg); opacity:.26; }
+        @media (max-width:480px) { .holo-ghost.g1 { opacity:.62; } .holo-ghost.g2 { opacity:.34; } }
+        .holo-frame { position:absolute; inset:0; padding:2px; border-radius:24px;
+            background:linear-gradient(145deg,var(--accent-soft),var(--accent) 38%,var(--accent2) 68%,var(--glow)); box-shadow:0 22px 60px rgba(var(--glow-rgb)/.26); }
+        .holo-main { position:relative; width:100%; height:100%; border-radius:22px; overflow:hidden; background:var(--card-img); }
+        .holo-main img { width:100%; height:100%; object-fit:cover; display:block; }
+        .holo-main::after { content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay;
+            background:repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 4px), linear-gradient(160deg, rgba(255,255,255,.14), transparent 40%); }
+        .holo-main::before { content:""; position:absolute; inset:-20% -60%; z-index:2; pointer-events:none;
+            background:linear-gradient(105deg, transparent 42%, rgba(255,255,255,.30) 50%, transparent 58%); transform:translateX(-120%); animation:holoShine 7s ease-in-out infinite; }
+        .holo-base { position:absolute; left:6%; right:6%; bottom:-22px; height:22px; border-radius:50%; pointer-events:none;
+            background:radial-gradient(ellipse at center, rgba(var(--glow-rgb)/.85), rgba(var(--glow-rgb)/0) 70%); filter:blur(7px); animation:holoPulse 3s ease-in-out infinite; }
+        .holo-line { position:absolute; left:-14%; right:-14%; bottom:-12px; height:2px; border-radius:2px; pointer-events:none;
+            background:linear-gradient(90deg, transparent, rgba(var(--glow-rgb)/.95), transparent); box-shadow:0 0 14px rgba(var(--glow-rgb)/.9); }
+        .holo-cap { display:flex; align-items:center; gap:12px; max-width:320px; width:100%; justify-content:space-between; padding:0 6px; }
+        .holo-cap b { font-weight:800; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .holo-dots { display:flex; gap:7px; }
+        .holo-dots i { width:7px; height:7px; border-radius:99px; background:var(--w2); transition:all .3s; cursor:pointer; }
+        .holo-dots i.on { width:22px; background:linear-gradient(90deg,var(--accent),var(--glow)); }
+        .holo-fallback .holo-logo { position:absolute; inset:8%; width:84%; height:auto; margin:auto; border-radius:50%; aspect-ratio:1; object-fit:cover; box-shadow:0 0 50px rgba(var(--glow-rgb)/.3); }
+        @keyframes holoSpin { to { transform:rotate(360deg); } }
+        @keyframes holoFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-9px); } }
+        @keyframes holoPulse { 0%,100% { opacity:.75; } 50% { opacity:1; } }
+        @keyframes holoShine { 0%,62% { transform:translateX(-120%); } 100% { transform:translateX(120%); } }
+
+        /* ---------- أزرار سريعة ---------- */
+        .nz-actions { max-width:560px; margin:4px auto 30px; padding:0 8px; display:flex; justify-content:center; gap:14px; }
+        .nz-act { display:flex; flex-direction:column; align-items:center; gap:7px; background:none; border:0; padding:0; cursor:pointer; text-decoration:none;
+            color:var(--muted); font:600 11.5px 'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
+        .nz-act i { width:54px; height:54px; border-radius:50%; display:grid; place-items:center; font-style:normal; font-size:21px; transition:transform .2s;
+            background:linear-gradient(160deg,var(--w2),var(--w1)); border:1px solid var(--line2); box-shadow:0 0 18px rgba(var(--glow-rgb)/.13), inset 0 0 14px rgba(255,255,255,.04); }
+        .nz-act:first-child i { color:var(--glow); }
+        .nz-act:active i { transform:scale(.9); }
+
+        /* ---------- عناوين الأقسام ---------- */
+        .nz-sec { display:flex; align-items:center; gap:12px; font-size:18px; font-weight:800; margin:0 0 14px; padding:0 4px; }
+        .nz-sec::after { content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--line2),transparent); }
+        .nz-sec.sale { color:var(--sale); }
+        .nz-sec-center { text-align:center; margin-bottom:26px; }
+        .nz-sec-center h3 { font:700 clamp(28px,7vw,40px)/1.3 'Amiri','Cairo',serif; margin:6px 0 10px; }
+        .nz-sec-center p.sub { color:var(--faint); font-size:13px; margin:12px 0 0; }
+        .nz-orn { display:flex; align-items:center; justify-content:center; gap:12px; color:var(--accent); }
+        .nz-orn span { width:60px; height:1px; background:linear-gradient(90deg,transparent,var(--accent)); }
+        .nz-orn span:last-child { transform:scaleX(-1); }
+        .nz-orn svg { width:30px; height:20px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+        #collection { background:transparent !important; border:0 !important; }
+        #search { background:var(--w1) !important; border-color:var(--line) !important; color:var(--text); min-height:48px; }
+        #search:focus { border-color:var(--accent) !important; box-shadow:0 0 0 3px rgba(var(--accent-rgb)/.14); }
+
+        /* ---------- الكروت ---------- */
+        .product-card { border-radius:22px !important; background:linear-gradient(165deg,var(--w2),var(--w1)) !important; backdrop-filter:none !important;
+            border:1px solid var(--line) !important; overflow:hidden; transition:transform .25s ease, box-shadow .25s ease; }
+        .product-card:hover { transform:translateY(-5px); box-shadow:0 14px 34px rgba(var(--glow-rgb)/.16); border-color:var(--line2) !important; }
+        .product-card > div:first-child { height:auto !important; aspect-ratio:3/4; background:var(--card-img) !important; }
+        .product-card h4 { font-weight:800; }
+        .product-card .tl-stack, #feat-track .tl-stack { position:absolute; top:8px; left:8px; display:flex; flex-direction:column; align-items:flex-start; gap:4px; z-index:1; }
+        .new-tag { background:linear-gradient(135deg,var(--accent2),var(--accent)); color:var(--on-accent); font-size:10px; font-weight:900; padding:2px 8px; border-radius:99px; box-shadow:0 2px 8px rgba(0,0,0,.25); }
+        .sale-tag { position:absolute; bottom:8px; right:8px; z-index:1; background:linear-gradient(135deg,var(--sale),var(--sale2)); color:#fff; font-size:11px; font-weight:900; padding:3px 10px; border-radius:99px;
+            box-shadow:0 4px 14px rgba(var(--glow-rgb)/.45); }
+        .pr { display:flex; align-items:baseline; gap:8px; margin:0 0 8px; }
+        .pr-now { color:var(--accent-soft); font-size:15px; font-weight:900; }
+        .pr-was { color:var(--faint); font-size:11.5px; text-decoration:line-through; }
+        html[data-theme="light"] .pr-now { color:var(--accent); }
+        .pr.is-sale .pr-now { color:var(--sale); }
+        #feat-track > div, #trend-track > div, #offer-track > div { border-radius:18px !important; }
+        #feat-track .pr, #trend-track .pr, #offer-track .pr { margin:-2px 8px 8px; }
+        .product-card img, #feat-track img, #trend-track img, #offer-track img { transition:transform .5s ease; }
+        .product-card:hover img { transform:scale(1.04); }
+
+        /* ---------- تحميل هيكلي + ظهور الصور ---------- */
+        html.js .product-card img, html.js .holo-main img, html.js #feat-track img, html.js #trend-track img, html.js #offer-track img { opacity:0; transition:opacity .55s ease, transform .5s ease; }
+        html.js .product-card img.ld, html.js .holo-main img.ld, html.js #feat-track img.ld, html.js #trend-track img.ld, html.js #offer-track img.ld { opacity:1; }
+        html.js .product-card img.opacity-40.ld { opacity:.4; }
+        .sk-card { border-radius:22px; overflow:hidden; border:1px solid var(--line); background:var(--w1); }
+        .sk-img, .sk-line { background:linear-gradient(100deg,var(--w1) 30%,var(--w2) 50%,var(--w1) 70%); background-size:200% 100%; animation:skShine 1.4s linear infinite; }
+        .sk-img { aspect-ratio:3/4; }
+        .sk-line { height:12px; border-radius:8px; margin:12px 12px 0; }
+        .sk-line.s { width:45%; margin-bottom:14px; }
+        @keyframes skShine { to { background-position:-200% 0; } }
+
+        /* ---------- النافذة ---------- */
+        #product-modal > div { background:var(--modal) !important; border:1px solid var(--line2) !important; border-radius:26px !important; box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 50px rgba(var(--glow-rgb)/.08); }
+        #modal-image-container img { cursor:zoom-in; }
+        #modal-price .pr { margin:0 0 4px; }
+        #modal-price .pr-now { font-size:22px; }
+        #modal-price .pr-was { font-size:14px; }
+        #modal-price .until { display:inline-block; margin:4px 0 8px; padding:2px 10px; border-radius:99px; font-size:11px; font-weight:800; color:var(--sale); background:rgba(var(--glow-rgb)/.12); border:1px solid rgba(var(--glow-rgb)/.35); }
+        #modal-price .sale-pill { display:inline-block; margin:0 0 6px; padding:3px 12px; border-radius:99px; font-size:12px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(--sale),var(--sale2)); }
+
+        /* ---------- معرض الصور (تكبير) ---------- */
+        #lightbox { display:none; position:fixed; inset:0; z-index:120; background:rgba(5,5,8,.96); direction:ltr; }
+        #lightbox.on { display:block; }
+        .lb-stage { position:absolute; inset:0; overflow:hidden; touch-action:none; display:flex; align-items:center; justify-content:center; cursor:grab; }
+        .lb-stage img { max-width:100%; max-height:100%; object-fit:contain; transform-origin:center center; will-change:transform; user-select:none; -webkit-user-drag:none; }
+        .lb-x, .lb-nav { position:absolute; z-index:2; width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,.3); background:rgba(0,0,0,.55); color:#fff; font-size:20px; cursor:pointer; display:grid; place-items:center; }
+        .lb-x { top:calc(14px + env(safe-area-inset-top)); right:14px; }
+        .lb-nav { top:50%; margin-top:-22px; }
+        .lb-prev { left:10px; } .lb-next { right:10px; }
+        .lb-cnt { position:absolute; z-index:2; top:calc(22px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); color:#fff; font-size:13px; background:rgba(0,0,0,.5); padding:3px 12px; border-radius:99px; }
+        .lb-hint { position:absolute; z-index:2; bottom:calc(18px + env(safe-area-inset-bottom)); left:0; right:0; text-align:center; color:rgba(255,255,255,.6); font-size:12px; pointer-events:none; }
+
+        /* ---------- باقي الأقسام ---------- */
+        .nz-card { border-radius:26px !important; background:linear-gradient(165deg,var(--w2),var(--w1)) !important; border-color:var(--line) !important; }
+        footer.bg-black { background:var(--bg2) !important; border-color:var(--line) !important; }
+        .fav-btn { background:rgba(0,0,0,.58); border-color:rgba(255,255,255,.3); }
+        .fav-btn.on { color:#ff4d6d; border-color:#ff4d6d; }
+        .fv-sheet { background:var(--sheet) !important; border-color:var(--line2) !important; }
+        .fv-head h3 { color:var(--glow) !important; }
+        .fv-x { background:var(--w2) !important; color:var(--text) !important; }
+        .fv-item { background:var(--w1) !important; border-color:var(--line) !important; }
+        .fv-item img, .fv-ph { background:var(--card-img) !important; }
+        .fv-t small { color:var(--faint) !important; }
+        .fv-t small.off { color:#ef5350 !important; }
+        .fv-t .fv-sale { display:inline-block; margin-top:3px; font-size:10.5px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(--sale),var(--sale2)); padding:1px 8px; border-radius:99px; }
+        .fv-foot { border-color:var(--line) !important; }
+        .fv-clear { color:var(--muted) !important; border-color:var(--line2) !important; }
+        .st-open { background:rgba(37,211,102,.14); color:#4ade80; border:1px solid rgba(74,222,128,.4); }
+        .st-closed { background:rgba(239,83,80,.12); color:#ff8a80; border:1px solid rgba(255,138,128,.4); }
+        #pwa-install { border:1px solid var(--line2); }
+        #pwa-help > div { background:var(--sheet) !important; border-color:var(--line2) !important; }
+
+        /* ---------- الشخصية: ألوان حسب الثيم ---------- */
+        #mascot-bubble { background:var(--pop-bg); color:var(--pop-text); border:1px solid var(--pop-ring); }
+        #mascot-bubble.clickable { background:var(--pop-click); box-shadow:0 6px 18px rgba(0,0,0,.4), 0 0 0 2px var(--pop-ring); }
+        #mascot-menu { background:var(--pop-bg); color:var(--pop-text); box-shadow:0 8px 26px rgba(0,0,0,.45), 0 0 0 2px var(--pop-ring); }
+        #mascot-menu button { color:var(--pop-text); }
+        #mascot-menu button:hover, #mascot-menu button:active { background:var(--pop-hover); }
+        #mascot-menu .mm-head { color:var(--pop-head); }
+        #mascot-peek { border-color:var(--pop-ring); background:var(--sheet); }
+        #mascot-close { border-color:var(--line2); }
+
+        /* ---------- الثيم الفاتح: تعديل ألوان Tailwind القديمة ---------- */
+        html[data-theme="light"] :is(h1,h2,h3,h4,p,span,div,a,button,li).text-white:not([class*="bg-"]):not([class*="from-"]) { color:var(--text); }
+        html[data-theme="light"] .text-gray-300, html[data-theme="light"] .text-gray-400, html[data-theme="light"] .text-gray-500 { color:var(--muted); }
+        html[data-theme="light"] .bg-gray-800 { background-color:var(--card-img); }
+        html[data-theme="light"] .border-gray-600, html[data-theme="light"] .border-gray-700, html[data-theme="light"] .border-gray-800, html[data-theme="light"] .border-gray-900 { border-color:var(--line); }
+        html[data-theme="light"] .bg-brand-accent.text-black { color:var(--on-accent); }
+        html[data-theme="light"] .fav-btn { color:#fff; }
+        html[data-theme="light"] .st-open { color:#15803d; background:rgba(22,163,74,.12); border-color:rgba(22,163,74,.4); }
+        html[data-theme="light"] .st-closed { color:#b91c1c; background:rgba(220,38,38,.1); border-color:rgba(220,38,38,.35); }
+        html[data-theme="light"] #modal-title, html[data-theme="light"] #modal-desc { color:var(--text); }
+        html[data-theme="light"] .nz-hdr { box-shadow:0 4px 18px rgba(42,33,39,.08); }
+        html[data-theme="light"] .nz-logo { background:#fff; }
+        html[data-theme="light"] .nz-ic.nz-wa { color:#16a34a; }
+        html[data-theme="light"] #theme-pop { box-shadow:0 20px 50px rgba(42,33,39,.2); }
+        html[data-theme="light"] .nz-act i { box-shadow:0 4px 14px rgba(42,33,39,.08); }
+        html[data-theme="light"] .product-card:hover { box-shadow:0 14px 30px rgba(42,33,39,.14); }
+        html[data-theme="light"] .holo-frame { box-shadow:0 18px 44px rgba(42,33,39,.22); }
+
+        /* ---------- حجم الكروت ---------- */
+        @media (max-width:767px) { html[data-cards="big"] #products-grid { grid-template-columns:1fr !important; } }
+        @media (min-width:768px) { html[data-cards="big"] #products-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; } }
+        @media (max-width:640px) { #mascot { width:82px; height:112px; } }
+
+        /* ---------- وضع التخفيف (أجهزة ضعيفة / توفير بيانات / اختيار الزبونة) ---------- */
+        html.lite *, html.lite *::before, html.lite *::after { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+        html.lite .holo-ghost, html.lite .holo-main::before, html.lite body::before { display:none !important; }
+        html.lite .holo-ring::after, html.lite .holo-slide, html.lite .holo-base, html.lite .sk-img, html.lite .sk-line { animation:none !important; }
+        html.lite .holo-ring, html.lite .holo-frame { box-shadow:none; }
+        html.lite html.js .nz-reveal, html.lite .nz-reveal { transition:none; opacity:1; transform:none; }
+        html.lite .product-card { box-shadow:none !important; }
+        @media (prefers-reduced-motion: reduce) {
+            .holo-slide, .holo-ring::after, .holo-base, .holo-main::before, .sk-img, .sk-line { animation:none !important; }
+            html.js .nz-reveal { transition:none; }
+            .nz-hdr { transition:none; }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-accent selection:text-black">
 
     <!-- Header -->
-    <header class="fixed w-full top-0 z-50 glass-panel border-b border-gray-800">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <!-- صورة اللوجو -->
-                <img src="logo.jpg" alt="محل نور" class="w-12 h-12 rounded-full border-2 border-brand-accent object-cover bg-black">
+    <header class="nz-hdr">
+        <div class="nz-hdr-in">
+            <a href="#top" class="nz-brand">
+                <img src="logo.jpg" alt="محل نور" class="nz-logo">
                 <div>
-                    <h1 class="font-bold text-lg md:text-xl leading-tight text-brand-accent">محل نور <span class="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded ml-1">الجبالي</span></h1>
-                    <p class="text-[10px] md:text-xs text-gray-400">Noor Store • Fashion For You</p>
+                    <div class="nz-name">محل نور <small>الجبالي</small></div>
+                    <div class="nz-sub"><span class="lg">Noor Store · </span>Fashion For You</div>
                 </div>
-            </div>
-            <div class="flex gap-2">
-                <button id="fav-open" type="button" onclick="openFav()" aria-label="المفضلة" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-800 text-pink-400 border border-pink-500/60 flex items-center justify-center text-lg hover:scale-110 transition">♥<span id="fav-count"></span></button>
-                <a href="https://wa.me/201271425089" target="_blank" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-brand-whatsapp text-white flex items-center justify-center hover:scale-110 transition shadow-lg shadow-green-900/50">
-                    <i class="fab fa-whatsapp text-lg"></i>
-                </a>
-                <button onclick="sharePage()" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-800 text-brand-accent border border-brand-accent flex items-center justify-center hover:bg-brand-accent hover:text-black transition">
-                    <i class="fas fa-share-alt"></i>
-                </button>
+            </a>
+            <div class="nz-tools">
+                <button id="theme-open" type="button" aria-label="تغيير الشكل" aria-haspopup="true" aria-expanded="false" class="nz-ic">🎨</button>
+                <button id="fav-open" type="button" onclick="openFav()" aria-label="المفضلة" class="nz-ic">♥<span id="fav-count"></span></button>
+                <a href="https://wa.me/201271425089" target="_blank" aria-label="واتساب" class="nz-ic nz-wa"><i class="fab fa-whatsapp"></i></a>
+                <button type="button" onclick="sharePage()" aria-label="مشاركة" class="nz-ic"><i class="fas fa-share-alt"></i></button>
             </div>
         </div>
     </header>
 
+    <!-- اختيار الشكل -->
+    <div id="theme-pop" role="dialog" aria-label="اختيار الشكل">
+        <p class="tp-h">اختاري الشكل اللي يعجبك 🎨</p>
+        <button type="button" class="tp-opt" data-theme="luxe"><i style="background:linear-gradient(135deg,#0a0a0d 40%,#e8b4a0)"></i><span>أسود وروز جولد</span></button>
+        <button type="button" class="tp-opt" data-theme="violet"><i style="background:linear-gradient(135deg,#6e3b83 40%,#d8be91)"></i><span>بنفسجي أنثوي</span></button>
+        <button type="button" class="tp-opt" data-theme="light"><i style="background:linear-gradient(135deg,#faf5f1 40%,#b8715a)"></i><span>فاتح ناعم</span></button>
+        <div class="tp-sep"></div>
+        <p class="tp-h">حجم الكروت</p>
+        <div class="tp-row"><button type="button" data-cards="small">صغير (2 جنب بعض)</button><button type="button" data-cards="big">كبير</button></div>
+        <label class="tp-sw"><input type="checkbox" id="tp-lite"> تخفيف المؤثرات (للموبايلات الضعيفة)</label>
+    </div>
+
     <!-- Hero Section -->
-    <section class="pt-32 pb-16 px-4 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-brand-accent/10 to-transparent opacity-50"></div>
-        <div class="container mx-auto text-center relative z-10 animate-fade-in">
-            <span id="season-banner" class="inline-block py-1 px-3 rounded-full bg-gray-800 border border-gray-700 text-brand-accent text-sm mb-4">
-                🔥 تشكيلة الشتاء وصلت
-            </span>
-            <h2 class="text-3xl md:text-5xl font-black mb-4 leading-tight">
-                أناقتك تبدأ من هنا <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-pink-200">أحدث إطلالات الأزياء النسائية</span>
-            </h2>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto text-base md:text-lg px-2">
-                اختيارات أنيقة تناسب ذوقك في كل وقت. اكتشفي الموديلات الجديدة وزورينا في فرعنا!
-            </p>
-            
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-10 px-4">
-                <a href="#collection" class="bg-brand-accent text-black font-bold py-3 px-8 rounded-full hover:bg-yellow-400 transition transform hover:scale-105 shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-                    <i class="fas fa-tshirt mr-2"></i> تصفح الكولكشن
-                </a>
-                <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="glass-panel text-white font-bold py-3 px-8 rounded-full hover:bg-gray-800 transition flex items-center justify-center gap-2">
-                    <i class="fab fa-tiktok"></i> تابعنا على تيك توك
-                </a>
+    <section class="nz-hero" id="top">
+        <div class="nz-hero-grid">
+            <div class="nz-hero-head nz-reveal">
+                <span id="season-banner" class="nz-chip">
+                    🔥 تشكيلة الشتاء وصلت
+                </span>
+                <p class="nz-eyebrow">New Season · Noor Store</p>
+                <h2 class="nz-title">أناقتك تبدأ من هنا <br><span class="nz-grad">أحدث إطلالات الأزياء النسائية</span></h2>
+            </div>
+            <div class="nz-hero-vis"><div id="holo"></div></div>
+            <div class="nz-hero-foot nz-reveal">
+                <p class="nz-lead">اختيارات أنيقة تناسب ذوقك في كل وقت. اكتشفي الموديلات الجديدة وزورينا في فرعنا!</p>
+                <div class="nz-cta">
+                    <a href="#collection" class="nz-btn p"><i class="fas fa-tshirt"></i> تصفح الكولكشن</a>
+                    <a href="https://www.tiktok.com/@noorstore11" target="_blank" class="nz-btn g"><i class="fab fa-tiktok"></i> تابعنا على تيك توك</a>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- اختصارات سريعة -->
+    <nav class="nz-actions nz-reveal" aria-label="اختصارات">
+        <button type="button" class="nz-act" onclick="openFav()"><i>♥</i>المفضلة</button>
+        <button type="button" class="nz-act" id="act-offers" style="display:none" onclick="nzGo('offers')"><i>🏷️</i>العروض</button>
+        <button type="button" class="nz-act" onclick="nzGo('trending')"><i>🔥</i>الرائج</button>
+        <button type="button" class="nz-act" onclick="openDirections()"><i>📍</i>اتجاهات</button>
+        <a class="nz-act" href="https://wa.me/201271425089" target="_blank"><i>💬</i>واتساب</a>
+    </nav>
+
     <!-- Featured Slider -->
     <section id="featured" class="hidden px-2 md:px-4 pb-8">
         <div class="container mx-auto">
-            <h3 class="text-lg font-bold mb-3 px-1">📌 مميز عندنا</h3>
+            <h3 class="nz-sec">📌 مميز عندنا</h3>
             <div id="feat-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
+        </div>
+    </section>
+
+    <!-- العروض: الموديلات اللي عليها خصم شغال -->
+    <section id="offers" class="hidden px-2 md:px-4 pb-8" style="scroll-margin-top:90px">
+        <div class="container mx-auto rounded-2xl">
+            <h3 class="nz-sec sale">🏷️ العروض</h3>
+            <div id="offer-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
         </div>
     </section>
 
     <!-- Trending (الرائج): الموديلات اللي عليها شارة هوت / تريند من لوحة التحكم -->
     <section id="trending" class="hidden px-2 md:px-4 pb-8" style="scroll-margin-top:90px">
         <div class="container mx-auto rounded-2xl">
-            <h3 class="text-lg font-bold mb-3 px-1">🔥 الرائج الآن</h3>
+            <h3 class="nz-sec">🔥 الرائج الآن</h3>
             <div id="trend-track" class="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2" style="scrollbar-width:none"></div>
         </div>
     </section>
@@ -253,10 +544,11 @@
     <!-- Collection Section -->
     <section id="collection" class="py-12 px-2 md:px-4 bg-[#0a0a0a]">
         <div class="container mx-auto">
-            <div class="text-center mb-10">
-                <h3 class="text-2xl md:text-3xl font-bold mb-2">أحدث الموديلات</h3>
-                <div class="w-16 h-1 bg-brand-accent mx-auto rounded"></div>
-                <p class="text-gray-400 mt-3 text-sm">اكتشفي اختيارات Noor Store النسائية</p>
+            <div class="nz-sec-center nz-reveal">
+                <p class="nz-eyebrow">New Collection</p>
+                <h3>أحدث الموديلات</h3>
+                <div class="nz-orn"><span></span><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M24 15.5v-2.7c2.6-.9 4.2-2.6 4.2-5 0-2.6-2-4.4-4.2-4.4s-4.2 1.8-4.2 4.2M24 15.5L5 26.5c-1.6.9-1 3.2.8 3.2h36.4c1.8 0 2.4-2.3.8-3.2L24 15.5z"/></svg><span></span></div>
+                <p class="sub">اكتشفي اختيارات Noor Store النسائية</p>
             </div>
 
             <!-- الكلاس هنا اتغير لـ grid-cols-2 عشان يبقوا كارتين جنب بعض في الموبايل -->
@@ -265,7 +557,8 @@
                 <div id="filters" class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width:none"></div>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6" id="products-grid">
-                <!-- Products will be injected here via JS -->
+                <!-- Products will be injected here via JS (هيكل تحميل لحد ما الموديلات توصل) -->
+                <div class="sk-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line s"></div></div><div class="sk-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line s"></div></div><div class="sk-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line s"></div></div><div class="sk-card"><div class="sk-img"></div><div class="sk-line"></div><div class="sk-line s"></div></div>
             </div>
         </div>
     </section>
@@ -273,7 +566,7 @@
     <!-- Location Section -->
     <section class="py-16 px-4 border-t border-gray-800">
         <div class="container mx-auto max-w-4xl">
-            <div class="glass-panel rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
+            <div class="glass-panel nz-card rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center gap-6">
                 <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-accent/20 text-brand-accent flex items-center justify-center text-2xl md:text-3xl shrink-0">
                     <i class="fas fa-map-marker-alt"></i>
                 </div>
@@ -303,15 +596,26 @@
     <!-- تعليمات التثبيت على iPhone -->
     <div id="pwa-help" role="dialog" aria-modal="true" aria-label="تثبيت التطبيق" onclick="if(event.target===this)this.classList.remove('on')">
         <div class="fv-sheet" style="padding-bottom:calc(18px + env(safe-area-inset-bottom))">
-            <div class="fv-head"><h3 style="color:#d4af37">📲 تثبيت تطبيق محل نور</h3><button type="button" class="fv-x" onclick="document.getElementById('pwa-help').classList.remove('on')" aria-label="إغلاق">✕</button></div>
-            <div style="padding:6px 20px 12px;color:#ddd;font-size:14px;line-height:2.1">
+            <div class="fv-head"><h3 style="color:var(--accent2)">📲 تثبيت تطبيق محل نور</h3><button type="button" class="fv-x" onclick="document.getElementById('pwa-help').classList.remove('on')" aria-label="إغلاق">✕</button></div>
+            <div style="padding:6px 20px 12px;color:var(--text);font-size:14px;line-height:2.1">
                 على iPhone أو iPad:<br>
                 1. دوسي على زرار المشاركة ⬆️ في سفاري<br>
                 2. اختاري «إضافة إلى الشاشة الرئيسية»<br>
                 3. دوسي «إضافة»<br>
-                <span style="color:#9a9aa2">وهتلاقي أيقونة محل نور على شاشتك زي أي تطبيق ✨</span>
+                <span style="color:var(--muted)">وهتلاقي أيقونة محل نور على شاشتك زي أي تطبيق ✨</span>
             </div>
         </div>
+    </div>
+
+
+    <!-- معرض الصور (تكبير) -->
+    <div id="lightbox" role="dialog" aria-modal="true" aria-label="عرض الصورة">
+        <div class="lb-stage"><img alt=""></div>
+        <button type="button" class="lb-x" aria-label="إغلاق">✕</button>
+        <div class="lb-cnt"></div>
+        <button type="button" class="lb-nav lb-prev" aria-label="السابقة">‹</button>
+        <button type="button" class="lb-nav lb-next" aria-label="التالية">›</button>
+        <div class="lb-hint">دوسة مزدوجة أو إصبعين للتكبير</div>
     </div>
 
     <!-- المفضلة -->
@@ -340,6 +644,7 @@
             
             <div class="p-5">
                 <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-white mb-2"></h3>
+                    <div id="modal-price"></div>
                 <p id="modal-status" class="text-brand-accent font-bold mb-3 text-sm md:text-base"><i class="fas fa-tag"></i> متاح للمعاينة بالفرع</p>
                 
                 <p id="modal-desc" class="text-gray-300 mb-5 text-xs md:text-sm leading-relaxed"></p>
@@ -369,6 +674,36 @@
 
     <script>
         // التعديل هنا لرقم الواتساب الخاص بك
+        // ===== أسعار وخصومات وشارة "جديد" =====
+        const todayISO = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+        const fmtEGP = n => Number(n).toLocaleString('en-US') + ' ج.م';
+        function saleInfo(p) {
+            const s = p && p.sale;
+            if (!s || !s.type || !(Number(s.value) > 0)) return null;
+            if (s.until && todayISO() > s.until) return null;                       // الخصم انتهى
+            const price = Number(p.price) > 0 ? Number(p.price) : 0;
+            let pct, now = 0;
+            if (s.type === 'percent') { pct = Math.min(90, Math.max(1, Math.round(Number(s.value)))); if (price) now = Math.round(price * (100 - pct) / 100); }
+            else { if (!price) return null; now = Math.max(0, Math.round(price - Number(s.value))); pct = Math.max(1, Math.round((price - now) / price * 100)); }
+            return { pct, was: price, now, until: s.until || '' };
+        }
+        function untilText(until) {
+            if (!until) return '';
+            const d = Math.round((new Date(until + 'T00:00:00') - new Date(todayISO() + 'T00:00:00')) / 86400000);
+            if (d < 0 || d > 7) return '';
+            return d === 0 ? 'ينتهي النهاردة' : d === 1 ? 'ينتهي بكرة' : 'ينتهي خلال ' + d + ' أيام';
+        }
+        const isNew = p => { if (!p || !p.added) return false; const d = (Date.now() - new Date(p.added + 'T00:00:00').getTime()) / 86400000; return d >= -1 && d <= 7; };
+        function priceHtml(p) {
+            const s = saleInfo(p), price = Number(p.price) > 0 ? Number(p.price) : 0;
+            if (s && s.now) return `<div class="pr is-sale"><b class="pr-now">${fmtEGP(s.now)}</b><s class="pr-was">${fmtEGP(s.was)}</s></div>`;
+            if (price) return `<div class="pr"><b class="pr-now">${fmtEGP(price)}</b></div>`;
+            return '';
+        }
+        const saleBadge = p => { const s = saleInfo(p); return s ? `<div class="sale-tag">🏷️ خصم ${s.pct}%</div>` : ''; };
+        const newBadge = p => isNew(p) ? '<div class="new-tag">✨ جديد</div>' : '';
+        const waOffer = p => { const s = saleInfo(p); return s ? ` (عليه خصم ${s.pct}%)` : ''; };
+
         const waNumber = "201271425089"; 
         
         const defaultProducts = [
@@ -413,13 +748,15 @@
                 <div class="glass-panel rounded-xl overflow-hidden product-card group flex flex-col">
                     <div class="h-44 md:h-56 bg-gray-800 relative overflow-hidden cursor-pointer shrink-0" onclick="openModal(${Number(p.id)})">
                         ${imageHtml}
-                        ${p.badge ? `<div class="absolute top-2 left-2 bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">${esc(p.badge)}</div>` : ''}
+                        <div class="tl-stack">${p.badge ? `<div class="bg-brand-accent text-black text-[10px] md:text-xs font-bold px-1.5 py-0.5 rounded">${esc(p.badge)}</div>` : ''}${newBadge(p)}</div>
                         ${tagHtml(p)}
+                        ${saleBadge(p)}
                         ${typeof favBtn === 'function' ? favBtn(p.id) : ''}
                         ${off ? '<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-bold">غير متوفر حالياً</div>' : ''}
                     </div>
                     <div class="p-3 md:p-4 flex flex-col flex-1">
                         <h4 class="text-sm md:text-lg font-bold mb-1 truncate">${esc(p.title)}</h4>
+                        ${priceHtml(p)}
                         <p class="text-gray-400 text-[10px] md:text-sm mb-3 line-clamp-2 flex-1">${esc(p.description)}</p>
                         <div class="flex justify-between items-center mt-auto pt-2 border-t border-gray-700/50">
                             <button onclick="quickWa(${Number(p.id)})" class="text-brand-whatsapp hover:text-green-400 transition bg-green-900/20 w-8 h-8 rounded-full flex items-center justify-center">
@@ -457,8 +794,8 @@
             document.getElementById('featured').classList.toggle('hidden', !f.length);
             document.getElementById('feat-track').innerHTML = f.map(p => `
                 <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
-                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}</div>
-                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>
+                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}${saleBadge(p)}</div>
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>${priceHtml(p)}
                 </div>`).join('');
         }
         function renderTrending() {
@@ -468,8 +805,18 @@
             document.getElementById('trending').classList.toggle('hidden', !t.length);
             document.getElementById('trend-track').innerHTML = t.map(p => `
                 <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
-                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}</div>
-                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>
+                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${tagHtml(p)}${saleBadge(p)}</div>
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>${priceHtml(p)}
+                </div>`).join('');
+        }
+        function renderOffers() {
+            const o = products.filter(p => p.available !== false && saleInfo(p)).sort((a, b) => saleInfo(b).pct - saleInfo(a).pct);
+            document.getElementById('offers').classList.toggle('hidden', !o.length);
+            const act = document.getElementById('act-offers'); if (act) act.style.display = o.length ? '' : 'none';
+            document.getElementById('offer-track').innerHTML = o.map(p => `
+                <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
+                    <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${saleBadge(p)}${tagHtml(p)}</div>
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>${priceHtml(p)}
                 </div>`).join('');
         }
         const ft = document.getElementById('feat-track');
@@ -516,6 +863,7 @@
             renderFilters();
             renderFeatured();
             renderTrending();
+            renderOffers();
             window.noorProductsLoaded = true;
             if (window.noorAfterProducts) window.noorAfterProducts();
             openFromHash();
@@ -560,6 +908,10 @@
             document.getElementById('modal-status').innerHTML = currentProduct.available === false
                 ? '<i class="fas fa-ban"></i> غير متوفر حالياً'
                 : '<i class="fas fa-tag"></i> متاح للمعاينة بالفرع';
+            document.getElementById('modal-price').innerHTML = (() => {
+                const sl = saleInfo(currentProduct), u = sl ? untilText(sl.until) : '';
+                return (sl ? `<span class="sale-pill">🏷️ خصم ${sl.pct}%</span>` : '') + priceHtml(currentProduct) + (u ? `<div class="until">⏳ ${u}</div>` : '');
+            })();
             
             const imgContainer = document.getElementById('modal-image-container');
             if(currentProduct.image) {
@@ -608,13 +960,13 @@
 
         function updateModalWaButton() {
             const btn = document.getElementById('modal-wa-btn');
-            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title} ${(d => d.length ? '(' + d.join('، ') + ')' : '')([selectedSize && 'المقاس: ' + selectedSize, selectedColor && 'اللون: ' + selectedColor].filter(Boolean))}، هل لسه متاح في المحل؟`);
+            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title}${waOffer(currentProduct)} ${(d => d.length ? '(' + d.join('، ') + ')' : '')([selectedSize && 'المقاس: ' + selectedSize, selectedColor && 'اللون: ' + selectedColor].filter(Boolean))}، هل لسه متاح في المحل؟`);
             btn.onclick = () => window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
         }
 
         function quickWa(id) {
             const p = products.find(x => x.id === id);
-            const msg = encodeURIComponent(`السلام عليكم، كنت بسأل عن ( ${p.title} )، متاح أجربه في المحل امتى؟`);
+            const msg = encodeURIComponent(`السلام عليكم، كنت بسأل عن ( ${p.title}${waOffer(p)} )، متاح أجربه في المحل امتى؟`);
             window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
         }
 
@@ -723,7 +1075,7 @@
                     var off = p.available === false;
                     return '<div class="fv-item" data-id="' + p.id + '">' +
                         (p.image ? '<img loading="lazy" alt="" src="' + esc(p.image) + '">' : '<div class="fv-ph">👗</div>') +
-                        '<div class="fv-t"><b>' + esc(p.title) + '</b><small class="' + (off ? 'off' : '') + '">' + (off ? 'غير متاح حالياً' : 'متاح للمعاينة بالفرع') + '</small></div>' +
+                        '<div class="fv-t"><b>' + esc(p.title) + '</b><small class="' + (off ? 'off' : '') + '">' + (off ? 'غير متاح حالياً' : 'متاح للمعاينة بالفرع') + '</small>' + (typeof saleInfo === 'function' && saleInfo(p) ? '<br><span class="fv-sale">🏷️ خصم ' + saleInfo(p).pct + '%</span>' : '') + '</div>' +
                         '<button type="button" class="fv-rm" data-rm="' + p.id + '" aria-label="شيلي من المفضلة">✕</button></div>';
                 }).join('');
             }
@@ -757,7 +1109,7 @@
                 var lines = [], len = encodeURIComponent(head + tail).length;
                 for (var i = 0; i < list.length; i++) {
                     var p = list[i];
-                    var line = (i + 1) + ') ' + p.title + (p.available === false ? ' (غير متاح)' : '') + '\n' + base + '#p' + p.id;
+                    var line = (i + 1) + ') ' + p.title + (p.available === false ? ' (غير متاح)' : '') + (typeof waOffer === 'function' ? waOffer(p) : '') + '\n' + base + '#p' + p.id;
                     var l = encodeURIComponent(line + '\n').length;
                     if (len + l > 3200) break;
                     lines.push(line); len += l;
@@ -856,7 +1208,7 @@
             var EXTRA_THINK = "think.webp";   // بتدوّر  (بالعدسة: البحث بدون نتيجة، واختيار حاجة)  — بديلها: الحيرة
             var EXTRA_POINT = "point.webp";   // بتشاور  (مع ترشيح منتج، وعند فتح القائمة)          — بديلها: الوقوف
 
-            var MASCOT_HEIGHT    = 128;    // ارتفاع الشخصية بالبكسل (العرض بيتحسب تلقائياً من الصورة)
+            var MASCOT_HEIGHT    = window.innerWidth <= 640 ? 112 : 128;    // ارتفاع الشخصية بالبكسل (العرض بيتحسب تلقائياً من الصورة)
             var EDGE_GAP         = 14;     // المسافة الابتدائية من حافة الشاشة (يسار/تحت)
             var TAP_THRESHOLD    = 5;      // أقل من كده (بكسل) = نقر، أكتر = سحب
             var WELCOME_MS       = 3000;   // مدة صورة الترحيب
@@ -873,9 +1225,10 @@
             var MODAL_REACT_CHANCE = 0.6;  // احتمال التعليق بعد قفل نافذة الموديل
             var LONG_PRESS_MS     = 550;   // مدة الضغطة الطويلة اللي بتفتح القائمة
 
-            // قائمة الضغطة الطويلة (id ثابت، والاسم تقدري تغيريه): trending / random / taste / directions / whatsapp
+            // قائمة الضغطة الطويلة (id ثابت، والاسم تقدري تغيريه): trending / offers / random / taste / directions / whatsapp
             var MENU_ITEMS = [
                 { id: 'trending', label: '🔥 وديني للرائج' },
+                { id: 'offers',   label: '🏷️ وديني للعروض' },
                 { id: 'random',   label: '🎲 اختاري لي حاجة عشوائية' },
                 { id: 'taste',    label: '💕 حاجة تناسب ذوقي' },
                 { id: 'directions', label: '📍 اتجاهات للمحل' },
@@ -1116,12 +1469,15 @@
                 if (!list.length) return null;
                 var pool = list.filter(function (p) { return p.featured; });
                 if (!pool.length || Math.random() < 0.4) pool = list;
+                var onSale = list.filter(function (x) { return typeof saleInfo === 'function' && saleInfo(x); });
+                if (onSale.length && Math.random() < 0.6) pool = onSale;
                 var p, tries = 0;
                 do { p = pool[Math.floor(Math.random() * pool.length)]; tries++; } while (p.id === lastPid && pool.length > 1 && tries < 6);
                 lastPid = p.id;
                 var t = String(p.title);
                 if (t.length > 26) t = t.slice(0, 25) + '…';
-                return { text: pick(PRODUCT_TEMPLATES).replace('{t}', t), id: Number(p.id) };
+                var sl = (typeof saleInfo === 'function') ? saleInfo(p) : null;
+                return { text: sl ? '«' + t + '» عليه خصم ' + sl.pct + '% 🏷️ 👆' : pick(PRODUCT_TEMPLATES).replace('{t}', t), id: Number(p.id) };
             }
             function modalOpen() { var m = document.getElementById('product-modal'); return !!(m && m.classList.contains('active')); }
 
@@ -1182,7 +1538,7 @@
                     fx('pop'); burst(['✨', '⭐'], 4);
                     showBubble(text, ms);
                     goIdleAfter(ms);
-                    setTimeout(function () { welcomeDone = true; maybeMotd(); }, ms + 300);
+                    setTimeout(function () { welcomeDone = true; maybeMotd(); maybeFavSale(); }, ms + 300);
                     lastActive = Date.now();
                     scheduleTips();
                     setTimeout(loadExtras, 1500);
@@ -1265,7 +1621,7 @@
             }
 
             // ---------- رسالة اليوم (من لوحة التحكم) + المفضلة ----------
-            var motdText = '', motdShown = false, welcomeDone = false, favCool = 0;
+            var motdText = '', motdShown = false, welcomeDone = false, favCool = 0, favSaleShown = false;
             var FAV_MESSAGES = ['اتحفظ في المفضلة ❤️', 'حلو اختيارك! 😍', 'ابعتيهم لنا على واتساب من زرار ♥ فوق 💬'];
             function maybeMotd() {
                 if (!motdText || hidden || !welcomeDone || motdShown) return;
@@ -1276,9 +1632,21 @@
                 try { sessionStorage.setItem(key, motdText); } catch (e) {}
                 react('point', motdText, Math.min(9000, Math.max(5000, motdText.length * 90)), false);
             }
+            function maybeFavSale() {                                // موديل في المفضلة نزل عليه خصم
+                if (hidden || !welcomeDone || favSaleShown || typeof isFav !== 'function' || typeof saleInfo !== 'function') return;
+                var all = (typeof products !== 'undefined') ? products : [];
+                var hit = all.filter(function (p) { return isFav(p.id) && p.available !== false && saleInfo(p); })[0];
+                if (!hit) return;
+                favSaleShown = true;
+                var key = 'noor_favsale_seen', seen = '';
+                try { seen = sessionStorage.getItem(key) || ''; } catch (e) {}
+                if (seen) return;
+                try { sessionStorage.setItem(key, '1'); } catch (e) {}
+                setTimeout(function () { if (!bubble.classList.contains('show') && !modalOpen()) react('cheer', '🏷️ موديل من مفضلتك عليه خصم دلوقتي!', 5200, true); }, motdText ? 9500 : 700);
+            }
             function readMotd() { motdText = (window.noorShop && window.noorShop.motd) || ''; }
             if (window.noorProductsReady) readMotd();
-            document.addEventListener('noor:products', function () { readMotd(); maybeMotd(); });
+            document.addEventListener('noor:products', function () { readMotd(); maybeMotd(); maybeFavSale(); });
             document.addEventListener('noor:fav', function (e) {
                 var d = e.detail || {};
                 if (!d.on) return;
@@ -1347,6 +1715,7 @@
                     (p.colors || []).forEach(function (c) { s += (t.colors[c] || 0); });
                     s -= 4 * (t.seen[p.id] || 0);          // نفضّل حاجة لسه ماشافتهاش
                     if (typeof isFav === 'function' && isFav(p.id)) s -= 3;   // ومش اللي هي حافظاها أصلاً
+                    if (typeof saleInfo === 'function' && saleInfo(p)) s += 1.5;   // وعليه خصم
                     s += Math.random() * 0.6;              // عشان النتيجة ماتبقاش ثابتة
                     return { p: p, s: s };
                 }).sort(function (a, b) { return b.s - a.s; });
@@ -1410,6 +1779,14 @@
                 if (has) { flash(sec.firstElementChild); react('cheer', 'ده الرائج عندنا 🔥', 3500, true); }
                 else react('think', 'لسه مفيش رائج دلوقتي، اتفرجي على أحدث الموديلات 👇', 4200, false);
             }
+            function goOffers() {
+                var sec = document.getElementById('offers');
+                var has = sec && !sec.classList.contains('hidden');
+                var target = has ? sec : document.getElementById('collection');
+                if (target) scrollToEl(target);
+                if (has) { flash(sec.firstElementChild); react('cheer', 'عروض النهاردة 🏷️ لحقي!', 3500, true); }
+                else react('think', 'مفيش عروض دلوقتي، بس شوفي أحدث الموديلات 👇', 4200, false);
+            }
             function reveal(p, intro, outro) {         // عدسة ثانية وبعدين تفتح الموديل
                 react('think', intro, 1300, false);
                 setTimeout(function () {
@@ -1440,6 +1817,7 @@
             function runMenu(id) {
                 closeMenu();
                 if (id === 'trending') goTrending();
+                else if (id === 'offers') goOffers();
                 else if (id === 'random') pickRandom();
                 else if (id === 'taste') pickTaste();
                 else if (id === 'directions') { if (typeof openDirections === 'function') openDirections(); react('point', 'ده الطريق للمحل 📍 هنستناكي!', 3500, false); }
@@ -1529,6 +1907,184 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
             }
+        })();
+    </script>
+    <!-- الشكل النهائي: ثيمات + هيدر ذكي + هولوجرام + تكبير الصور + تحميل أنعم -->
+    <script>
+        (function () {
+            var root = document.documentElement;
+            var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // ---------- ظهور الصور بنعومة ----------
+            ['load', 'error'].forEach(function (ev) {
+                document.addEventListener(ev, function (e) { if (e.target && e.target.tagName === 'IMG') e.target.classList.add('ld'); }, true);
+            });
+            [].forEach.call(document.images, function (im) { if (im.complete) im.classList.add('ld'); });
+
+            // ---------- اختيار الشكل ----------
+            var pop = document.getElementById('theme-pop'), tbtn = document.getElementById('theme-open'), meta = document.getElementById('meta-theme');
+            var COLORS = { luxe: '#0a0a0d', violet: '#17151c', light: '#faf5f1' };
+            function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+            function paint() {
+                var t = root.getAttribute('data-theme'), c = root.getAttribute('data-cards') || 'small';
+                [].forEach.call(pop.querySelectorAll('.tp-opt'), function (b) { b.classList.toggle('on', b.getAttribute('data-theme') === t); });
+                [].forEach.call(pop.querySelectorAll('[data-cards]'), function (b) { b.classList.toggle('on', b.getAttribute('data-cards') === c); });
+                document.getElementById('tp-lite').checked = root.classList.contains('lite');
+                if (meta) meta.setAttribute('content', COLORS[t] || COLORS.luxe);
+            }
+            pop.addEventListener('click', function (e) {
+                var b = e.target.closest ? e.target.closest('.tp-opt') : null;
+                if (b) { root.setAttribute('data-theme', b.getAttribute('data-theme')); put('noor_theme', b.getAttribute('data-theme')); paint(); return; }
+                var c = e.target.closest ? e.target.closest('[data-cards]') : null;
+                if (c) { if (c.getAttribute('data-cards') === 'big') root.setAttribute('data-cards', 'big'); else root.removeAttribute('data-cards'); put('noor_cards', c.getAttribute('data-cards')); paint(); }
+            });
+            document.getElementById('tp-lite').addEventListener('change', function (e) { root.classList.toggle('lite', e.target.checked); put('noor_lite', e.target.checked ? '1' : '0'); });
+            tbtn.addEventListener('click', function () { var on = pop.classList.toggle('on'); tbtn.setAttribute('aria-expanded', on); });
+            document.addEventListener('pointerdown', function (e) {
+                if (pop.classList.contains('on') && !pop.contains(e.target) && !tbtn.contains(e.target)) { pop.classList.remove('on'); tbtn.setAttribute('aria-expanded', 'false'); }
+            }, true);
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') pop.classList.remove('on'); });
+            paint();
+
+            // ---------- هيدر بيختفي مع النزول ويرجع مع الطلوع ----------
+            var hdr = document.querySelector('.nz-hdr'), lastY = window.pageYOffset, tick = false, searchEl = document.getElementById('search');
+            window.addEventListener('scroll', function () {
+                if (tick) return; tick = true;
+                requestAnimationFrame(function () {
+                    var y = window.pageYOffset, dy = y - lastY;
+                    if (Math.abs(dy) > 8) {
+                        var hide = dy > 0 && y > 140;
+                        if (document.activeElement === searchEl || pop.classList.contains('on')) hide = false;
+                        hdr.classList.toggle('nz-hide', hide);
+                        lastY = y;
+                    }
+                    tick = false;
+                });
+            }, { passive: true });
+
+            // ---------- اختصارات + ظهور تدريجي ----------
+            window.nzGo = function (id) {
+                var el = document.getElementById(id);
+                if (!el || el.classList.contains('hidden')) el = document.getElementById('collection');
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 84, behavior: reduced ? 'auto' : 'smooth' });
+            };
+            var els = [].slice.call(document.querySelectorAll('.nz-reveal'));
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (en) { en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .12 });
+                els.forEach(function (e) { io.observe(e); });
+            } else els.forEach(function (e) { e.classList.add('in'); });
+
+            // ---------- هولوجرام الموديلات (سحب بالإصبع + تبديل تلقائي) ----------
+            var box = document.getElementById('holo'), items = [], idx = 0, timer = null, swiped = false;
+            function pick() {
+                var all = (typeof products !== 'undefined' ? products : []).filter(function (p) { return p.image && p.available !== false; });
+                var out = [];
+                [all.filter(function (p) { return typeof saleInfo === 'function' && saleInfo(p); }), all.filter(function (p) { return p.featured; }), all.filter(function (p) { return p.tag; }), all].forEach(function (l) { l.forEach(function (p) { if (out.indexOf(p) === -1) out.push(p); }); });
+                return out.slice(0, 5);
+            }
+            function show(i) {
+                idx = (i + items.length) % items.length;
+                [].forEach.call(box.querySelectorAll('.holo-slide'), function (s, k) { s.classList.toggle('on', k === idx); });
+                [].forEach.call(box.querySelectorAll('.holo-dots i'), function (d, k) { d.classList.toggle('on', k === idx); });
+                var t = box.querySelector('.holo-cap b'); if (t) t.textContent = items[idx].title;
+            }
+            function play() { clearInterval(timer); if (reduced || items.length < 2) return; timer = setInterval(function () { if (document.visibilityState === 'visible') show(idx + 1); }, 5200); }
+            function openCur() { if (typeof openModal === 'function' && items[idx]) openModal(Number(items[idx].id)); }
+            function build() {
+                items = pick();
+                if (!items.length) { box.innerHTML = '<div class="holo-stage holo-fallback"><div class="holo-ring"></div><img class="holo-logo ld" src="logo.jpg" alt=""></div>'; return; }
+                box.innerHTML = '<div class="holo-stage"><div class="holo-ring"></div>' + items.map(function (p, i) {
+                    var u = esc(p.image);
+                    return '<div class="holo-slide"><img class="holo-ghost g2" alt="" src="' + u + '"><img class="holo-ghost g1" alt="" src="' + u + '">' +
+                           '<div class="holo-frame"><div class="holo-main"><img alt="' + esc(p.title) + '" src="' + u + '"' + (i ? ' loading="lazy"' : '') + '></div></div></div>';
+                }).join('') + '<div class="holo-base"></div><div class="holo-line"></div></div>' +
+                '<div class="holo-cap"><b></b><button type="button" class="nz-btn g sm" id="holo-go">اكتشفي ←</button></div>' +
+                '<div class="holo-dots">' + items.map(function () { return '<i></i>'; }).join('') + '</div>';
+                var st = box.querySelector('.holo-stage'), sx = 0, sy = 0, down = false;
+                st.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; down = true; swiped = false; clearInterval(timer); });
+                st.addEventListener('pointerup', function (e) {
+                    if (!down) return; down = false;
+                    var dx = e.clientX - sx, dy = e.clientY - sy;
+                    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) { swiped = true; show(idx + (dx > 0 ? 1 : -1)); }
+                    play();
+                });
+                st.addEventListener('pointercancel', function () { down = false; play(); });
+                st.addEventListener('click', function () { if (swiped) { swiped = false; return; } openCur(); });
+                document.getElementById('holo-go').addEventListener('click', openCur);
+                [].forEach.call(box.querySelectorAll('.holo-dots i'), function (d, k) { d.addEventListener('click', function () { show(k); play(); }); });
+                show(0); play();
+            }
+            if (box) {
+                document.addEventListener('noor:products', build);
+                box.innerHTML = '<div class="holo-stage holo-fallback"><div class="holo-ring"></div><img class="holo-logo ld" src="logo.jpg" alt=""></div>';
+                if (window.noorProductsReady) build();
+            }
+
+            // ---------- معرض الصور: تكبير بإصبعين + سحب + دبل تاب ----------
+            var lb = document.getElementById('lightbox'), stage = lb.querySelector('.lb-stage'), limg = lb.querySelector('img'), cnt = lb.querySelector('.lb-cnt');
+            var list = [], li = 0, sc = 1, tx = 0, ty = 0, pts = {}, p0 = null, d0 = 0, sc0 = 1, lastTap = 0, moved = 0;
+            function apply() { limg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + sc + ')'; }
+            function clampPan() {
+                var r = stage.getBoundingClientRect(), mx = Math.max(0, (limg.offsetWidth * sc - r.width) / 2), my = Math.max(0, (limg.offsetHeight * sc - r.height) / 2);
+                tx = Math.max(-mx, Math.min(mx, tx)); ty = Math.max(-my, Math.min(my, ty));
+            }
+            function reset() { sc = 1; tx = 0; ty = 0; apply(); }
+            function lshow(i) { li = (i + list.length) % list.length; limg.src = list[li]; cnt.textContent = (li + 1) + ' / ' + list.length; reset(); }
+            window.openLightbox = function (imgs, i) {
+                list = (imgs || []).slice(); if (!list.length) return;
+                lb.classList.add('on'); lshow(i || 0);
+                lb.querySelector('.lb-prev').style.display = lb.querySelector('.lb-next').style.display = cnt.style.display = list.length > 1 ? '' : 'none';
+            };
+            window.closeLightbox = function () { lb.classList.remove('on'); limg.removeAttribute('src'); };
+            lb.querySelector('.lb-x').addEventListener('click', closeLightbox);
+            lb.querySelector('.lb-prev').addEventListener('click', function () { lshow(li - 1); });
+            lb.querySelector('.lb-next').addEventListener('click', function () { lshow(li + 1); });
+            document.addEventListener('keydown', function (e) {
+                if (!lb.classList.contains('on')) return;
+                if (e.key === 'Escape') closeLightbox(); else if (e.key === 'ArrowLeft') lshow(li - 1); else if (e.key === 'ArrowRight') lshow(li + 1);
+            });
+            function dist() { var k = Object.keys(pts); return Math.hypot(pts[k[0]].x - pts[k[1]].x, pts[k[0]].y - pts[k[1]].y); }
+            stage.addEventListener('pointerdown', function (e) {
+                pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+                try { stage.setPointerCapture(e.pointerId); } catch (x) {}
+                if (Object.keys(pts).length === 2) { d0 = dist(); sc0 = sc; }
+                else { p0 = { x: e.clientX, y: e.clientY, tx: tx, ty: ty, t: Date.now() }; moved = 0; }
+            });
+            stage.addEventListener('pointermove', function (e) {
+                if (!pts[e.pointerId]) return;
+                pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+                if (Object.keys(pts).length === 2) { sc = Math.max(1, Math.min(5, sc0 * dist() / d0)); clampPan(); apply(); moved = 99; }
+                else if (p0) {
+                    var dx = e.clientX - p0.x, dy = e.clientY - p0.y; moved = Math.max(moved, Math.hypot(dx, dy));
+                    if (sc > 1) { tx = p0.tx + dx; ty = p0.ty + dy; clampPan(); apply(); }
+                }
+            });
+            function lend(e) {
+                if (!pts[e.pointerId]) return;
+                var wasTwo = Object.keys(pts).length === 2;
+                delete pts[e.pointerId];
+                if (wasTwo) { p0 = null; if (sc < 1.05) reset(); return; }
+                if (!p0) return;
+                var dx = e.clientX - p0.x, dy = e.clientY - p0.y, p = p0; p0 = null;
+                if (sc === 1 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { lshow(li + (dx > 0 ? 1 : -1)); return; }   // سحب لليمين = التالي (الصفحة RTL)
+                if (moved < 8 && Date.now() - p.t < 300) {
+                    var now = Date.now();
+                    if (now - lastTap < 320) {                                                                                         // دبل تاب: تكبير/تصغير
+                        if (sc > 1) reset();
+                        else { var r = stage.getBoundingClientRect(); sc = 2.5; tx = -(e.clientX - r.left - r.width / 2) * 1.5; ty = -(e.clientY - r.top - r.height / 2) * 1.5; clampPan(); apply(); }
+                        lastTap = 0;
+                    } else lastTap = now;
+                }
+            }
+            stage.addEventListener('pointerup', lend); stage.addEventListener('pointercancel', lend);
+            stage.addEventListener('wheel', function (e) { e.preventDefault(); sc = Math.max(1, Math.min(5, sc * (e.deltaY < 0 ? 1.15 : 0.87))); clampPan(); apply(); }, { passive: false });
+            // دوسة على صورة النافذة = تكبير
+            document.getElementById('modal-image-container').addEventListener('click', function (e) {
+                var im = e.target.closest ? e.target.closest('img') : null;
+                if (!im || typeof currentProduct === 'undefined' || !currentProduct) return;
+                var imgs = currentProduct.images && currentProduct.images.length ? currentProduct.images : (currentProduct.image ? [currentProduct.image] : []);
+                var i = imgs.indexOf(im.getAttribute('src')); openLightbox(imgs, i < 0 ? 0 : i);
+            });
         })();
     </script>
 </body>

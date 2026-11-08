@@ -162,6 +162,16 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
 @media(min-width:600px){.dash-stats{grid-template-columns:repeat(4,minmax(0,1fr))}.wrap{max-width:860px}}
 @media(prefers-reduced-motion:reduce){.ib,.btn{transition:none}}
 
+
+/* ===== السعر والخصم + قص الصور + خصم لعدة موديلات ===== */
+.pbox{margin-top:16px;padding:12px 14px 14px;border:1px solid var(--ln);border-radius:16px;background:var(--s1)}
+.pbox>b{display:block;color:var(--gd);margin-bottom:2px}
+.pbox label{margin:12px 0 6px}
+.pbox .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#f_dprev{margin-top:10px;font-size:13px;color:var(--gd);min-height:18px}
+#bkbar{flex-direction:column;gap:8px;align-items:stretch}
+#bkbar .r1,#bkbar .r2{display:flex;gap:8px;align-items:center;width:100%}
+#bkbar .r2 .btn{flex:1}
 </style>
 </head>
 <body>
@@ -199,13 +209,13 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
   <div class="manage-tools">
     <input class="in" id="product-search" type="search" placeholder="ابحث باسم الموديل أو التصنيف..." aria-label="البحث في المنتجات">
     <div class="filter-pills" id="product-filters" aria-label="تصفية المنتجات">
-      <button type="button" class="active" data-filter="all">الكل</button><button type="button" data-filter="available">متاح</button><button type="button" data-filter="unavailable">غير متاح</button><button type="button" data-filter="featured">مميز</button>
+      <button type="button" class="active" data-filter="all">الكل</button><button type="button" data-filter="available">متاح</button><button type="button" data-filter="unavailable">غير متاح</button><button type="button" data-filter="featured">مميز</button><button type="button" data-filter="sale">عليها خصم</button>
     </div>
   </div>
   <div class="tbar"><p class="mu" id="sum"></p><button class="btn" id="bk" type="button">☑ تحديد متعدد</button></div><div id="list"></div>
 </main>
 <button class="btn p fab" id="add">+ إضافة موديل جديد</button>
-<div id="bkbar"><span id="bkn" class="mu" style="flex:1">0 محدد</span><button class="btn" id="bka" type="button">الكل</button><button class="btn p" id="bkv" type="button">✓ متوفر</button><button class="btn d" id="bkx" type="button">✕ مخلص</button><button class="btn" id="bkc" type="button">إلغاء</button></div>
+<div id="bkbar"><div class="r1"><span id="bkn" class="mu" style="flex:1">0 محدد</span><button class="btn" id="bka" type="button">الكل</button><button class="btn" id="bkc" type="button">إلغاء</button></div><div class="r2"><button class="btn p" id="bkv" type="button">✓ متوفر</button><button class="btn d" id="bkx" type="button">✕ مخلص</button><button class="btn" id="bkd" type="button">🏷️ خصم</button></div></div>
 
 <!-- الإعدادات / الربط -->
 <section class="scr" id="cfg"><div class="wrap">
@@ -251,6 +261,15 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
     <input class="in" id="f_k" list="cats" placeholder="مثال: تيشرتات"><datalist id="cats"></datalist>
     <label>شارة مميزة — 🔥 هوت أو ⭐ تريند بتظهر الموديل في قسم «الرائج الآن» بالموقع</label>
     <select class="in" id="f_g"><option value="">بدون</option><option value="hot">🔥 هوت</option><option value="trend">⭐ تريند</option></select>
+    <div class="pbox"><b>💰 السعر والخصم</b>
+    <label>السعر بالجنيه (اختياري)</label>
+    <input class="in ltr" id="f_p" type="number" inputmode="decimal" min="0" step="1" placeholder="مثال: 350">
+    <label>الخصم (اختياري)</label>
+    <div class="g2"><select class="in" id="f_dt"><option value="">بدون خصم</option><option value="percent">نسبة %</option><option value="amount">مبلغ بالجنيه</option></select><input class="in ltr" id="f_dv" type="number" inputmode="decimal" min="0" placeholder="القيمة"></div>
+    <label>آخر يوم للخصم (اختياري — بعده الخصم بيختفي لوحده)</label>
+    <input class="in ltr" id="f_du" type="date">
+    <div id="f_dprev"></div>
+  </div>
     <label class="sw" style="margin-top:16px"><input type="checkbox" id="f_f"><i></i>مميز (يظهر في الشريط المتحرك)</label>
     <label>رابط التيك توك (اختياري)</label>
     <input class="in ltr" id="f_u" type="url" inputmode="url" autocapitalize="off" placeholder="https://www.tiktok.com/...">
@@ -258,10 +277,25 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
     <div class="gal" id="gal"></div>
     <div class="pick" id="pk"><span style="font-size:28px">📷</span><span>اضغط لإضافة صور من الموبايل</span></div>
     <input type="file" id="fi" accept="image/*" multiple hidden>
+    <label class="sw" style="margin-top:14px"><input type="checkbox" id="f_crop"><i></i>قص الصور تلقائياً على 3:4 (شكل ثابت في الموقع)</label>
     <label class="sw" style="margin-top:20px"><input type="checkbox" id="f_a" checked><i></i>متوفر حالياً</label>
   </div>
   <div class="foot"><button class="btn" id="fc">إلغاء</button><button class="btn p" id="fs">حفظ</button></div>
 </section>
+
+<!-- خصم لعدة موديلات -->
+<div class="dlg" id="sd"><div class="box">
+  <h3 style="margin:0 0 8px">🏷️ خصم للموديلات المحددة</h3>
+  <p class="mu" style="font-size:13px">هيتطبق على <b id="sdn">0</b> موديل.</p>
+  <label>نوع الخصم</label>
+  <select class="in" id="sd_t"><option value="percent">نسبة %</option><option value="amount">مبلغ بالجنيه (للموديلات اللي ليها سعر)</option></select>
+  <label>القيمة</label>
+  <input class="in ltr" id="sd_v" type="number" inputmode="decimal" min="0">
+  <label>آخر يوم للخصم (اختياري)</label>
+  <input class="in ltr" id="sd_u" type="date">
+  <div style="display:flex;gap:10px;margin-top:16px"><button class="btn p" id="sd_ok" type="button" style="flex:1">تطبيق</button><button class="btn" id="sd_no" type="button" style="flex:1">إلغاء الخصم عنهم</button></div>
+  <button class="btn" id="sd_x" type="button" style="width:100%;margin-top:10px">رجوع</button>
+</div></div>
 
 <!-- تأكيد الحذف -->
 <div class="dlg" id="cf"><div class="box">
@@ -326,8 +360,20 @@ const getF=async p=>{try{return await gh(`${R()}/contents/${p}?ref=${encodeURICo
 const putF=(p,b64,msg,sha)=>gh(`${R()}/contents/${p}`,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
 const delF=async(p,msg)=>{const f=await getF(p);if(f)await gh(`${R()}/contents/${p}`,{method:'DELETE',body:JSON.stringify({message:msg,sha:f.sha,branch:cfg.branch})})};
 
-const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false});
+const normSale=s=>{if(!s||typeof s!=='object')return null;const t=s.type==='percent'||s.type==='amount'?s.type:'',v=+s.value;if(!t||!(v>0))return null;return{type:t,value:Math.round(v*100)/100,until:/^\d{4}-\d{2}-\d{2}$/.test(s.until||'')?s.until:''}};
+const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false,price:+p.price>0?Math.round(p.price*100)/100:0,sale:normSale(p.sale),added:/^\d{4}-\d{2}-\d{2}$/.test(p.added||'')?p.added:''});
 const normShop=x=>{x=x||{};const t=v=>/^\d{1,2}:\d{2}$/.test(v||'')?v:'';return{open:t(x.open),close:t(x.close),off:(x.off===0||x.off)?String(x.off):'',map:typeof x.map==='string'?x.map:''}};
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const fmtEGP=n=>Number(n).toLocaleString('en-US')+' ج.م';
+function saleInfo(p){
+  const s=p&&p.sale;if(!s||!s.type||!(s.value>0))return null;
+  if(s.until&&todayISO()>s.until)return null;
+  const price=p.price>0?p.price:0;let pct,now=0;
+  if(s.type==='percent'){pct=Math.min(90,Math.max(1,Math.round(s.value)));if(price)now=Math.round(price*(100-pct)/100)}
+  else{if(!price)return null;now=Math.max(0,Math.round(price-s.value));pct=Math.max(1,Math.round((price-now)/price*100))}
+  return{pct,was:price,now,until:s.until||''};
+}
+function untilText(u){if(!u)return'';const d=Math.round((new Date(u+'T00:00:00')-new Date(todayISO()+'T00:00:00'))/86400000);if(d<0||d>7)return'';return d===0?'ينتهي النهاردة':d===1?'ينتهي بكرة':'ينتهي خلال '+d+' أيام'}
 function parse(f){if(!f)return{banner:'',motd:'',shop:normShop(),products:[]};const j=JSON.parse(dec(f.content)),l=Array.isArray(j)?j:j.products;if(!Array.isArray(l))throw new Error('products.json مش بالصيغة المتوقعة');const o=Array.isArray(j)?{}:j;return{banner:o.banner||'',motd:typeof o.motd==='string'?o.motd:'',shop:normShop(o.shop),products:l.map(norm)}}
 
 async function load(){
@@ -353,9 +399,11 @@ function shrink(file){return new Promise((ok,no)=>{
   const u=URL.createObjectURL(file),im=new Image();
   im.onerror=()=>no(new Error('الصورة مش مدعومة، جرب صورة تانية'));
   im.onload=()=>{
-    const s=Math.min(1,1200/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.round(im.naturalWidth*s),h=Math.round(im.naturalHeight*s);
+    let sx=0,sy=0,sw=im.naturalWidth,sh=im.naturalHeight;
+    if($('#f_crop')&&$('#f_crop').checked){const r=3/4;if(sw/sh>r){const nw=Math.round(sh*r);sx=Math.round((sw-nw)/2);sw=nw}else{const nh=Math.round(sw/r);sy=Math.round((sh-nh)*.4);sh=nh}}
+    const s=Math.min(1,1200/Math.max(sw,sh)),w=Math.round(sw*s),h=Math.round(sh*s);
     const c=document.createElement('canvas');c.width=w;c.height=h;
-    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);
+    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,sx,sy,sw,sh,0,0,w,h);
     URL.revokeObjectURL(u);const d=c.toDataURL('image/jpeg',.82);ok({url:d,b64:d.split(',')[1]});
   };
   im.src=u;
@@ -375,7 +423,7 @@ function render(){
   const visible=items.filter(p=>{
     const hay=normalized((p.title||'')+' '+(p.category||'')+' '+(p.description||''));
     const queryOk=!productQuery||hay.includes(normalized(productQuery));
-    const filterOk=productFilter==='all'||(productFilter==='available'&&p.available)||(productFilter==='unavailable'&&!p.available)||(productFilter==='featured'&&p.featured);
+    const filterOk=productFilter==='all'||(productFilter==='available'&&p.available)||(productFilter==='unavailable'&&!p.available)||(productFilter==='featured'&&p.featured)||(productFilter==='sale'&&!!saleInfo(p));
     return queryOk&&filterOk;
   });
   $('#sum').textContent=`عرض ${visible.length} من ${items.length} موديل • ${availableCount} متوفر`;
@@ -386,6 +434,7 @@ function render(){
       <h3>${p.featured?'📌 ':''}${p.tag==='hot'?'🔥 ':p.tag==='trend'?'⭐ ':''}${esc(p.title)}</h3>
       ${p.badge?`<span class="pill">${esc(p.badge)}</span>`:''}
       <div class="mu">${p.category?esc(p.category)+' • ':''}${esc(p.colors.join('، '))||'بدون ألوان'}${p.sizes.length?' • '+esc(p.sizes.join(' / ')):''}</div>
+      ${(()=>{const s=saleInfo(p);let h='';if(p.price)h+='💰 '+fmtEGP(p.price);if(s){h+=(h?' • ':'')+'🏷️ -'+s.pct+'%'+(s.now?' ← '+fmtEGP(s.now):'');const u=untilText(s.until);if(u)h+=' • ⏳ '+u}else if(p.sale)h+=(h?' • ':'')+'⌛ انتهى الخصم';return h?`<div class="mu" style="color:var(--gd);font-weight:700">${h}</div>`:''})()}
       <div class="row">
         <label class="sw"><input type="checkbox" data-a="tg" ${p.available?'checked':''}><i></i>${p.available?'متوفر':'غير متوفر'}</label>
       </div>
@@ -440,12 +489,21 @@ function openForm(id,dup){
   F={id:id||0,colors:[...(p?p.colors:[])],sizes:[...(p?p.sizes:[])],gal:(p&&!cp?p.images:[]).map(x=>({p:x,url:src({image:x}),b64:''})),oldImgs:p&&!cp?[...p.images]:[]};
   $('#ft').textContent=cp?'نسخة من: '+p.title:(id?'تعديل الموديل':'موديل جديد');
   $('#f_t').value=p?p.title:'';$('#f_b').value=p?p.badge:'';$('#f_d').value=p?p.description:'';
-  $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?(cp?true:p.available):true;$('#f_k').value=p?p.category:'';$('#f_g').value=p?p.tag:'';$('#f_f').checked=p&&!cp?p.featured:false;
+  $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?(cp?true:p.available):true;$('#f_k').value=p?p.category:'';$('#f_g').value=p?p.tag:'';$('#f_f').checked=p&&!cp?p.featured:false;fillPrice(p);
   $('#cats').innerHTML=[...new Set(['تيشرتات','هوديز','بنطلونات',...items.map(x=>x.category)].filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
   $('#f_s').value='';chips();schips();pickShow();
   $('#frm').classList.add('on');$('#frm').scrollTop=0;document.body.style.overflow='hidden';
   if(cp){toast('اتنسخت البيانات ✓ عدّل الاسم وضيف صور الموديل الجديد');setTimeout(()=>{$('#f_t').focus();$('#f_t').select()},300)}
 }
+function fillPrice(p){
+  $('#f_p').value=p&&p.price?p.price:'';$('#f_dt').value=p&&p.sale?p.sale.type:'';$('#f_dv').value=p&&p.sale?p.sale.value:'';$('#f_du').value=p&&p.sale?p.sale.until:'';dprev();
+}
+function dprev(){
+  const pr=parseFloat($('#f_p').value)||0,t=$('#f_dt').value,v=parseFloat($('#f_dv').value)||0;let h='';
+  if(t&&v>0){const s=saleInfo({price:pr,sale:{type:t,value:v,until:''}});h=s?(s.now?'السعر بعد الخصم: '+fmtEGP(s.now)+' بدل '+fmtEGP(s.was)+' (خصم '+s.pct+'%)':'هيظهر في الموقع: خصم '+s.pct+'%'):(t==='amount'?'الخصم بالجنيه محتاج السعر الأول':'')}
+  $('#f_dprev').textContent=h?'🏷️ '+h:'';
+}
+['f_p','f_dt','f_dv'].forEach(i=>$('#'+i).addEventListener('input',dprev));
 const closeForm=()=>{$('#frm').classList.remove('on');document.body.style.overflow=''};
 const chips=()=>{$('#chips').innerHTML=F.colors.map((c,i)=>`<span class="chip"><button type="button" data-i="${i}" aria-label="حذف اللون">×</button>${esc(c)}</span>`).join('')};
 function addColors(){
@@ -523,6 +581,26 @@ async function bulkSet(v){
   catch(e){toast(e.message,1)}finally{busy()}
 }
 $('#bkv').onclick=()=>bulkSet(true);$('#bkx').onclick=()=>bulkSet(false);
+$('#bkd').onclick=()=>{if(!sel.size){toast('حدّد موديل واحد على الأقل',1);return}$('#sdn').textContent=sel.size;$('#sd_v').value='';$('#sd_u').value='';$('#sd').classList.add('on')};
+$('#sd_x').onclick=()=>$('#sd').classList.remove('on');
+async function bulkSale(clear){
+  const ids=new Set(sel);let sale=null,skipped=0;
+  if(!clear){
+    const t=$('#sd_t').value,v=parseFloat($('#sd_v').value)||0,u=$('#sd_u').value;
+    if(!(v>0)){toast('اكتب قيمة الخصم',1);return}
+    if(t==='percent'&&v>90){toast('النسبة لازم تكون من 1 إلى 90',1);return}
+    sale={type:t,value:v,until:u||''};
+  }
+  $('#sd').classList.remove('on');busy('جاري تحديث '+ids.size+' موديل...');
+  try{
+    await mutate(l=>{skipped=0;return l.map(p=>{if(!ids.has(p.id))return p;if(clear)return{...p,sale:null};if(sale.type==='amount'&&(!(p.price>0)||sale.value>=p.price)){skipped++;return p}return{...p,sale}})},clear?'Bulk sale off: '+ids.size:'Bulk sale: '+ids.size);
+    bulk=false;sel.clear();bulkUI();
+    toast(clear?'✓ تم إلغاء الخصم':'✓ تم تطبيق الخصم'+(skipped?' (اتخطيت '+skipped+' موديل: الخصم بالجنيه محتاج سعر أكبر من الخصم)':''),skipped?1:0);
+  }catch(e){toast(e.message,1)}finally{busy()}
+}
+$('#sd_ok').onclick=()=>bulkSale(false);$('#sd_no').onclick=()=>bulkSale(true);
+$('#f_crop').checked=(function(){try{return localStorage.getItem('noor_crop')!=='0'}catch{return true}})();
+$('#f_crop').onchange=()=>{try{localStorage.setItem('noor_crop',$('#f_crop').checked?'1':'0')}catch{}};
 
 $('#fx').onclick=$('#fc').onclick=closeForm;
 
@@ -531,7 +609,16 @@ $('#fs').onclick=async()=>{
   const t=$('#f_t').value.trim();
   if(!t){toast('اكتب اسم الموديل الأول',1);$('#f_t').focus();return}
   let u=$('#f_u').value.trim();if(u&&!/^https?:\/\//i.test(u))u='https://'+u;
-  const rec={title:t,badge:$('#f_b').value.trim(),description:$('#f_d').value.trim(),colors:[...F.colors],sizes:[...F.sizes],category:$('#f_k').value.trim(),tag:$('#f_g').value,featured:$('#f_f').checked,tiktokUrl:u,available:$('#f_a').checked};
+  const pr=parseFloat($('#f_p').value)||0,dt=$('#f_dt').value,dv=parseFloat($('#f_dv').value)||0,du=$('#f_du').value;
+  let sale=null;
+  if(dt){
+    if(!(dv>0)){toast('اكتب قيمة الخصم',1);$('#f_dv').focus();return}
+    if(dt==='percent'&&dv>90){toast('نسبة الخصم لازم تكون من 1 إلى 90',1);return}
+    if(dt==='amount'&&!pr){toast('الخصم بالجنيه محتاج سعر الموديل',1);$('#f_p').focus();return}
+    if(dt==='amount'&&dv>=pr){toast('الخصم لازم يكون أقل من السعر',1);return}
+    sale={type:dt,value:dv,until:du||''};
+  }
+  const rec={price:pr,sale,title:t,badge:$('#f_b').value.trim(),description:$('#f_d').value.trim(),colors:[...F.colors],sizes:[...F.sizes],category:$('#f_k').value.trim(),tag:$('#f_g').value,featured:$('#f_f').checked,tiktokUrl:u,available:$('#f_a').checked};
   const id=F.id,up=[];
   busy('جاري الحفظ...');
   try{
@@ -545,7 +632,7 @@ $('#fs').onclick=async()=>{
     busy('جاري تحديث products.json...');
     await mutate(l=>id
       ?l.map(p=>p.id===id?{...p,...rec,images:imgs,image:imgs[0]||''}:p)
-      :[{id:Math.max(0,...l.map(p=>p.id))+1,...rec,images:imgs,image:imgs[0]||''},...l],
+      :[{id:Math.max(0,...l.map(p=>p.id))+1,added:todayISO(),...rec,images:imgs,image:imgs[0]||''},...l],
       (id?'Update: ':'Add: ')+t);
     for(const o of F.oldImgs)if(!imgs.includes(o))await rmImg(o);
     closeForm();toast('✓ تم الحفظ — التغيير بيظهر في الموقع خلال دقيقة أو اتنين');
@@ -591,8 +678,8 @@ const TOUR=[
   {m:'idle.webp',t:'ليه اللوحة دي مهمة؟',p:'الموقع هو واجهة المحل قدام الزبونات. لما الموديلات والصور تبقى محدّثة، الزبونة بتشوف اللي موجود فعلاً وتكلمكم على واتساب. وأي تعديل بتعمله هنا بيتحفظ لوحده، وبيظهر في الموقع بعد دقيقة أو اتنين تقريباً.'},
   {m:'idle.webp',el:'.bn',t:'النص الموسمي',p:'ده الشريط اللي بيظهر فوق الموقع، زي «🔥 تشكيلة الشتاء وصلت». اكتب الجملة واضغط «حفظ». وسيبه فاضي لو عايز تخفيه.'},
   {m:'point.webp',el:'#shopbox',t:'رسالة اليوم وبيانات المحل',p:'اضغط على الصندوق ده يتفتح. «رسالة اليوم» الشخصية بتقولها للزبونة أول ما تدخل الموقع، زي «خصم 20% النهاردة». وهنا كمان مواعيد الشغل ويوم الإجازة، فالموقع بيكتب «مفتوح دلوقتي» أو «مقفول»، ورابط المحل على الخريطة لزرار «اتجاهات».'},
-  {m:'idle.webp',el:()=>document.querySelector('#list .card')||$('#list'),t:'قائمة الموديلات',p:'كل كارت هو موديل ظاهر في الموقع. فيه مفتاح «متوفر» تقفله لما الموديل يخلص، وتحته 📌 للتثبيت في الشريط المميز، و✏️ للتعديل، و📄 لعمل نسخة منه (مفيدة لما يكون شبه موديل تاني)، و🗑️ للحذف. وزرار «تحديد متعدد» فوق القائمة بيخليك تعدّل التوفر لكذا موديل مرة واحدة.'},
-  {m:'heart.webp',el:'#add',pos:'top',t:'إضافة موديل جديد',p:'من الزرار ده بتضيف موديل: اكتب الاسم والوصف، وضيف الألوان والمقاسات والتصنيف، واختار الصور من الموبايل (لحد 8 صور، والأولى هي الغلاف). الصور بتتصغّر لوحدها قبل الرفع عشان الموقع يفضل سريع. ولو اخترت شارة 🔥 هوت أو ⭐ تريند، الموديل بيظهر في قسم «الرائج الآن» وبترشحه الشخصية للزبونات.'},
+  {m:'idle.webp',el:()=>document.querySelector('#list .card')||$('#list'),t:'قائمة الموديلات',p:'كل كارت هو موديل ظاهر في الموقع. فيه مفتاح «متوفر» تقفله لما الموديل يخلص، وتحته 📌 للتثبيت في الشريط المميز، و✏️ للتعديل، و📄 لعمل نسخة منه (مفيدة لما يكون شبه موديل تاني)، و🗑️ للحذف. وزرار «تحديد متعدد» فوق القائمة بيخليك تعدّل التوفر أو تضيف خصم لكذا موديل مرة واحدة.'},
+  {m:'heart.webp',el:'#add',pos:'top',t:'إضافة موديل جديد',p:'من الزرار ده بتضيف موديل: اكتب الاسم والوصف، وضيف الألوان والمقاسات والتصنيف، واختار الصور من الموبايل (لحد 8 صور، والأولى هي الغلاف). الصور بتتصغّر وبتتقص لوحدها على شكل ثابت (3:4) قبل الرفع عشان الموقع يفضل سريع وشكله متناسق. وفي خانة «السعر والخصم» اكتب السعر (اختياري) ونسبة أو مبلغ الخصم وآخر يوم له، والموقع بيعرض العرض لوحده ويخفيه بعد ما ينتهي. ولو اخترت شارة 🔥 هوت أو ⭐ تريند، الموديل بيظهر في قسم «الرائج الآن» وبترشحه الشخصية للزبونات.'},
   {m:'idle.webp',el:'body > header.top',t:'التحديث والإعدادات',p:'↻ بيحمّل آخر نسخة من الموديلات. ⚙ فيها ربط GitHub وتسجيل الخروج، والتوكن بيتحفظ على الجهاز ده بس فماتبعتوش لحد. وزرار ❓ بيعيد الشرح ده في أي وقت. ومن ⚙ تقدر تثبّت اللوحة على الشاشة الرئيسية كأنها تطبيق.'},
   {m:'heart.webp',t:'خلصنا! 🎉',p:'كده بقيت عارف كل حاجة. جرّب تضيف أول موديل، ولو احتجت الشرح تاني دوس على ❓ فوق.'}
 ];
