@@ -1,4 +1,11 @@
 {
   "banner": "🔥 تشكيلة الشتاء وصلت",
+  "motd": "",
+  "shop": {
+    "open": "",
+    "close": "",
+    "off": "",
+    "map": ""
+  },
   "products": []
 }
