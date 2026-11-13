@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Noor Store · index.html · v2.0 · 2026-11-12 -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -452,6 +453,17 @@
             html.js .nz-reveal { transition:none; }
             .nz-hdr { transition:none; }
         }
+
+        /* ---------- الكمية + تنبيه اللون/المقاس ---------- */
+        .qty { display:flex; align-items:center; gap:10px; }
+        .qty button { width:42px; height:42px; border-radius:12px; border:1px solid var(--line2); background:var(--w1); color:var(--text); font-size:20px; font-weight:800; cursor:pointer; line-height:1; }
+        .qty button:active { transform:scale(.92); }
+        .qty input { width:68px; height:42px; text-align:center; border-radius:12px; border:1px solid var(--line); background:var(--w1); color:var(--text); font:800 16px 'Cairo',sans-serif; outline:0; }
+        .qty input:focus { border-color:var(--accent); }
+        #modal-wa-hint { font-size:12px; line-height:1.7; color:var(--glow); text-align:center; margin:4px 4px 0; }
+        #modal-wa-hint:empty { display:none; }
+        .need { outline:2px solid var(--glow); outline-offset:6px; border-radius:12px; animation:needPulse .6s ease 2; }
+        @keyframes needPulse { 50% { outline-color:transparent; } }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-accent selection:text-black">
@@ -469,7 +481,7 @@
             <div class="nz-tools">
                 <button id="theme-open" type="button" aria-label="تغيير الشكل" aria-haspopup="true" aria-expanded="false" class="nz-ic">🎨</button>
                 <button id="fav-open" type="button" onclick="openFav()" aria-label="المفضلة" class="nz-ic">♥<span id="fav-count"></span></button>
-                <a href="https://wa.me/201271425089" target="_blank" aria-label="واتساب" class="nz-ic nz-wa"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/201271425089" data-wa target="_blank" aria-label="واتساب" class="nz-ic nz-wa"><i class="fab fa-whatsapp"></i></a>
                 <button type="button" onclick="sharePage()" aria-label="مشاركة" class="nz-ic"><i class="fas fa-share-alt"></i></button>
             </div>
         </div>
@@ -514,7 +526,7 @@
         <button type="button" class="nz-act" id="act-offers" style="display:none" onclick="nzGo('offers')"><i>🏷️</i>العروض</button>
         <button type="button" class="nz-act" onclick="nzGo('trending')"><i>🔥</i>الرائج</button>
         <button type="button" class="nz-act" onclick="openDirections()"><i>📍</i>اتجاهات</button>
-        <a class="nz-act" href="https://wa.me/201271425089" target="_blank"><i>💬</i>واتساب</a>
+        <a class="nz-act" href="https://wa.me/201271425089" data-wa target="_blank"><i>💬</i>واتساب</a>
     </nav>
 
     <!-- Featured Slider -->
@@ -580,7 +592,7 @@
                     </div>
                     <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-5">
                         <button type="button" onclick="openDirections()" class="bg-brand-accent text-black font-bold py-2.5 px-6 rounded-full hover:bg-yellow-400 transition text-sm md:text-base"><i class="fas fa-location-arrow ml-1"></i> اتجاهات للمحل</button>
-                        <a href="https://wa.me/201271425089" target="_blank" class="glass-panel text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition text-sm md:text-base"><i class="fab fa-whatsapp ml-1 text-brand-whatsapp"></i> كلمينا واتساب</a>
+                        <a href="https://wa.me/201271425089" data-wa target="_blank" class="glass-panel text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition text-sm md:text-base"><i class="fab fa-whatsapp ml-1 text-brand-whatsapp"></i> كلمينا واتساب</a>
                         <button id="pwa-install" type="button" onclick="installApp()" class="hidden glass-panel text-white font-bold py-2.5 px-6 rounded-full hover:bg-gray-800 transition text-sm md:text-base">📲 ثبّتي التطبيق</button>
                     </div>
                 </div>
@@ -649,7 +661,7 @@
                 
                 <p id="modal-desc" class="text-gray-300 mb-5 text-xs md:text-sm leading-relaxed"></p>
                 
-                <div class="mb-5">
+                <div id="modal-colors-wrap" class="mb-5">
                     <p class="text-xs md:text-sm text-gray-400 mb-2">حددي اللون للاستفسار:</p>
                     <div id="modal-colors" class="flex gap-2 flex-wrap">
                         <!-- Colors go here -->
@@ -660,10 +672,20 @@
                     <div id="modal-sizes" class="flex gap-2 flex-wrap"></div>
                 </div>
                 
+                <div class="mb-4">
+                    <label for="modal-quantity" class="block text-xs md:text-sm text-gray-400 mb-2">الكمية:</label>
+                    <div class="qty">
+                        <button type="button" id="qty-minus" aria-label="أقل">−</button>
+                        <input id="modal-quantity" type="number" min="1" max="20" value="1" inputmode="numeric">
+                        <button type="button" id="qty-plus" aria-label="أكتر">+</button>
+                    </div>
+                </div>
+
                 <div class="flex flex-col gap-2">
                     <button id="modal-wa-btn" class="w-full bg-brand-whatsapp text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-600 transition text-sm md:text-base">
                         <i class="fab fa-whatsapp text-lg"></i> استفسري عن الموديل
                     </button>
+                    <p id="modal-wa-hint" role="status"></p>
                     <a id="modal-tiktok-btn" href="#" target="_blank" class="w-full glass-panel text-white border border-gray-600 font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition text-sm md:text-base">
                         <i class="fab fa-tiktok"></i> شوفيه فيديو على تيك توك
                     </a>
@@ -704,7 +726,34 @@
         const newBadge = p => isNew(p) ? '<div class="new-tag">✨ جديد</div>' : '';
         const waOffer = p => { const s = saleInfo(p); return s ? ` (عليه خصم ${s.pct}%)` : ''; };
 
-        const waNumber = "201271425089"; 
+        let waNumber = "201271425089";
+        // ===== واتساب: الرقم بيتغير من اللوحة + رسالة موحدة لكل الأماكن =====
+        window.NOOR_VERSION = '2.0 · 2026-11-12';
+        let waWarned = false;
+        const waUrl = text => 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(text);
+        function waOpen(text, productId) {                         // أي فتح لواتساب من الصفحة بيعدّي من هنا
+            window.open(waUrl(text), '_blank');
+            document.dispatchEvent(new CustomEvent('noor:wa', { detail: { id: productId || 0 } }));
+        }
+        function applyWhatsapp() {
+            document.querySelectorAll('a[data-wa]').forEach(a => { a.href = 'https://wa.me/' + waNumber; });
+        }
+        // نص موديل واحد: بيستخدمه الاستفسار والمفضلة (ونفس الدالة هتخدم سلّة الواتساب بعدين)
+        function waItem(p, o) {
+            o = o || {};
+            const sl = saleInfo(p), price = Number(p.price) > 0 ? Number(p.price) : 0;
+            const unit = sl && sl.now ? sl.now : price;
+            const lines = [p.title + (sl ? ' (عليه خصم ' + sl.pct + '%)' : '') + (p.available === false ? ' — غير متاح حالياً' : '')];
+            if (o.ask) {
+                if ((p.colors || []).length) lines.push('اللون: ' + (o.color || 'مش محدد'));
+                if ((p.sizes || []).length) lines.push('المقاس: ' + (o.size || 'مش محدد'));
+                const qty = o.qty > 0 ? o.qty : 1;
+                lines.push('الكمية: ' + qty);
+                if (unit) lines.push('السعر: ' + (qty > 1 ? qty + ' × ' + fmtEGP(unit) + ' = ' + fmtEGP(unit * qty) : fmtEGP(unit)));
+            } else if (unit) lines.push('السعر: ' + fmtEGP(unit));
+            lines.push('الرابط: ' + location.origin + location.pathname + '#p' + p.id);
+            return lines.join('\n');
+        } 
         
         const defaultProducts = [
             {
@@ -854,6 +903,9 @@
                     motd: (!Array.isArray(d) && typeof d.motd === 'string') ? d.motd.trim() : '',
                     shop: (!Array.isArray(d) && d.shop && typeof d.shop === 'object') ? d.shop : null
                 };
+                const cfgWa = String((window.noorShop.shop && window.noorShop.shop.whatsapp) || '').replace(/\D/g, '');
+                if (cfgWa.length >= 10 && cfgWa.length <= 15) waNumber = cfgWa;
+                applyWhatsapp();
                 if (!Array.isArray(d) && typeof d.banner === 'string') {
                     const b = document.getElementById('season-banner');
                     if (d.banner.trim()) b.textContent = d.banner; else b.style.display = 'none';
@@ -896,8 +948,11 @@
 
         function openModal(id) {
             currentProduct = products.find(p => p.id === id);
-            selectedColor = (currentProduct.colors || [])[0] || '';
+            selectedColor = '';
             selectedSize = '';
+            waWarned = false;
+            document.getElementById('modal-quantity').value = '1';
+            document.getElementById('modal-wa-hint').textContent = '';
             renderSizes(); 
             
             document.getElementById('modal-title').innerText = currentProduct.title;
@@ -931,7 +986,9 @@
 
         function renderColors() {
             const container = document.getElementById('modal-colors');
-            container.innerHTML = (currentProduct.colors || []).map(c => `
+            const colors = currentProduct.colors || [];
+            document.getElementById('modal-colors-wrap').classList.toggle('hidden', !colors.length);
+            container.innerHTML = colors.map(c => `
                 <button data-c="${esc(c)}" onclick="selectColor(this.dataset.c)" class="px-2 py-1 text-[11px] md:text-sm rounded-full border ${selectedColor === c ? 'bg-brand-accent text-black border-brand-accent font-bold' : 'bg-transparent text-gray-300 border-gray-600 hover:border-gray-400'} transition">
                     ${esc(c)}
                 </button>
@@ -948,27 +1005,52 @@
 
         function selectSize(s) {
             selectedSize = selectedSize === s ? '' : s;
+            waWarned = false; document.getElementById('modal-wa-hint').textContent = '';
             renderSizes();
             updateModalWaButton();
         }
 
         function selectColor(color) {
             selectedColor = color;
+            waWarned = false; document.getElementById('modal-wa-hint').textContent = '';
             renderColors();
             updateModalWaButton();
         }
 
         function updateModalWaButton() {
             const btn = document.getElementById('modal-wa-btn');
-            const msg = encodeURIComponent(`السلام عليكم، حابة استفسر عن الموديل ده: ${currentProduct.title}${waOffer(currentProduct)} ${(d => d.length ? '(' + d.join('، ') + ')' : '')([selectedSize && 'المقاس: ' + selectedSize, selectedColor && 'اللون: ' + selectedColor].filter(Boolean))}، هل لسه متاح في المحل؟`);
-            btn.onclick = () => window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+            if (!currentProduct) return;
+            const off = currentProduct.available === false;
+            btn.disabled = off;
+            btn.classList.toggle('opacity-50', off);
+            btn.classList.toggle('cursor-not-allowed', off);
+            btn.innerHTML = off ? 'المنتج غير متاح حالياً' : '<i class="fab fa-whatsapp text-lg"></i> استفسري عن الموديل';
+            btn.onclick = () => {
+                if (off) return;
+                const needColor = (currentProduct.colors || []).length && !selectedColor;
+                const needSize = (currentProduct.sizes || []).length && !selectedSize;
+                if ((needColor || needSize) && !waWarned) {                 // تنبيه لطيف في أول دوسة بس
+                    waWarned = true;
+                    [['modal-colors-wrap', needColor], ['modal-sizes-wrap', needSize]].forEach(([id, need]) => {
+                        if (!need) return;
+                        const w = document.getElementById(id); w.classList.add('need'); setTimeout(() => w.classList.remove('need'), 2600);
+                    });
+                    document.getElementById('modal-wa-hint').textContent = 'اختاري ' + (needColor && needSize ? 'اللون والمقاس' : needColor ? 'اللون' : 'المقاس') + ' عشان الرد يبقى دقيق — أو دوسي تاني لو عايزة تبعتي زي ما هو.';
+                    return;
+                }
+                const qty = Math.max(1, Math.min(20, parseInt(document.getElementById('modal-quantity').value, 10) || 1));
+                const text = [
+                    'السلام عليكم، حابة أستفسر عن الموديل ده:',
+                    waItem(currentProduct, { ask: true, color: selectedColor, size: selectedSize, qty }),
+                    Number(currentProduct.price) > 0 ? 'هل متاح في المحل؟' : 'ممكن أعرف السعر والتفاصيل والتوافر؟'
+                ].join('\n');
+                waOpen(text, currentProduct.id);
+            };
         }
 
-        function quickWa(id) {
-            const p = products.find(x => x.id === id);
-            const msg = encodeURIComponent(`السلام عليكم، كنت بسأل عن ( ${p.title}${waOffer(p)} )، متاح أجربه في المحل امتى؟`);
-            window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
-        }
+        function quickWa(id) { openModal(id); }   // بيفتح نافذة الموديل عشان تختاري اللون والمقاس والكمية
+
+        (() => { const i = document.getElementById('modal-quantity'), cl = v => Math.max(1, Math.min(20, parseInt(v, 10) || 1)); document.getElementById('qty-minus').addEventListener('click', () => { i.value = cl(cl(i.value) - 1); }); document.getElementById('qty-plus').addEventListener('click', () => { i.value = cl(cl(i.value) + 1); }); i.addEventListener('change', () => { i.value = cl(i.value); }); })();
 
         function closeModal() {
             if (location.hash.startsWith('#p')) history.replaceState(null, '', location.pathname + location.search);
@@ -1104,18 +1186,16 @@
             window.sendFavs = function () {
                 var list = favList();
                 if (!list.length) return;
-                var base = location.origin + location.pathname;
-                var head = 'السلام عليكم، أنا مهتمة بالموديلات دي من الموقع 🌸\n', tail = '\nممكن تفاصيل التوفر والأسعار؟';
-                var lines = [], len = encodeURIComponent(head + tail).length;
+                var head = 'السلام عليكم، أنا مهتمة بالموديلات دي من الموقع 🌸\n\n', tail = '\nممكن تفاصيل التوفر والأسعار؟';
+                var blocks = [], len = encodeURIComponent(head + tail).length;
                 for (var i = 0; i < list.length; i++) {
-                    var p = list[i];
-                    var line = (i + 1) + ') ' + p.title + (p.available === false ? ' (غير متاح)' : '') + (typeof waOffer === 'function' ? waOffer(p) : '') + '\n' + base + '#p' + p.id;
-                    var l = encodeURIComponent(line + '\n').length;
+                    var b = (i + 1) + ') ' + waItem(list[i]) + '\n';
+                    var l = encodeURIComponent(b + '\n').length;
                     if (len + l > 3200) break;
-                    lines.push(line); len += l;
+                    blocks.push(b); len += l;
                 }
-                if (lines.length < list.length) lines.push('+ ' + (list.length - lines.length) + ' موديلات تانية في المفضلة');
-                window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent(head + lines.join('\n') + tail), '_blank');
+                if (blocks.length < list.length) blocks.push('+ ' + (list.length - blocks.length) + ' موديلات تانية في المفضلة\n');
+                waOpen(head + blocks.join('\n') + tail);
             };
 
             // ---------- مواعيد المحل + الاتجاهات ----------
@@ -1574,17 +1654,18 @@
             }
             // 1) الزبونة داست واتساب → لما ترجع للصفحة نشكرها
             var pendingWa = false;
-            document.addEventListener('click', function (e) {
-                var t = e.target, el = t && t.closest ? t.closest('#modal-wa-btn,#fav-wa,[onclick^="quickWa"],a[href*="wa.me"]') : null;
-                if (!el) return;
-                pendingWa = true;
-                // الاستفسار على واتساب إشارة قوية على ذوق الزبونة
-                if (el.id === 'modal-wa-btn') { if (typeof currentProduct !== 'undefined' && currentProduct) track(currentProduct, 3); }
-                else {
-                    var mm = /quickWa\((\d+)\)/.exec(el.getAttribute('onclick') || '');
-                    if (mm && typeof products !== 'undefined') { var pp = products.filter(function (x) { return Number(x.id) === Number(mm[1]); })[0]; if (pp) track(pp, 3); }
-                }
+            document.addEventListener('click', function (e) {                 // روابط واتساب العادية (الهيدر / العنوان / الاختصارات)
+                var el = e.target && e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
+                if (el) pendingWa = true;
             }, true);
+            document.addEventListener('noor:wa', function (e) {               // أي فتح لواتساب بيعدّي من waOpen
+                pendingWa = true;
+                var id = e.detail && e.detail.id;
+                if (id && typeof products !== 'undefined') {                  // الاستفسار إشارة قوية على الذوق
+                    var pp = products.filter(function (x) { return Number(x.id) === Number(id); })[0];
+                    if (pp) track(pp, 3);
+                }
+            });
             document.addEventListener('visibilitychange', function () {
                 if (document.visibilityState === 'visible' && pendingWa) {
                     pendingWa = false;
@@ -1809,11 +1890,7 @@
                 if (!p) { react('confused', 'لسه معرفش ذوقك 🤔 شوفي كام موديل وأنا أتابع معاكي!', 4800, false); return; }
                 reveal(p, 'بفتّش على اللي يناسب ذوقك... 🔍', 'لقيتلك حاجة على ذوقك! 💕');
             }
-            function openWa() {
-                if (typeof waNumber === 'undefined') return;
-                pendingWa = true;
-                window.open('https://wa.me/' + waNumber + '?text=' + encodeURIComponent('السلام عليكم، محتاجة مساعدة في اختيار حاجة من الموقع 🌸'), '_blank');
-            }
+            function openWa() { waOpen('السلام عليكم، محتاجة مساعدة في اختيار حاجة من الموقع 🌸'); }
             function runMenu(id) {
                 closeMenu();
                 if (id === 'trending') goTrending();

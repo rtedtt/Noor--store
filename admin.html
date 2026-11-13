@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Noor Store · admin.html · v2.0 · 2026-11-12 -->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -172,6 +173,20 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
 #bkbar{flex-direction:column;gap:8px;align-items:stretch}
 #bkbar .r1,#bkbar .r2{display:flex;gap:8px;align-items:center;width:100%}
 #bkbar .r2 .btn{flex:1}
+
+/* ===== الإعدادات ===== */
+.srow{display:flex;align-items:center;gap:14px;width:100%;padding:14px;margin-top:12px;border:1px solid var(--ln);border-radius:16px;background:var(--s1);color:var(--tx);font:inherit;text-align:right;cursor:pointer}
+.srow .si{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:rgba(216,190,145,.12);flex:none}
+.srow .stt{flex:1;min-width:0}
+.srow .stt b{display:block;font-size:15px}
+.srow .stt small{display:block;color:var(--mu);font-size:12px;margin-top:3px}
+.srow .sa{color:var(--mu);font-size:24px}
+.srow:active{transform:scale(.99)}
+.sabout{margin-top:18px;padding:14px;border:1px solid var(--ln);border-radius:16px;background:var(--s1);display:flex;flex-direction:column;gap:6px;line-height:1.8}
+.sabout b{color:var(--gd)}
+.sabout-b{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.sabout-b .btn{flex:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.sabout-b a.btn{color:var(--tx)}
 </style>
 </head>
 <body>
@@ -187,17 +202,10 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
   <div class="bn"><label>النص الموسمي (بيظهر فوق الهيرو في الموقع)</label>
     <div><input class="in" id="bt" maxlength="80" placeholder="🔥 تشكيلة الشتاء وصلت"><button class="btn p" id="bs">حفظ</button></div>
     <div class="mu" style="margin-top:6px">سيبه فاضي لو عايز تخفيه.</div></div>
-  <details class="sc" id="shopbox"><summary>📣 رسالة اليوم + بيانات المحل (مواعيد وخريطة)</summary>
-    <label>رسالة اليوم (الشخصية بتقولها للزبونة أول ما تدخل الموقع)</label>
+  <details class="sc" id="shopbox"><summary>📣 رسالة اليوم (الشخصية بتقولها للزبونة)</summary>
+    <label>رسالة اليوم</label>
     <input class="in" id="sh_m" maxlength="120" placeholder="خصم 20% على الشتوي النهاردة 🔥">
-    <div class="mu" style="margin-top:6px">سيبها فاضية لو مفيش رسالة.</div>
-    <label>مواعيد الشغل (بتظهر في الموقع مع «مفتوح دلوقتي» أو «مقفول»)</label>
-    <div class="g2"><div><span class="mu">من</span><input class="in" type="time" id="sh_o"></div><div><span class="mu">إلى</span><input class="in" type="time" id="sh_c"></div></div>
-    <label>يوم الإجازة</label>
-    <select class="in" id="sh_x"><option value="">مفيش إجازة</option><option value="5">الجمعة</option><option value="6">السبت</option><option value="0">الأحد</option><option value="1">الاتنين</option><option value="2">التلات</option><option value="3">الأربع</option><option value="4">الخميس</option></select>
-    <label>رابط المحل على خرائط جوجل (لزرار «اتجاهات»)</label>
-    <input class="in ltr" id="sh_l" inputmode="url" placeholder="https://maps.app.goo.gl/...">
-    <div class="mu" style="margin-top:6px">افتحي المحل على خرائط جوجل ← مشاركة ← انسخي الرابط وحطيه هنا.</div>
+    <div class="mu" style="margin-top:6px">سيبيها فاضية لو مفيش رسالة. رقم الواتساب والمواعيد والخريطة في ⚙ الإعدادات.</div>
     <button class="btn p" id="shs" type="button" style="width:100%;margin-top:14px">حفظ</button>
   </details>
   <section class="dash-stats" aria-label="ملخص المنتجات">
@@ -217,7 +225,53 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
 <button class="btn p fab" id="add">+ إضافة موديل جديد</button>
 <div id="bkbar"><div class="r1"><span id="bkn" class="mu" style="flex:1">0 محدد</span><button class="btn" id="bka" type="button">الكل</button><button class="btn" id="bkc" type="button">إلغاء</button></div><div class="r2"><button class="btn p" id="bkv" type="button">✓ متوفر</button><button class="btn d" id="bkx" type="button">✕ مخلص</button><button class="btn" id="bkd" type="button">🏷️ خصم</button></div></div>
 
-<!-- الإعدادات / الربط -->
+<!-- الإعدادات (القايمة الرئيسية) -->
+<section class="scr" id="set">
+  <div class="top"><button class="ib" id="set_x" aria-label="رجوع">→</button><h1>الإعدادات</h1></div>
+  <div class="wrap">
+    <button class="srow" type="button" data-go="cfg"><span class="si">🔗</span><span class="stt"><b>ربط GitHub</b><small id="set_gh">—</small></span><span class="sa">‹</span></button>
+    <button class="srow" type="button" data-go="sshop"><span class="si">🏪</span><span class="stt"><b>بيانات المحل</b><small>واتساب • مواعيد الشغل • الخريطة</small></span><span class="sa">‹</span></button>
+    <button class="srow" type="button" data-go="sapp"><span class="si">📲</span><span class="stt"><b>التطبيق</b><small id="set_app">—</small></span><span class="sa">‹</span></button>
+    <div class="sabout">
+      <b>لوحة تحكم نور</b>
+      <span class="mu">نسخة <span id="set_ver"></span></span>
+      <div class="sabout-b"><button class="btn" type="button" id="set_tour">❓ شرح اللوحة</button><a class="btn" href="index.html" target="_blank" rel="noopener">🌐 فتح الموقع</a></div>
+    </div>
+    <button class="btn d" id="set_lo" type="button" style="width:100%;margin-top:18px">🚪 تسجيل الخروج ومسح التوكن</button>
+  </div>
+</section>
+
+<!-- بيانات المحل -->
+<section class="scr" id="sshop">
+  <div class="top"><button class="ib" data-back="set" aria-label="رجوع">→</button><h1>بيانات المحل</h1></div>
+  <div class="wrap">
+    <label>رقم واتساب المحل (مع كود الدولة، أرقام فقط أو مع +)</label>
+    <input class="in ltr" id="sh_w" type="tel" inputmode="tel" placeholder="201xxxxxxxxx" maxlength="20">
+    <div class="mu" style="margin-top:6px">مثال مصر: 20 ثم رقم الموبايل بدون الصفر الأول. كل أزرار واتساب ورسائله في الموقع بتستخدم الرقم ده.</div>
+    <label>مواعيد الشغل (بتظهر في الموقع مع «مفتوح دلوقتي» أو «مقفول»)</label>
+    <div class="g2"><div><span class="mu">من</span><input class="in" type="time" id="sh_o"></div><div><span class="mu">إلى</span><input class="in" type="time" id="sh_c"></div></div>
+    <label>يوم الإجازة</label>
+    <select class="in" id="sh_x"><option value="">مفيش إجازة</option><option value="5">الجمعة</option><option value="6">السبت</option><option value="0">الأحد</option><option value="1">الاتنين</option><option value="2">التلات</option><option value="3">الأربع</option><option value="4">الخميس</option></select>
+    <label>رابط المحل على خرائط جوجل (لزرار «اتجاهات»)</label>
+    <input class="in ltr" id="sh_l" inputmode="url" placeholder="https://maps.app.goo.gl/...">
+    <div class="mu" style="margin-top:6px">افتحي المحل على خرائط جوجل ← مشاركة ← انسخي الرابط وحطيه هنا.</div>
+    <button class="btn p" id="sss" type="button" style="width:100%;margin-top:18px">حفظ</button>
+  </div>
+</section>
+
+<!-- التطبيق -->
+<section class="scr" id="sapp">
+  <div class="top"><button class="ib" data-back="set" aria-label="رجوع">→</button><h1>التطبيق</h1></div>
+  <div class="wrap">
+    <div class="sabout"><b>حالة التثبيت</b><span id="app_st" class="mu">—</span></div>
+    <button class="btn p" id="pwa" type="button" style="display:none;width:100%;margin-top:14px">📲 تثبيت اللوحة على الشاشة الرئيسية</button>
+    <p class="mu" id="app_how" style="display:none;margin-top:14px;line-height:2"></p>
+    <div class="sabout"><b>تحديث التطبيق</b><span class="mu">لو حسّيتي إن اللوحة مش بتجيب آخر نسخة، دوسي هنا. الموديلات والبيانات مش هتتأثر والتوكن بيفضل محفوظ.</span><div class="sabout-b"><button class="btn" id="app_up" type="button">🔄 تحديث دلوقتي</button></div></div>
+    <p class="mu" style="margin-top:18px;line-height:1.9">⚠️ اللوحة بتفتح بدون نت، لكن الحفظ والتعديل محتاجين اتصال.</p>
+  </div>
+</section>
+
+<!-- ربط GitHub -->
 <section class="scr" id="cfg"><div class="wrap">
   <h2 style="color:var(--gd)">الربط مع GitHub</h2>
   <p class="mu">التوكن بيتحفظ على الجهاز ده بس، ومش بيتكتب في الصفحة.</p>
@@ -233,11 +287,9 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
     GitHub ← Settings ← Developer settings ← Personal access tokens ← Fine-grained tokens ← Generate.<br>
     اختار المستودع بتاع الموقع بس، وفي Permissions خلّي <b>Contents = Read and write</b>.
   </details>
-  <button class="btn" id="pwa" type="button" style="display:none;width:100%;margin-top:16px">📲 تثبيت اللوحة على الشاشة الرئيسية</button>
-  <p class="mu" id="pwa_ios" style="display:none;margin-top:16px">📲 لتثبيت اللوحة على iPhone: دوس زرار المشاركة ⬆️ في سفاري واختار «إضافة إلى الشاشة الرئيسية». وهتدخل التوكن مرة تانية جوه التطبيق.</p>
   <button class="btn p" id="sv" style="width:100%;margin-top:20px">حفظ والاتصال</button>
+  <button class="btn" id="tc" type="button" style="width:100%;margin-top:10px">🔌 اختبار الاتصال (من غير حفظ)</button>
   <button class="btn" id="cc" style="width:100%;margin-top:10px">رجوع</button>
-  <button class="btn d" id="lo" style="width:100%;margin-top:10px">تسجيل الخروج ومسح التوكن</button>
 </div></section>
 
 <!-- نموذج الموديل -->
@@ -334,7 +386,7 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let cfg={token:'',owner:'',repo:'',branch:''},items=[],banner='',motd='',shop={open:'',close:'',off:'',map:''},prev={},F=null,delId=null,tt;
+let cfg={token:'',owner:'',repo:'',branch:''},items=[],banner='',motd='',shop={open:'',close:'',off:'',map:'',whatsapp:''},prev={},F=null,delId=null,tt;
 try{Object.assign(cfg,JSON.parse(localStorage.getItem('noor_cfg')||'{}'))}catch{}
 const saveCfg=()=>{try{localStorage.setItem('noor_cfg',JSON.stringify(cfg))}catch{}};
 
@@ -362,7 +414,7 @@ const delF=async(p,msg)=>{const f=await getF(p);if(f)await gh(`${R()}/contents/$
 
 const normSale=s=>{if(!s||typeof s!=='object')return null;const t=s.type==='percent'||s.type==='amount'?s.type:'',v=+s.value;if(!t||!(v>0))return null;return{type:t,value:Math.round(v*100)/100,until:/^\d{4}-\d{2}-\d{2}$/.test(s.until||'')?s.until:''}};
 const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false,price:+p.price>0?Math.round(p.price*100)/100:0,sale:normSale(p.sale),added:/^\d{4}-\d{2}-\d{2}$/.test(p.added||'')?p.added:''});
-const normShop=x=>{x=x||{};const t=v=>/^\d{1,2}:\d{2}$/.test(v||'')?v:'';return{open:t(x.open),close:t(x.close),off:(x.off===0||x.off)?String(x.off):'',map:typeof x.map==='string'?x.map:''}};
+const normShop=x=>{x=x||{};const t=v=>/^\d{1,2}:\d{2}$/.test(v||'')?v:'';return{open:t(x.open),close:t(x.close),off:(x.off===0||x.off)?String(x.off):'',map:typeof x.map==='string'?x.map:'',whatsapp:typeof x.whatsapp==='string'?x.whatsapp.replace(/\D/g,''):''}};
 const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmtEGP=n=>Number(n).toLocaleString('en-US')+' ج.م';
 function saleInfo(p){
@@ -384,7 +436,7 @@ async function load(){
 /* كل تعديل بيقرأ أحدث نسخة من الملف الأول عشان ميحصلش تعارض */
 async function mutate(fn,msg,bn,ex){
   for(let i=0;i<2;i++){
-    const f=await getF('products.json'),d=parse(f),nx=fn(d.products),b=bn===undefined?d.banner:bn,x=ex===undefined?{motd:d.motd,shop:d.shop}:ex;
+    const f=await getF('products.json'),d=parse(f),nx=fn(d.products),b=bn===undefined?d.banner:bn,x=ex===undefined?{motd:d.motd,shop:d.shop}:(typeof ex==='function'?ex(d):ex);
     try{await putF('products.json',enc(JSON.stringify({banner:b,motd:x.motd,shop:x.shop,products:nx},null,2)+'\n'),msg,f&&f.sha);items=nx;banner=b;motd=x.motd;shop=x.shop;render();return}
     catch(e){if((e.st!==409&&e.st!==422)||i)throw e}
   }
@@ -552,15 +604,24 @@ $('#bs').onclick=async()=>{
   catch(e){toast(e.message,1)}finally{busy()}
 };
 function fillShop(){
-  $('#sh_m').value=motd;$('#sh_o').value=shop.open;$('#sh_c').value=shop.close;$('#sh_x').value=shop.off;$('#sh_l').value=shop.map;
+  $('#sh_m').value=motd;$('#sh_o').value=shop.open;$('#sh_c').value=shop.close;$('#sh_x').value=shop.off;$('#sh_l').value=shop.map;$('#sh_w').value=shop.whatsapp||'';
 }
 $('#shs').onclick=async()=>{
+  const m=$('#sh_m').value.trim();
+  busy('جاري الحفظ...');
+  try{await mutate(l=>l,'Update message of the day',undefined,d=>({motd:m,shop:d.shop}));fillShop();toast('✓ تم حفظ رسالة اليوم — بتظهر في الموقع خلال دقيقة أو اتنين')}
+  catch(e){toast(e.message,1)}finally{busy()}
+};
+$('#sss').onclick=async()=>{
   const o=$('#sh_o').value,c=$('#sh_c').value;
   if(!!o!==!!c){toast('اكتب وقت الفتح ووقت القفل مع بعض، أو سيبهم الاتنين فاضيين',1);return}
+  const w=$('#sh_w').value.replace(/\D/g,'');
+  if(w&&(w.length<10||w.length>15)){toast('رقم واتساب لازم يكون من 10 إلى 15 رقم مع كود الدولة',1);return}
   let m=$('#sh_l').value.trim();if(m&&!/^https?:\/\//i.test(m))m='https://'+m;
   if(m){try{const h=new URL(m).hostname;if(!/(^|\.)(google\.[a-z.]+|goo\.gl|g\.co)$/i.test(h))throw 0}catch{toast('رابط الخريطة لازم يكون من خرائط جوجل (maps.app.goo.gl أو google.com/maps)',1);return}}
+  const sh={open:o,close:c,off:$('#sh_x').value,map:m,whatsapp:w};
   busy('جاري الحفظ...');
-  try{await mutate(l=>l,'Update shop info',undefined,{motd:$('#sh_m').value.trim(),shop:{open:o,close:c,off:$('#sh_x').value,map:m}});fillShop();toast('✓ تم الحفظ — بيظهر في الموقع خلال دقيقة أو اتنين')}
+  try{await mutate(l=>l,'Update shop info',undefined,d=>({motd:d.motd,shop:sh}));fillShop();toast('✓ تم الحفظ — بيظهر في الموقع خلال دقيقة أو اتنين')}
   catch(e){toast(e.message,1)}finally{busy()}
 };
 
@@ -649,11 +710,21 @@ function guess(){
   const seg=location.pathname.split('/')[1];
   return{owner:m[1],repo:seg&&!/\.html?$/i.test(seg)?seg:location.hostname};
 }
+const SCRS=['set','cfg','sshop','sapp'];
+const ADMIN_VER='2.0 · 2026-11-12';
+function openScr(id){SCRS.forEach(x=>$('#'+x).classList.toggle('on',x===id));document.body.style.overflow='hidden'}
+function closeScr(){SCRS.forEach(x=>$('#'+x).classList.remove('on'));document.body.style.overflow=''}
 function openCfg(){
   const g=guess();
   $('#tk').value=cfg.token;$('#ow').value=cfg.owner||g.owner||'';$('#rp').value=cfg.repo||g.repo||'';$('#br').value=cfg.branch;
-  $('#cc').style.display=$('#lo').style.display=cfg.token?'':'none';
-  $('#cfg').classList.add('on');
+  $('#cc').style.display=cfg.token?'':'none';
+  openScr('cfg');
+}
+function openSet(){
+  $('#set_gh').textContent=cfg.token?'متصل بـ '+cfg.owner+'/'+cfg.repo+' • '+(cfg.branch||'main'):'مش متصل';
+  $('#set_ver').textContent=ADMIN_VER;
+  if(window.appUI)window.appUI();
+  openScr('set');
 }
 $('#sv').onclick=async()=>{
   const n={token:$('#tk').value.trim(),owner:$('#ow').value.trim(),repo:$('#rp').value.trim(),branch:$('#br').value.trim()};
@@ -663,13 +734,27 @@ $('#sv').onclick=async()=>{
     const r=await gh(R());
     if(r.permissions&&r.permissions.push===false)throw new Error('التوكن ده للقراءة بس. لازم صلاحية Contents: Read and write');
     cfg.branch=n.branch||r.default_branch;saveCfg();
-    $('#cfg').classList.remove('on');toast('✓ تم الاتصال بالمستودع');
+    closeScr();toast('✓ تم الاتصال بالمستودع');
     await load();
   }catch(e){cfg=old;toast(e.message,1)}finally{busy()}
 };
-$('#cc').onclick=()=>$('#cfg').classList.remove('on');
-$('#lo').onclick=()=>{cfg={token:'',owner:cfg.owner,repo:cfg.repo,branch:''};saveCfg();items=[];render();openCfg()};
-$('#st').onclick=openCfg;$('#rf').onclick=load;$('#add').onclick=()=>openForm(0);
+$('#tc').onclick=async()=>{
+  const n={token:$('#tk').value.trim(),owner:$('#ow').value.trim(),repo:$('#rp').value.trim(),branch:$('#br').value.trim()};
+  if(!n.token||!n.owner||!n.repo){toast('كمّل التوكن واسم الحساب والمستودع',1);return}
+  const old=cfg;cfg=n;busy('جاري اختبار الاتصال...');
+  try{
+    const r=await gh(R());
+    const w=r.permissions?(r.permissions.push?'✓ صلاحية الكتابة شغالة':'✗ التوكن للقراءة بس'):'مقدرتش أتأكد من صلاحية الكتابة';
+    toast((r.full_name?'✓ متصل بـ '+r.full_name+' — ':'✓ متصل — ')+w,r.permissions&&r.permissions.push===false?1:0);
+  }catch(e){toast(e.message,1)}finally{cfg=old;busy()}
+};
+$('#cc').onclick=()=>openScr('set');
+$('#set_x').onclick=closeScr;
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>openScr(b.dataset.back));
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(b.dataset.go==='cfg')openCfg();else{fillShop();openScr(b.dataset.go)}});
+$('#set_lo').onclick=()=>{if(!confirm('تسجيل الخروج ومسح التوكن من الجهاز ده؟'))return;cfg={token:'',owner:cfg.owner,repo:cfg.repo,branch:''};saveCfg();items=[];render();openCfg()};
+$('#set_tour').onclick=()=>{closeScr();tourStart()};
+$('#st').onclick=openSet;$('#rf').onclick=load;$('#add').onclick=()=>openForm(0);
 
 /* ===== جولة الشرح: بتظهر أول مرة بعد تسجيل الدخول بالتوكن، وزرار ❓ بيعيدها ===== */
 const TOUR_KEY='noor_tour_v1';
@@ -677,10 +762,10 @@ const TOUR=[
   {m:'welcome.webp',t:'أهلاً بيك في لوحة تحكم نور 👋',p:'أنا مساعدة المحل، وهشرحلك اللوحة في دقيقة. من هنا بتتحكم في الموقع كله من موبايلك: بتضيف الموديلات والصور، وتغيّر المتاح والمخلص، وتكتب الجملة اللي بتظهر فوق الموقع. من غير ما تحتاج مبرمج.'},
   {m:'idle.webp',t:'ليه اللوحة دي مهمة؟',p:'الموقع هو واجهة المحل قدام الزبونات. لما الموديلات والصور تبقى محدّثة، الزبونة بتشوف اللي موجود فعلاً وتكلمكم على واتساب. وأي تعديل بتعمله هنا بيتحفظ لوحده، وبيظهر في الموقع بعد دقيقة أو اتنين تقريباً.'},
   {m:'idle.webp',el:'.bn',t:'النص الموسمي',p:'ده الشريط اللي بيظهر فوق الموقع، زي «🔥 تشكيلة الشتاء وصلت». اكتب الجملة واضغط «حفظ». وسيبه فاضي لو عايز تخفيه.'},
-  {m:'point.webp',el:'#shopbox',t:'رسالة اليوم وبيانات المحل',p:'اضغط على الصندوق ده يتفتح. «رسالة اليوم» الشخصية بتقولها للزبونة أول ما تدخل الموقع، زي «خصم 20% النهاردة». وهنا كمان مواعيد الشغل ويوم الإجازة، فالموقع بيكتب «مفتوح دلوقتي» أو «مقفول»، ورابط المحل على الخريطة لزرار «اتجاهات».'},
+  {m:'point.webp',el:'#shopbox',t:'رسالة اليوم',p:'اضغط على الصندوق ده يتفتح. «رسالة اليوم» الشخصية بتقولها للزبونة أول ما تدخل الموقع، زي «خصم 20% النهاردة». أما رقم الواتساب ومواعيد الشغل ورابط الخريطة فهتلاقيهم في ⚙ الإعدادات ← بيانات المحل.'},
   {m:'idle.webp',el:()=>document.querySelector('#list .card')||$('#list'),t:'قائمة الموديلات',p:'كل كارت هو موديل ظاهر في الموقع. فيه مفتاح «متوفر» تقفله لما الموديل يخلص، وتحته 📌 للتثبيت في الشريط المميز، و✏️ للتعديل، و📄 لعمل نسخة منه (مفيدة لما يكون شبه موديل تاني)، و🗑️ للحذف. وزرار «تحديد متعدد» فوق القائمة بيخليك تعدّل التوفر أو تضيف خصم لكذا موديل مرة واحدة.'},
   {m:'heart.webp',el:'#add',pos:'top',t:'إضافة موديل جديد',p:'من الزرار ده بتضيف موديل: اكتب الاسم والوصف، وضيف الألوان والمقاسات والتصنيف، واختار الصور من الموبايل (لحد 8 صور، والأولى هي الغلاف). الصور بتتصغّر وبتتقص لوحدها على شكل ثابت (3:4) قبل الرفع عشان الموقع يفضل سريع وشكله متناسق. وفي خانة «السعر والخصم» اكتب السعر (اختياري) ونسبة أو مبلغ الخصم وآخر يوم له، والموقع بيعرض العرض لوحده ويخفيه بعد ما ينتهي. ولو اخترت شارة 🔥 هوت أو ⭐ تريند، الموديل بيظهر في قسم «الرائج الآن» وبترشحه الشخصية للزبونات.'},
-  {m:'idle.webp',el:'body > header.top',t:'التحديث والإعدادات',p:'↻ بيحمّل آخر نسخة من الموديلات. ⚙ فيها ربط GitHub وتسجيل الخروج، والتوكن بيتحفظ على الجهاز ده بس فماتبعتوش لحد. وزرار ❓ بيعيد الشرح ده في أي وقت. ومن ⚙ تقدر تثبّت اللوحة على الشاشة الرئيسية كأنها تطبيق.'},
+  {m:'idle.webp',el:'body > header.top',t:'التحديث والإعدادات',p:'↻ بيحمّل آخر نسخة من الموديلات. ⚙ الإعدادات فيها: ربط GitHub، وبيانات المحل (واتساب ومواعيد وخريطة)، وتثبيت اللوحة كتطبيق، وتسجيل الخروج. والتوكن بيتحفظ على الجهاز ده بس فماتبعتوش لحد. وزرار ❓ بيعيد الشرح ده في أي وقت.'},
   {m:'heart.webp',t:'خلصنا! 🎉',p:'كده بقيت عارف كل حاجة. جرّب تضيف أول موديل، ولو احتجت الشرح تاني دوس على ❓ فوق.'}
 ];
 let tourI=0,tourHl=null,tourShown=false;
@@ -734,14 +819,32 @@ cfg.token&&cfg.owner&&cfg.repo?load():openCfg();
 <!-- تثبيت اللوحة كتطبيق + Service Worker -->
 <script>
 (function(){
-  const b=document.getElementById('pwa'),h=document.getElementById('pwa_ios');let dp=null;
+  const $=s=>document.querySelector(s);
+  let dp=null;
   const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-  addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;if(!standalone)b.style.display='block'});
-  addEventListener('appinstalled',()=>{dp=null;b.style.display='none'});
-  if(ios&&!standalone)h.style.display='block';
-  b.onclick=()=>{if(!dp)return;dp.prompt();dp.userChoice.then(()=>{dp=null;b.style.display='none'})};
+  window.appUI=function(){
+    const st=$('#app_st'),btn=$('#pwa'),how=$('#app_how'),sum=$('#set_app');
+    if(standalone){st.textContent='✓ شغّالة كتطبيق مثبّت';sum.textContent='✓ مثبّتة';btn.style.display='none';how.style.display='none';return}
+    if(dp){st.textContent='قابلة للتثبيت دلوقتي';sum.textContent='قابلة للتثبيت';btn.style.display='block';how.style.display='none';return}
+    st.textContent='لسه مش مثبّتة (أو مثبّتة وإنتي فاتحاها من المتصفح)';sum.textContent='طريقة التثبيت';btn.style.display='none';how.style.display='block';
+    how.innerHTML=ios
+      ?'على iPhone: دوسي زرار المشاركة ⬆️ في سفاري واختاري «إضافة إلى الشاشة الرئيسية». وهتدخلي التوكن مرة تانية جوه التطبيق.'
+      :'من قايمة Chrome (⋮) اختاري «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».<br>لو لقيتي أيقونة «لوحة نور» عندك بالفعل، افتحي اللوحة منها بدل المتصفح (هتفتح من غير شريط العنوان).';
+  };
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;appUI()});
+  addEventListener('appinstalled',()=>{dp=null;appUI()});
+  $('#pwa').onclick=()=>{if(!dp)return;dp.prompt();dp.userChoice.then(()=>{dp=null;appUI()})};
+  $('#app_up').onclick=async()=>{
+    if(typeof busy==='function')busy('جاري التحديث...');
+    try{
+      if('serviceWorker' in navigator)for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister();
+      if(window.caches)for(const k of await caches.keys())await caches.delete(k);
+    }catch(e){}
+    location.reload();
+  };
   if('serviceWorker' in navigator)addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
+  appUI();
 })();
 </script>
 </body>
