@@ -11,23 +11,25 @@
   "products": [
     {
       "id": 1,
-      "added": "2026-11-14",
-      "price": 0,
-      "sale": null,
       "title": "طقم كاجوال",
       "badge": "",
+      "image": "images/mwgd61gu70ir.jpg",
       "description": "طقم كاجوال (هودي بسحاب وبنطلون) - رمادي داكن\n​إطلالة عصرية ومريحة: طقم شتوي كاجوال مكون من قطعتين (جاكيت هودي وبنطلون) باللون الرمادي الداكن المميز، مزين بالخطوط البيضاء الرياضية الكلاسيكية على الأكمام والجانبين لإطلالة يومية مريحة ومفعمة بالحيوية.",
-      "colors": [],
+      "colors": [
+        "رمادي"
+      ],
       "sizes": [],
       "category": "طقم",
       "tag": "hot",
       "featured": true,
-      "tiktokUrl": "https://vm.tiktok.com/ZSp4VN5HB/",
-      "available": true,
       "images": [
         "images/mwgd61gu70ir.jpg"
       ],
-      "image": "images/mwgd61gu70ir.jpg"
+      "tiktokUrl": "https://vm.tiktok.com/ZSp4VN5HB/",
+      "available": true,
+      "price": 0,
+      "sale": null,
+      "added": "2026-11-14"
     }
   ]
 }
