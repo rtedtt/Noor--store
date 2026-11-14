@@ -11,11 +11,9 @@
   "products": [
     {
       "id": 2,
-      "added": "2026-11-14",
-      "price": 0,
-      "sale": null,
       "title": "طقم كاجوال عصري",
       "badge": "تريند الشتاء❄️",
+      "image": "images/mwgdki76rbix.jpg",
       "description": "طقم كاجوال عصري (جاكيت جلد برغندي وبنطلون جينز واسع)\nإطلالة شتوية \"ستريت وير\" جريئة: طقم كاجوال يجمع بين فخامة الجلد وحرية الدنيم الفضفاض، مثالي للشابات والباحثات عن ستايل عصري، واسع (Oversized)، ومريح جداً في الحركة.",
       "colors": [],
       "sizes": [
@@ -24,12 +22,14 @@
       "category": "طقم",
       "tag": "trend",
       "featured": true,
+      "images": [
+        "images/mwgdki76rbix.jpg"
+      ],
       "tiktokUrl": "https://vm.tiktok.com/ZSp4VN5HB/",
       "available": true,
-      "images": [
-        "images/mwgdbjjg2m2q.jpg"
-      ],
-      "image": "images/mwgdbjjg2m2q.jpg"
+      "price": 0,
+      "sale": null,
+      "added": "2026-11-14"
     },
     {
       "id": 1,
