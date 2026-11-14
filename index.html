@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Noor Store · index.html · v2.0 · 2026-11-12 -->
+<!-- Noor Store · index.html · v2.1 · 2026-11-13 -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -33,6 +33,16 @@
                 var d = document.documentElement, nav = navigator, conn = nav.connection || {};
                 var t = localStorage.getItem('noor_theme'), l = localStorage.getItem('noor_lite'), c = localStorage.getItem('noor_cards');
                 d.setAttribute('data-theme', /^(luxe|violet|light)$/.test(t) ? t : 'luxe');   // الثيم الافتراضي: luxe
+                // جهاز المدير (فيه توكن): بيظهر رابط اللوحة، والتطبيق المثبّت ممكن يفتح عليها على طول
+                var raw = localStorage.getItem('noor_cfg'), tok = raw && JSON.parse(raw).token;
+                if (tok) {
+                    d.classList.add('is-admin');
+                    var app = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || nav.standalone === true;
+                    if (app && localStorage.getItem('noor_launch') === 'admin' && !sessionStorage.getItem('noor_launched')) {
+                        sessionStorage.setItem('noor_launched', '1');
+                        location.replace('admin.html');
+                    }
+                }
                 d.classList.add('js');
                 if (l === '1' || (l === null && (conn.saveData || (nav.deviceMemory && nav.deviceMemory <= 2) || (nav.hardwareConcurrency && nav.hardwareConcurrency <= 2)))) d.classList.add('lite');
                 if (c === 'big') d.setAttribute('data-cards', 'big');
@@ -464,6 +474,12 @@
         #modal-wa-hint:empty { display:none; }
         .need { outline:2px solid var(--glow); outline-offset:6px; border-radius:12px; animation:needPulse .6s ease 2; }
         @keyframes needPulse { 50% { outline-color:transparent; } }
+
+        /* ---------- رابط لوحة التحكم: بيظهر بس على جهاز المدير ---------- */
+        .admin-only { display:none !important; }
+        html.is-admin .admin-only { display:flex !important; }
+        html.is-admin .tp-sep.admin-only { display:block !important; }
+        a.tp-opt { text-decoration:none; }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-accent selection:text-black">
@@ -497,6 +513,8 @@
         <p class="tp-h">حجم الكروت</p>
         <div class="tp-row"><button type="button" data-cards="small">صغير (2 جنب بعض)</button><button type="button" data-cards="big">كبير</button></div>
         <label class="tp-sw"><input type="checkbox" id="tp-lite"> تخفيف المؤثرات (للموبايلات الضعيفة)</label>
+        <div class="tp-sep admin-only"></div>
+        <a class="tp-opt admin-only" href="admin.html" id="goadmin"><i style="background:linear-gradient(135deg,#d4af37,#1a1a1a)"></i><span>⚙ لوحة التحكم</span></a>
     </div>
 
     <!-- Hero Section -->
@@ -728,7 +746,7 @@
 
         let waNumber = "201271425089";
         // ===== واتساب: الرقم بيتغير من اللوحة + رسالة موحدة لكل الأماكن =====
-        window.NOOR_VERSION = '2.0 · 2026-11-12';
+        window.NOOR_VERSION = '2.1 · 2026-11-13';
         let waWarned = false;
         const waUrl = text => 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(text);
         function waOpen(text, productId) {                         // أي فتح لواتساب من الصفحة بيعدّي من هنا
@@ -2162,6 +2180,21 @@
                 var imgs = currentProduct.images && currentProduct.images.length ? currentProduct.images : (currentProduct.image ? [currentProduct.image] : []);
                 var i = imgs.indexOf(im.getAttribute('src')); openLightbox(imgs, i < 0 ? 0 : i);
             });
+        })();
+    </script>
+    <!-- دخول مخفي للوحة: 5 دوسات سريعة على اللوجو -->
+    <script>
+        (function () {
+            var n = 0, t = 0, a = document.querySelector('.nz-brand');
+            if (!a) return;
+            a.addEventListener('click', function (e) {
+                var now = Date.now();
+                if (now - t > 2500) n = 0;
+                t = now; n++;
+                if (n >= 5) { n = 0; e.preventDefault(); try { sessionStorage.setItem('noor_launched', '1'); } catch (x) {} location.href = 'admin.html'; }
+            });
+            var g = document.getElementById('goadmin');
+            if (g) g.addEventListener('click', function () { try { sessionStorage.setItem('noor_launched', '1'); } catch (x) {} });
         })();
     </script>
 </body>

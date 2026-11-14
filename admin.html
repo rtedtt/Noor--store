@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Noor Store · admin.html · v2.0 · 2026-11-12 -->
+<!-- Noor Store · admin.html · v2.1 · 2026-11-13 -->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -194,6 +194,7 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
 <header class="top">
   <img src="logo.jpg" alt="" class="lg">
   <h1>لوحة تحكم نور</h1>
+  <button class="ib" id="gosite" aria-label="المتجر" title="المتجر">🌐</button>
   <button class="ib" id="hp" aria-label="شرح اللوحة">❓</button>
   <button class="ib" id="rf" aria-label="تحديث">↻</button>
   <button class="ib" id="st" aria-label="الإعدادات">⚙</button>
@@ -232,10 +233,12 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
     <button class="srow" type="button" data-go="cfg"><span class="si">🔗</span><span class="stt"><b>ربط GitHub</b><small id="set_gh">—</small></span><span class="sa">‹</span></button>
     <button class="srow" type="button" data-go="sshop"><span class="si">🏪</span><span class="stt"><b>بيانات المحل</b><small>واتساب • مواعيد الشغل • الخريطة</small></span><span class="sa">‹</span></button>
     <button class="srow" type="button" data-go="sapp"><span class="si">📲</span><span class="stt"><b>التطبيق</b><small id="set_app">—</small></span><span class="sa">‹</span></button>
+    <div class="sabout"><b>🚀 التطبيق المثبّت يفتح على</b><span class="mu">على الجهاز ده بس، لما تفتحيه من الأيقونة.</span>
+      <div class="sabout-b"><button class="btn" id="ln_site" type="button">🛍️ المتجر</button><button class="btn" id="ln_admin" type="button">⚙ لوحة التحكم</button></div></div>
     <div class="sabout">
       <b>لوحة تحكم نور</b>
       <span class="mu">نسخة <span id="set_ver"></span></span>
-      <div class="sabout-b"><button class="btn" type="button" id="set_tour">❓ شرح اللوحة</button><a class="btn" href="index.html" target="_blank" rel="noopener">🌐 فتح الموقع</a></div>
+      <div class="sabout-b"><button class="btn" type="button" id="set_tour">❓ شرح اللوحة</button><a class="btn" href="index.html" id="set_site">🌐 فتح الموقع</a></div>
     </div>
     <button class="btn d" id="set_lo" type="button" style="width:100%;margin-top:18px">🚪 تسجيل الخروج ومسح التوكن</button>
   </div>
@@ -430,7 +433,7 @@ function parse(f){if(!f)return{banner:'',motd:'',shop:normShop(),products:[]};co
 
 async function load(){
   busy('جاري تحميل الموديلات...');
-  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;motd=d.motd;shop=d.shop;$('#bt').value=banner;fillShop();render();setTimeout(maybeTour,500)}
+  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;motd=d.motd;shop=d.shop;$('#bt').value=banner;fillShop();render();setTimeout(maybeTour,500);autoLaunch()}
   catch(e){toast(e.message,1)}finally{busy()}
 }
 /* كل تعديل بيقرأ أحدث نسخة من الملف الأول عشان ميحصلش تعارض */
@@ -711,7 +714,7 @@ function guess(){
   return{owner:m[1],repo:seg&&!/\.html?$/i.test(seg)?seg:location.hostname};
 }
 const SCRS=['set','cfg','sshop','sapp'];
-const ADMIN_VER='2.0 · 2026-11-12';
+const ADMIN_VER='2.1 · 2026-11-13';
 function openScr(id){SCRS.forEach(x=>$('#'+x).classList.toggle('on',x===id));document.body.style.overflow='hidden'}
 function closeScr(){SCRS.forEach(x=>$('#'+x).classList.remove('on'));document.body.style.overflow=''}
 function openCfg(){
@@ -724,6 +727,7 @@ function openSet(){
   $('#set_gh').textContent=cfg.token?'متصل بـ '+cfg.owner+'/'+cfg.repo+' • '+(cfg.branch||'main'):'مش متصل';
   $('#set_ver').textContent=ADMIN_VER;
   if(window.appUI)window.appUI();
+  paintLaunch();
   openScr('set');
 }
 $('#sv').onclick=async()=>{
@@ -754,6 +758,16 @@ document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>openScr(b.data
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(b.dataset.go==='cfg')openCfg();else{fillShop();openScr(b.dataset.go)}});
 $('#set_lo').onclick=()=>{if(!confirm('تسجيل الخروج ومسح التوكن من الجهاز ده؟'))return;cfg={token:'',owner:cfg.owner,repo:cfg.repo,branch:''};saveCfg();items=[];render();openCfg()};
 $('#set_tour').onclick=()=>{closeScr();tourStart()};
+const isApp=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const goSite=()=>{try{sessionStorage.setItem('noor_launched','1')}catch{}};
+$('#gosite').onclick=()=>{goSite();location.href='index.html'};
+$('#set_site').addEventListener('click',goSite);
+const setLaunch=v=>{try{localStorage.setItem('noor_launch',v)}catch{}paintLaunch()};
+function paintLaunch(){let v='site';try{v=localStorage.getItem('noor_launch')==='admin'?'admin':'site'}catch{}$('#ln_admin').classList.toggle('p',v==='admin');$('#ln_site').classList.toggle('p',v==='site')}
+$('#ln_site').onclick=()=>setLaunch('site');$('#ln_admin').onclick=()=>setLaunch('admin');
+function autoLaunch(){   // أول مرة تفتحي اللوحة من التطبيق المثبّت: التطبيق يفتح عليها من دلوقتي
+  try{if(isApp&&localStorage.getItem('noor_launch')===null){localStorage.setItem('noor_launch','admin');toast('✓ التطبيق هيفتح على لوحة التحكم من دلوقتي (تقدري تغيّري ده من ⚙ الإعدادات)')}}catch{}
+}
 $('#st').onclick=openSet;$('#rf').onclick=load;$('#add').onclick=()=>openForm(0);
 
 /* ===== جولة الشرح: بتظهر أول مرة بعد تسجيل الدخول بالتوكن، وزرار ❓ بيعيدها ===== */
