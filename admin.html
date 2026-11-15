@@ -2,6 +2,11 @@
 <!-- Noor Store · admin.html · v2.1 · 2026-11-13 -->
 <html lang="ar" dir="rtl">
 <head>
+<script>
+/* بوابة: بدون كلمة السر (من الموقع) أو توكن محفوظ على الجهاز بيرجعك للرئيسية */
+(function(){var ok=false;try{ok=sessionStorage.getItem('noor_gate')==='1'||!!(JSON.parse(localStorage.getItem('noor_cfg')||'{}').token)}catch(e){}
+if(!ok){document.documentElement.style.display='none';location.replace('index.html')}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
