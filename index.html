@@ -291,14 +291,14 @@
         .holo-ring::after { content:""; position:absolute; inset:-2px; border-radius:50%; padding:2px; pointer-events:none;
             background:conic-gradient(from 0deg, rgba(var(--glow-rgb)/0) 0deg, rgba(var(--glow-rgb)/.95) 70deg, var(--champ) 120deg, rgba(var(--glow-rgb)/0) 190deg);
             -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:holoSpin 8s linear infinite; }
-        .holo-slide { position:absolute; inset:0; opacity:0; transition:opacity .9s ease; cursor:pointer; animation:holoFloat 6s ease-in-out infinite; }
-        .holo-slide.on { opacity:1; }
-        .holo-ghost { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:22px; pointer-events:none;
-            filter:blur(1.5px) saturate(1.9) hue-rotate(-28deg) brightness(.85); mix-blend-mode:screen; }
-        html[data-theme="light"] .holo-ghost { mix-blend-mode:multiply; filter:blur(2px) saturate(1.4) hue-rotate(-28deg) brightness(1.05); }
-        .holo-ghost.g1 { transform:translate(-14%,-4%) scale(.96) rotate(-4deg); opacity:.5; }
-        .holo-ghost.g2 { transform:translate(-25%,-8%) scale(.9) rotate(-8deg); opacity:.26; }
-        @media (max-width:480px) { .holo-ghost.g1 { opacity:.62; } .holo-ghost.g2 { opacity:.34; } }
+        .holo-deck { position:absolute; inset:0; perspective:900px; animation:holoFloat 6s ease-in-out infinite; }
+        .holo-card { position:absolute; inset:0; cursor:pointer; will-change:transform; transform-origin:50% 90%; backface-visibility:hidden; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+        .holo-shade { position:absolute; inset:0; border-radius:24px; background:#000; opacity:0; pointer-events:none; }
+        .holo-card img { -webkit-user-drag:none; pointer-events:none; }
+        .hero-tint { position:absolute; inset:0; z-index:0; pointer-events:none; background-color:rgb(var(--hb,0 0 0)); opacity:var(--ht,0);
+            transition:background-color .9s ease, opacity .9s ease;
+            -webkit-mask-image:radial-gradient(ellipse 95% 60% at 50% 60%, #000 0, transparent 75%); mask-image:radial-gradient(ellipse 95% 60% at 50% 60%, #000 0, transparent 75%); }
+        .nz-hero-grid { position:relative; z-index:1; }
         .holo-frame { position:absolute; inset:0; padding:2px; border-radius:24px;
             background:linear-gradient(145deg,var(--accent-soft),var(--accent) 38%,var(--accent2) 68%,var(--glow)); box-shadow:0 22px 60px rgba(var(--glow-rgb)/.26); }
         .holo-main { position:relative; width:100%; height:100%; border-radius:22px; overflow:hidden; background:var(--card-img); }
@@ -454,12 +454,12 @@
         /* ---------- وضع التخفيف (أجهزة ضعيفة / توفير بيانات / اختيار الزبونة) ---------- */
         html.lite *, html.lite *::before, html.lite *::after { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
         html.lite .holo-ghost, html.lite .holo-main::before, html.lite body::before { display:none !important; }
-        html.lite .holo-ring::after, html.lite .holo-slide, html.lite .holo-base, html.lite .sk-img, html.lite .sk-line { animation:none !important; }
+        html.lite .holo-ring::after, html.lite .holo-deck, html.lite .holo-base, html.lite .sk-img, html.lite .sk-line { animation:none !important; }
         html.lite .holo-ring, html.lite .holo-frame { box-shadow:none; }
         html.lite html.js .nz-reveal, html.lite .nz-reveal { transition:none; opacity:1; transform:none; }
         html.lite .product-card { box-shadow:none !important; }
         @media (prefers-reduced-motion: reduce) {
-            .holo-slide, .holo-ring::after, .holo-base, .holo-main::before, .sk-img, .sk-line { animation:none !important; }
+            .holo-deck, .holo-ring::after, .holo-base, .holo-main::before, .sk-img, .sk-line { animation:none !important; }
             html.js .nz-reveal { transition:none; }
             .nz-hdr { transition:none; }
         }
@@ -2077,37 +2077,120 @@
                 [all.filter(function (p) { return typeof saleInfo === 'function' && saleInfo(p); }), all.filter(function (p) { return p.featured; }), all.filter(function (p) { return p.tag; }), all].forEach(function (l) { l.forEach(function (p) { if (out.indexOf(p) === -1) out.push(p); }); });
                 return out.slice(0, 5);
             }
-            function show(i) {
-                idx = (i + items.length) % items.length;
-                [].forEach.call(box.querySelectorAll('.holo-slide'), function (s, k) { s.classList.toggle('on', k === idx); });
+            var order = [], cards = [], tints = [], busy = false, hero = null, tintEl = null;
+            var POSE = [{ x: 0, y: 0, r: 0, s: 1, sh: 0 }, { x: -9, y: -2, r: -4, s: .96, sh: .22 }, { x: -17, y: -4, r: -8, s: .92, sh: .42 }];
+            function pose(d) { return POSE[Math.min(d, 2)]; }
+            function trans(el, on, ms) { el.style.transition = on ? 'transform ' + (ms || 450) + 'ms cubic-bezier(.2,.8,.25,1), opacity ' + (ms || 450) + 'ms ease' : 'none'; }
+            function put(el, P, o, z) {
+                el.style.transform = 'translate(' + P.x + '%,' + P.y + '%) rotate(' + P.r + 'deg) scale(' + P.s + ')';
+                el.style.opacity = o; el.lastChild.style.opacity = P.sh; if (z != null) el.style.zIndex = z;
+            }
+            function lerpP(a, b, p) { return { x: a.x + (b.x - a.x) * p, y: a.y + (b.y - a.y) * p, r: a.r + (b.r - a.r) * p, s: a.s + (b.s - a.s) * p, sh: a.sh + (b.sh - a.sh) * p }; }
+            // بترتب الكروت اللي ورا الكارت اللي فوق (p = نسبة السحب 0..1 بتطلّعهم لقدام)
+            function layout(p) {
+                order.forEach(function (ci, d) {
+                    if (d === 0) return;
+                    put(cards[ci], lerpP(pose(d), pose(d - 1), p), d > 2 ? (d === 3 ? p : 0) : 1, 10 - d);
+                });
+            }
+            function sync() {
+                idx = order[0];
                 [].forEach.call(box.querySelectorAll('.holo-dots i'), function (d, k) { d.classList.toggle('on', k === idx); });
                 var t = box.querySelector('.holo-cap b'); if (t) t.textContent = items[idx].title;
+                var c = tints[idx];
+                if (hero) { if (c) { hero.style.setProperty('--hb', c.rgb); hero.style.setProperty('--ht', c.a); } else hero.style.setProperty('--ht', 0); }
             }
-            function play() { clearInterval(timer); if (reduced || items.length < 2) return; timer = setInterval(function () { if (document.visibilityState === 'visible') show(idx + 1); }, 5200); }
+            function settle() {
+                cards.forEach(function (c) { trans(c, true); });
+                put(cards[order[0]], POSE[0], 1, 10); layout(0); sync();
+            }
+            // الكارت اللي فوق بيطير ويروح ورا الكوتشينة
+            function fling(dir) {
+                if (busy || items.length < 2) { settle(); return; }
+                busy = true;
+                var el = cards[order[0]]; order.push(order.shift());
+                trans(el, true, 380); el.style.zIndex = 30;
+                el.style.transform = 'translate(' + (dir * 125) + '%,-6%) rotate(' + (dir * 22) + 'deg) rotateY(' + (-dir * 40) + 'deg)';
+                el.style.opacity = 0; el.lastChild.style.opacity = 0;
+                cards.forEach(function (c) { if (c !== el) trans(c, true); });
+                layout(0); sync();
+                setTimeout(function () {
+                    var d = order.length - 1;
+                    trans(el, false); put(el, pose(d), 0, 10 - d); void el.offsetWidth;
+                    trans(el, true); el.style.opacity = d > 2 ? 0 : 1; busy = false;
+                }, 400);
+            }
+            function goTo(k) {
+                if (busy || k === order[0]) return;
+                while (order[0] !== k) order.push(order.shift());
+                settle();
+            }
+            function play() { clearInterval(timer); if (reduced || items.length < 2) return; timer = setInterval(function () { if (document.visibilityState === 'visible' && !busy) fling(-1); }, 5200); }
             function openCur() { if (typeof openModal === 'function' && items[idx]) openModal(Number(items[idx].id)); }
+            // لون خلفية الصورة (متوسط الحواف) عشان خلفية الصفحة تتغير معاها
+            function sampleBg(src, cb) {
+                var im = new Image(); im.crossOrigin = 'anonymous';
+                im.onload = function () {
+                    try {
+                        var w = 24, h = 32, c = document.createElement('canvas'); c.width = w; c.height = h;
+                        var g = c.getContext('2d', { willReadFrequently: true }); g.drawImage(im, 0, 0, w, h);
+                        var d = g.getImageData(0, 0, w, h).data, r = 0, gr = 0, b = 0, n = 0;
+                        for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+                            if (x < 3 || y < 3 || x >= w - 3 || y >= h - 3) { var o = (y * w + x) * 4; r += d[o]; gr += d[o + 1]; b += d[o + 2]; n++; }
+                        }
+                        r /= n; gr /= n; b /= n;
+                        var lum = .299 * r + .587 * gr + .114 * b, mx = Math.max(r, gr, b, 1);
+                        if (mx < 90) { var k = 90 / mx; r *= k; gr *= k; b *= k; }   // الألوان الغامقة جداً بتتفتح شوية عشان تبان
+                        cb({ rgb: Math.round(r) + ' ' + Math.round(gr) + ' ' + Math.round(b), a: lum > 190 ? .32 : .55 });
+                    } catch (e) { cb(null); }
+                };
+                im.onerror = function () { cb(null); };
+                im.src = src;
+            }
             function build() {
                 items = pick();
                 if (!items.length) { box.innerHTML = '<div class="holo-stage holo-fallback"><div class="holo-ring"></div><img class="holo-logo ld" src="logo.jpg" alt=""></div>'; return; }
-                box.innerHTML = '<div class="holo-stage"><div class="holo-ring"></div>' + items.map(function (p, i) {
-                    var u = esc(p.image);
-                    return '<div class="holo-slide"><img class="holo-ghost g2" alt="" src="' + u + '"><img class="holo-ghost g1" alt="" src="' + u + '">' +
-                           '<div class="holo-frame"><div class="holo-main"><img alt="' + esc(p.title) + '" src="' + u + '"' + (i ? ' loading="lazy"' : '') + '></div></div></div>';
-                }).join('') + '<div class="holo-base"></div><div class="holo-line"></div></div>' +
+                box.innerHTML = '<div class="holo-stage"><div class="holo-ring"></div><div class="holo-deck">' + items.map(function (p, i) {
+                    return '<div class="holo-card"><div class="holo-frame"><div class="holo-main"><img alt="' + esc(p.title) + '" src="' + esc(p.image) + '"' + (i > 2 ? ' loading="lazy"' : '') + ' draggable="false"></div></div><div class="holo-shade"></div></div>';
+                }).join('') + '</div><div class="holo-base"></div><div class="holo-line"></div></div>' +
                 '<div class="holo-cap"><b></b><button type="button" class="nz-btn g sm" id="holo-go">اكتشفي ←</button></div>' +
                 '<div class="holo-dots">' + items.map(function () { return '<i></i>'; }).join('') + '</div>';
-                var st = box.querySelector('.holo-stage'), sx = 0, sy = 0, down = false;
-                st.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; down = true; swiped = false; clearInterval(timer); });
-                st.addEventListener('pointerup', function (e) {
-                    if (!down) return; down = false;
-                    var dx = e.clientX - sx, dy = e.clientY - sy;
-                    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) { swiped = true; show(idx + (dx > 0 ? 1 : -1)); }
-                    play();
+                cards = [].slice.call(box.querySelectorAll('.holo-card'));
+                order = items.map(function (_, i) { return i; }); busy = false; tints = [];
+                hero = box.closest('.nz-hero');
+                if (hero && !hero.querySelector('.hero-tint')) { tintEl = document.createElement('div'); tintEl.className = 'hero-tint'; hero.insertBefore(tintEl, hero.firstChild); }
+                items.forEach(function (p, i) { sampleBg(p.image, function (c) { tints[i] = c; if (order[0] === i) sync(); }); });
+                settle();
+
+                var st = box.querySelector('.holo-stage'), sx = 0, sy = 0, t0 = 0, down = false, drag = false, dxNow = 0;
+                st.addEventListener('pointerdown', function (e) {
+                    if (busy) return;
+                    down = true; drag = false; swiped = false; sx = e.clientX; sy = e.clientY; t0 = Date.now(); dxNow = 0; clearInterval(timer);
+                    cards.forEach(function (c) { trans(c, false); });
+                    try { st.setPointerCapture(e.pointerId); } catch (x) {}
                 });
-                st.addEventListener('pointercancel', function () { down = false; play(); });
+                st.addEventListener('pointermove', function (e) {
+                    if (!down) return;
+                    var dx = e.clientX - sx, dy = e.clientY - sy;
+                    if (!drag && Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) drag = true;
+                    if (!drag) return;
+                    swiped = true; dxNow = dx;
+                    var el = cards[order[0]];
+                    el.style.transform = 'translate(' + dx + 'px,' + (dy * .15) + 'px) rotate(' + (dx * .07) + 'deg) rotateY(' + (dx * -.12) + 'deg)';
+                    layout(Math.min(Math.abs(dx) / 140, 1));
+                });
+                function end(e, cancel) {
+                    if (!down) return; down = false;
+                    var dx = dxNow, v = dx / Math.max(Date.now() - t0, 1);
+                    if (!cancel && drag && (Math.abs(dx) > 70 || Math.abs(v) > .5)) fling(dx > 0 ? 1 : -1); else settle();
+                    play();
+                }
+                st.addEventListener('pointerup', function (e) { end(e, false); });
+                st.addEventListener('pointercancel', function (e) { end(e, true); });
                 st.addEventListener('click', function () { if (swiped) { swiped = false; return; } openCur(); });
                 document.getElementById('holo-go').addEventListener('click', openCur);
-                [].forEach.call(box.querySelectorAll('.holo-dots i'), function (d, k) { d.addEventListener('click', function () { show(k); play(); }); });
-                show(0); play();
+                [].forEach.call(box.querySelectorAll('.holo-dots i'), function (d, k) { d.addEventListener('click', function () { goTo(k); play(); }); });
+                play();
             }
             if (box) {
                 document.addEventListener('noor:products', build);
