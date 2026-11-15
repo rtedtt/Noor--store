@@ -326,10 +326,13 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
     <input class="in ltr" id="f_p" type="number" inputmode="decimal" min="0" step="1" placeholder="مثال: 350">
     <label>الخصم (اختياري)</label>
     <div class="g2"><select class="in" id="f_dt"><option value="">بدون خصم</option><option value="percent">نسبة %</option><option value="amount">مبلغ بالجنيه</option></select><input class="in ltr" id="f_dv" type="number" inputmode="decimal" min="0" placeholder="القيمة"></div>
+    <label>أول يوم للخصم (اختياري — لو سيبته فاضي الخصم يشتغل فوراً، ولو حطيت تاريخ جاي هيبدأ لوحده)</label>
+    <input class="in ltr" id="f_df" type="date">
     <label>آخر يوم للخصم (اختياري — بعده الخصم بيختفي لوحده)</label>
     <input class="in ltr" id="f_du" type="date">
     <div id="f_dprev"></div>
   </div>
+    <div class="pbox"><b>⭐ التقييمات والتعليقات</b><div id="rvl"></div><div class="g2" style="margin-top:8px"><input class="in" id="rv_n" placeholder="اسم الزبونة" maxlength="30"><select class="in" id="rv_s"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div><textarea class="in" id="rv_t" maxlength="300" placeholder="التعليق"></textarea><button class="btn" id="rv_a" type="button" style="width:100%">إضافة التقييم</button></div>
     <label class="sw" style="margin-top:16px"><input type="checkbox" id="f_f"><i></i>مميز (يظهر في الشريط المتحرك)</label>
     <label>رابط التيك توك (اختياري)</label>
     <input class="in ltr" id="f_u" type="url" inputmode="url" autocapitalize="off" placeholder="https://www.tiktok.com/...">
@@ -351,6 +354,8 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
   <select class="in" id="sd_t"><option value="percent">نسبة %</option><option value="amount">مبلغ بالجنيه (للموديلات اللي ليها سعر)</option></select>
   <label>القيمة</label>
   <input class="in ltr" id="sd_v" type="number" inputmode="decimal" min="0">
+  <label>أول يوم للخصم (اختياري — يبدأ لوحده)</label>
+  <input class="in ltr" id="sd_f" type="date">
   <label>آخر يوم للخصم (اختياري)</label>
   <input class="in ltr" id="sd_u" type="date">
   <div style="display:flex;gap:10px;margin-top:16px"><button class="btn p" id="sd_ok" type="button" style="flex:1">تطبيق</button><button class="btn" id="sd_no" type="button" style="flex:1">إلغاء الخصم عنهم</button></div>
@@ -420,13 +425,14 @@ const getF=async p=>{try{return await gh(`${R()}/contents/${p}?ref=${encodeURICo
 const putF=(p,b64,msg,sha)=>gh(`${R()}/contents/${p}`,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
 const delF=async(p,msg)=>{const f=await getF(p);if(f)await gh(`${R()}/contents/${p}`,{method:'DELETE',body:JSON.stringify({message:msg,sha:f.sha,branch:cfg.branch})})};
 
-const normSale=s=>{if(!s||typeof s!=='object')return null;const t=s.type==='percent'||s.type==='amount'?s.type:'',v=+s.value;if(!t||!(v>0))return null;return{type:t,value:Math.round(v*100)/100,until:/^\d{4}-\d{2}-\d{2}$/.test(s.until||'')?s.until:''}};
-const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false,price:+p.price>0?Math.round(p.price*100)/100:0,sale:normSale(p.sale),added:/^\d{4}-\d{2}-\d{2}$/.test(p.added||'')?p.added:''});
+const normSale=s=>{if(!s||typeof s!=='object')return null;const t=s.type==='percent'||s.type==='amount'?s.type:'',v=+s.value;if(!t||!(v>0))return null;return{type:t,value:Math.round(v*100)/100,until:/^\d{4}-\d{2}-\d{2}$/.test(s.until||'')?s.until:'',from:/^\d{4}-\d{2}-\d{2}$/.test(s.from||'')?s.from:''}};
+const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false,price:+p.price>0?Math.round(p.price*100)/100:0,sale:normSale(p.sale),reviews:Array.isArray(p.reviews)?p.reviews.map(x=>({name:String(x.name||'').slice(0,30),rating:Math.max(1,Math.min(5,+x.rating||5)),text:String(x.text||'').slice(0,300)})).filter(x=>x.text):[],added:/^\d{4}-\d{2}-\d{2}$/.test(p.added||'')?p.added:''});
 const normShop=x=>{x=x||{};const t=v=>/^\d{1,2}:\d{2}$/.test(v||'')?v:'';return{open:t(x.open),close:t(x.close),off:(x.off===0||x.off)?String(x.off):'',map:typeof x.map==='string'?x.map:'',whatsapp:typeof x.whatsapp==='string'?x.whatsapp.replace(/\D/g,''):''}};
 const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmtEGP=n=>Number(n).toLocaleString('en-US')+' ج.م';
 function saleInfo(p){
   const s=p&&p.sale;if(!s||!s.type||!(s.value>0))return null;
+  if(s.from&&todayISO()<s.from)return null;
   if(s.until&&todayISO()>s.until)return null;
   const price=p.price>0?p.price:0;let pct,now=0;
   if(s.type==='percent'){pct=Math.min(90,Math.max(1,Math.round(s.value)));if(price)now=Math.round(price*(100-pct)/100)}
@@ -461,10 +467,10 @@ function shrink(file){return new Promise((ok,no)=>{
   im.onload=()=>{
     let sx=0,sy=0,sw=im.naturalWidth,sh=im.naturalHeight;
     if($('#f_crop')&&$('#f_crop').checked){const r=3/4;if(sw/sh>r){const nw=Math.round(sh*r);sx=Math.round((sw-nw)/2);sw=nw}else{const nh=Math.round(sw/r);sy=Math.round((sh-nh)*.4);sh=nh}}
-    const s=Math.min(1,1200/Math.max(sw,sh)),w=Math.round(sw*s),h=Math.round(sh*s);
+    const s=Math.min(1,1000/Math.max(sw,sh)),w=Math.round(sw*s),h=Math.round(sh*s);
     const c=document.createElement('canvas');c.width=w;c.height=h;
     const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,sx,sy,sw,sh,0,0,w,h);
-    URL.revokeObjectURL(u);const d=c.toDataURL('image/jpeg',.82);ok({url:d,b64:d.split(',')[1]});
+    URL.revokeObjectURL(u);let d=c.toDataURL('image/webp',.78);const wp=d.startsWith('data:image/webp');if(!wp)d=c.toDataURL('image/jpeg',.82);ok({url:d,b64:d.split(',')[1],ext:wp?'webp':'jpg'});
   };
   im.src=u;
 })}
@@ -494,7 +500,7 @@ function render(){
       <h3>${p.featured?'📌 ':''}${p.tag==='hot'?'🔥 ':p.tag==='trend'?'⭐ ':''}${esc(p.title)}</h3>
       ${p.badge?`<span class="pill">${esc(p.badge)}</span>`:''}
       <div class="mu">${p.category?esc(p.category)+' • ':''}${esc(p.colors.join('، '))||'بدون ألوان'}${p.sizes.length?' • '+esc(p.sizes.join(' / ')):''}</div>
-      ${(()=>{const s=saleInfo(p);let h='';if(p.price)h+='💰 '+fmtEGP(p.price);if(s){h+=(h?' • ':'')+'🏷️ -'+s.pct+'%'+(s.now?' ← '+fmtEGP(s.now):'');const u=untilText(s.until);if(u)h+=' • ⏳ '+u}else if(p.sale)h+=(h?' • ':'')+'⌛ انتهى الخصم';return h?`<div class="mu" style="color:var(--gd);font-weight:700">${h}</div>`:''})()}
+      ${(()=>{const s=saleInfo(p);let h='';if(p.price)h+='💰 '+fmtEGP(p.price);if(s){h+=(h?' • ':'')+'🏷️ -'+s.pct+'%'+(s.now?' ← '+fmtEGP(s.now):'');const u=untilText(s.until);if(u)h+=' • ⏳ '+u}else if(p.sale)h+=(h?' • ':'')+(p.sale.from&&todayISO()<p.sale.from?'🗓️ الخصم هيبدأ لوحده '+p.sale.from:'⌛ انتهى الخصم');return h?`<div class="mu" style="color:var(--gd);font-weight:700">${h}</div>`:''})()}
       <div class="row">
         <label class="sw"><input type="checkbox" data-a="tg" ${p.available?'checked':''}><i></i>${p.available?'متوفر':'غير متوفر'}</label>
       </div>
@@ -546,17 +552,17 @@ $('#cy').onclick=async()=>{
 /* ===== نموذج الإضافة / التعديل ===== */
 function openForm(id,dup){
   const p=(id||dup)?items.find(x=>x.id===(id||dup)):null,cp=!!dup&&!id;
-  F={id:id||0,colors:[...(p?p.colors:[])],sizes:[...(p?p.sizes:[])],gal:(p&&!cp?p.images:[]).map(x=>({p:x,url:src({image:x}),b64:''})),oldImgs:p&&!cp?[...p.images]:[]};
+  F={id:id||0,reviews:(p&&!cp?(p.reviews||[]):[]).map(x=>({...x})),colors:[...(p?p.colors:[])],sizes:[...(p?p.sizes:[])],gal:(p&&!cp?p.images:[]).map(x=>({p:x,url:src({image:x}),b64:''})),oldImgs:p&&!cp?[...p.images]:[]};
   $('#ft').textContent=cp?'نسخة من: '+p.title:(id?'تعديل الموديل':'موديل جديد');
   $('#f_t').value=p?p.title:'';$('#f_b').value=p?p.badge:'';$('#f_d').value=p?p.description:'';
   $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?(cp?true:p.available):true;$('#f_k').value=p?p.category:'';$('#f_g').value=p?p.tag:'';$('#f_f').checked=p&&!cp?p.featured:false;fillPrice(p);
   $('#cats').innerHTML=[...new Set(['تيشرتات','هوديز','بنطلونات',...items.map(x=>x.category)].filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
-  $('#f_s').value='';chips();schips();pickShow();
+  $('#f_s').value='';chips();schips();pickShow();rvShow();
   $('#frm').classList.add('on');$('#frm').scrollTop=0;document.body.style.overflow='hidden';
   if(cp){toast('اتنسخت البيانات ✓ عدّل الاسم وضيف صور الموديل الجديد');setTimeout(()=>{$('#f_t').focus();$('#f_t').select()},300)}
 }
 function fillPrice(p){
-  $('#f_p').value=p&&p.price?p.price:'';$('#f_dt').value=p&&p.sale?p.sale.type:'';$('#f_dv').value=p&&p.sale?p.sale.value:'';$('#f_du').value=p&&p.sale?p.sale.until:'';dprev();
+  $('#f_p').value=p&&p.price?p.price:'';$('#f_dt').value=p&&p.sale?p.sale.type:'';$('#f_dv').value=p&&p.sale?p.sale.value:'';$('#f_du').value=p&&p.sale?p.sale.until:'';$('#f_df').value=p&&p.sale?(p.sale.from||''):'';dprev();
 }
 function dprev(){
   const pr=parseFloat($('#f_p').value)||0,t=$('#f_dt').value,v=parseFloat($('#f_dv').value)||0;let h='';
@@ -593,7 +599,7 @@ $('#chips').addEventListener('click',e=>{const b=e.target.closest('button');if(b
 $('#pk').onclick=()=>$('#fi').click();
 async function pickFiles(fs){
   fs=[...fs];if(!fs.length)return;busy('جاري تجهيز الصور...');
-  try{for(const f of fs){if(F.gal.length>=8){toast('الحد الأقصى 8 صور',1);break}const r=await shrink(f);F.gal.push({p:'',url:r.url,b64:r.b64})}pickShow()}
+  try{for(const f of fs){if(F.gal.length>=8){toast('الحد الأقصى 8 صور',1);break}const r=await shrink(f);F.gal.push({p:'',url:r.url,b64:r.b64,ext:r.ext})}pickShow()}
   catch(x){toast(x.message,1)}finally{busy()}
 }
 $('#fi').onchange=e=>{pickFiles(e.target.files);e.target.value=''};
@@ -650,15 +656,16 @@ async function bulkSet(v){
   catch(e){toast(e.message,1)}finally{busy()}
 }
 $('#bkv').onclick=()=>bulkSet(true);$('#bkx').onclick=()=>bulkSet(false);
-$('#bkd').onclick=()=>{if(!sel.size){toast('حدّد موديل واحد على الأقل',1);return}$('#sdn').textContent=sel.size;$('#sd_v').value='';$('#sd_u').value='';$('#sd').classList.add('on')};
+$('#bkd').onclick=()=>{if(!sel.size){toast('حدّد موديل واحد على الأقل',1);return}$('#sdn').textContent=sel.size;$('#sd_v').value='';$('#sd_u').value='';$('#sd_f').value='';$('#sd').classList.add('on')};
 $('#sd_x').onclick=()=>$('#sd').classList.remove('on');
 async function bulkSale(clear){
   const ids=new Set(sel);let sale=null,skipped=0;
   if(!clear){
-    const t=$('#sd_t').value,v=parseFloat($('#sd_v').value)||0,u=$('#sd_u').value;
+    const t=$('#sd_t').value,v=parseFloat($('#sd_v').value)||0,u=$('#sd_u').value,fr=$('#sd_f').value;
+    if(fr&&u&&fr>u){toast('أول يوم لازم يكون قبل آخر يوم',1);return}
     if(!(v>0)){toast('اكتب قيمة الخصم',1);return}
     if(t==='percent'&&v>90){toast('النسبة لازم تكون من 1 إلى 90',1);return}
-    sale={type:t,value:v,until:u||''};
+    sale={type:t,value:v,until:u||'',from:fr||''};
   }
   $('#sd').classList.remove('on');busy('جاري تحديث '+ids.size+' موديل...');
   try{
@@ -671,6 +678,9 @@ $('#sd_ok').onclick=()=>bulkSale(false);$('#sd_no').onclick=()=>bulkSale(true);
 $('#f_crop').checked=(function(){try{return localStorage.getItem('noor_crop')!=='0'}catch{return true}})();
 $('#f_crop').onchange=()=>{try{localStorage.setItem('noor_crop',$('#f_crop').checked?'1':'0')}catch{}};
 
+function rvShow(){$('#rvl').innerHTML=F.reviews.map((x,i)=>`<div class="mu" style="padding:6px 0;border-bottom:1px solid var(--ln)"><button type="button" class="btn d" data-r="${i}" style="min-height:30px;padding:0 10px;float:left">🗑️</button><b>${esc(x.name||'زبونة')}</b> ${'★'.repeat(x.rating)}<br>${esc(x.text)}</div>`).join('')}
+$('#rvl').addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(b){F.reviews.splice(+b.dataset.r,1);rvShow()}});
+$('#rv_a').onclick=()=>{const t=$('#rv_t').value.trim();if(t.length<2){toast('اكتبي التعليق الأول',1);return}F.reviews.unshift({name:$('#rv_n').value.trim(),rating:+$('#rv_s').value,text:t});$('#rv_n').value='';$('#rv_t').value='';rvShow()};
 $('#fx').onclick=$('#fc').onclick=closeForm;
 
 $('#fs').onclick=async()=>{
@@ -678,23 +688,24 @@ $('#fs').onclick=async()=>{
   const t=$('#f_t').value.trim();
   if(!t){toast('اكتب اسم الموديل الأول',1);$('#f_t').focus();return}
   let u=$('#f_u').value.trim();if(u&&!/^https?:\/\//i.test(u))u='https://'+u;
-  const pr=parseFloat($('#f_p').value)||0,dt=$('#f_dt').value,dv=parseFloat($('#f_dv').value)||0,du=$('#f_du').value;
+  const pr=parseFloat($('#f_p').value)||0,dt=$('#f_dt').value,dv=parseFloat($('#f_dv').value)||0,du=$('#f_du').value,df=$('#f_df').value;
+  if(df&&du&&df>du){toast('أول يوم للخصم لازم يكون قبل آخر يوم',1);return}
   let sale=null;
   if(dt){
     if(!(dv>0)){toast('اكتب قيمة الخصم',1);$('#f_dv').focus();return}
     if(dt==='percent'&&dv>90){toast('نسبة الخصم لازم تكون من 1 إلى 90',1);return}
     if(dt==='amount'&&!pr){toast('الخصم بالجنيه محتاج سعر الموديل',1);$('#f_p').focus();return}
     if(dt==='amount'&&dv>=pr){toast('الخصم لازم يكون أقل من السعر',1);return}
-    sale={type:dt,value:dv,until:du||''};
+    sale={type:dt,value:dv,until:du||'',from:df||''};
   }
-  const rec={price:pr,sale,title:t,badge:$('#f_b').value.trim(),description:$('#f_d').value.trim(),colors:[...F.colors],sizes:[...F.sizes],category:$('#f_k').value.trim(),tag:$('#f_g').value,featured:$('#f_f').checked,tiktokUrl:u,available:$('#f_a').checked};
+  const rec={reviews:[...F.reviews],price:pr,sale,title:t,badge:$('#f_b').value.trim(),description:$('#f_d').value.trim(),colors:[...F.colors],sizes:[...F.sizes],category:$('#f_k').value.trim(),tag:$('#f_g').value,featured:$('#f_f').checked,tiktokUrl:u,available:$('#f_a').checked};
   const id=F.id,up=[];
   busy('جاري الحفظ...');
   try{
     let n=0;
     for(const g of F.gal)if(!g.p){
       busy(`جاري رفع الصور (${++n})...`);
-      g.p='images/'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.jpg';
+      g.p='images/'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)+'.'+(g.ext||'jpg');
       await putF(g.p,g.b64,'Add image '+g.p);up.push(g.p);prev[g.p]=g.url;
     }
     const imgs=F.gal.map(g=>g.p);

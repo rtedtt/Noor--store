@@ -483,6 +483,27 @@
         html.is-admin .tp-sep.admin-only { display:block !important; }
         a.tp-opt { text-decoration:none; }
     </style>
+<style id="noor-plus-css">
+#cart-panel,#sh-panel{display:none;position:fixed;inset:0;z-index:90;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.78)}
+#cart-panel.on,#sh-panel.on{display:flex}
+#cart-count{position:absolute;top:-4px;left:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#25d366;color:#fff;font:800 10px/17px Cairo,sans-serif;display:none;align-items:center;justify-content:center}
+.cd{padding:0 10px 6px;font-size:11px;font-weight:800;color:var(--sale)}
+.ct-q{display:flex;align-items:center;gap:10px;margin-top:6px}
+.ct-q button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line2,#444);background:transparent;color:inherit;font-size:16px;cursor:pointer}
+.ct-tot{padding:6px 18px;font-weight:800;text-align:center;color:var(--accent2)}
+#product-modal{overflow-y:auto;align-items:flex-start;padding-top:16px;padding-bottom:16px}
+.more-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.more-row>div{flex:none;width:92px;cursor:pointer}
+.more-row img{width:92px;height:116px;object-fit:cover;border-radius:10px}
+.stars{color:#f5b301;letter-spacing:1px}
+.rv-i{padding:8px 0;border-bottom:1px solid rgba(128,128,128,.25);font-size:12px;line-height:1.7}
+.rate-in button{font-size:26px;background:none;border:0;color:#777;cursor:pointer;padding:0 2px}
+.rate-in button.on{color:#f5b301}
+.rv-f{width:100%;margin-top:8px;padding:9px 12px;border-radius:12px;border:1px solid rgba(128,128,128,.4);background:transparent;color:inherit;font:inherit;font-size:13px}
+.rv-go{width:100%;margin-top:8px;min-height:42px;border:0;border-radius:12px;background:var(--accent);color:var(--on-accent,#000);font:inherit;font-weight:800;cursor:pointer}
+#new-bar{display:flex;align-items:center;gap:8px;margin:10px 12px;padding:10px 14px;border-radius:14px;background:linear-gradient(135deg,var(--accent-soft),var(--accent));color:var(--on-accent,#000);font-size:13px;font-weight:700}
+#new-bar span{flex:1}#new-bar button{border:0;border-radius:99px;padding:4px 12px;background:rgba(0,0,0,.18);color:inherit;font:inherit;font-size:12px;cursor:pointer}
+</style>
 </head>
 <body class="antialiased selection:bg-brand-accent selection:text-black">
 
@@ -499,6 +520,7 @@
             <div class="nz-tools">
                 <button id="theme-open" type="button" aria-label="تغيير الشكل" aria-haspopup="true" aria-expanded="false" class="nz-ic">🎨</button>
                 <button id="fav-open" type="button" onclick="openFav()" aria-label="المفضلة" class="nz-ic">♥<span id="fav-count"></span></button>
+                <button id="cart-open" type="button" onclick="openCart()" aria-label="السلة" class="nz-ic">🛒<span id="cart-count"></span></button>
                 <a href="https://wa.me/201271425089" data-wa target="_blank" aria-label="واتساب" class="nz-ic nz-wa"><i class="fab fa-whatsapp"></i></a>
                 <button type="button" onclick="sharePage()" aria-label="مشاركة" class="nz-ic"><i class="fas fa-share-alt"></i></button>
             </div>
@@ -657,8 +679,27 @@
             <div class="fv-list" id="fv-list"></div>
             <div class="fv-foot" id="fv-foot">
                 <button type="button" class="fv-wa" id="fav-wa" onclick="sendFavs()">💬 ابعتيها للمحل على واتساب</button>
+                <button type="button" class="fv-clear" onclick="shareFavs()">🔗 شاركي</button>
                 <button type="button" class="fv-clear" onclick="clearFavs()">مسح الكل</button>
             </div>
+        </div>
+    </div>
+
+        <!-- السلة -->
+    <div id="cart-panel" role="dialog" aria-modal="true" aria-label="السلة" onclick="if(event.target===this)closeCart()">
+        <div class="fv-sheet">
+            <div class="fv-head"><h3>🛒 السلة</h3><button type="button" class="fv-x" onclick="closeCart()" aria-label="إغلاق">✕</button></div>
+            <div class="fv-list" id="ct-list"></div>
+            <div class="ct-tot" id="ct-tot"></div>
+            <div class="fv-foot" id="ct-foot"><button type="button" class="fv-wa" onclick="sendCart()">💬 ابعتي الطلب على واتساب</button><button type="button" class="fv-clear" onclick="clearCart()">مسح</button></div>
+        </div>
+    </div>
+    <!-- قايمة متشاركة -->
+    <div id="sh-panel" role="dialog" aria-modal="true" aria-label="قايمة متشاركة" onclick="if(event.target===this)closeShared()">
+        <div class="fv-sheet">
+            <div class="fv-head"><h3>💕 قايمة اتشاركت معاكِ</h3><button type="button" class="fv-x" onclick="closeShared()" aria-label="إغلاق">✕</button></div>
+            <div class="fv-list" id="sh-list"></div>
+            <div class="fv-foot"><button type="button" class="fv-wa" style="background:var(--accent);color:var(--on-accent,#000)" onclick="addShared()">♥ ضيفيهم لمفضلتي</button></div>
         </div>
     </div>
 
@@ -702,6 +743,7 @@
                 </div>
 
                 <div class="flex flex-col gap-2">
+                    <button type="button" onclick="addToCart()" class="w-full glass-panel border border-gray-600 text-white font-bold py-2.5 px-4 rounded-xl text-sm md:text-base hover:bg-gray-800 transition">🛒 أضيفي للسلة</button>
                     <button id="modal-wa-btn" class="w-full bg-brand-whatsapp text-white font-bold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 hover:bg-green-600 transition text-sm md:text-base">
                         <i class="fab fa-whatsapp text-lg"></i> استفسري عن الموديل
                     </button>
@@ -710,6 +752,7 @@
                         <i class="fab fa-tiktok"></i> شوفيه فيديو على تيك توك
                     </a>
                 </div>
+                <div id="modal-more"></div><div id="modal-rv"></div>
             </div>
         </div>
     </div>
@@ -722,6 +765,7 @@
         function saleInfo(p) {
             const s = p && p.sale;
             if (!s || !s.type || !(Number(s.value) > 0)) return null;
+            if (s.from && todayISO() < s.from) return null;                       // الخصم لسه مابدأش
             if (s.until && todayISO() > s.until) return null;                       // الخصم انتهى
             const price = Number(p.price) > 0 ? Number(p.price) : 0;
             let pct, now = 0;
@@ -744,6 +788,9 @@
         }
         const saleBadge = p => { const s = saleInfo(p); return s ? `<div class="sale-tag">🏷️ خصم ${s.pct}%</div>` : ''; };
         const newBadge = p => isNew(p) ? '<div class="new-tag">✨ جديد</div>' : '';
+        const cdLeft = u => new Date(u + 'T23:59:59') - Date.now();
+        const cdFmt = ms => { const s = Math.floor(ms / 1000), d = Math.floor(s / 86400), p = n => String(n).padStart(2, '0'); return (d ? d + ' يوم ' : '') + p(Math.floor(s % 86400 / 3600)) + ':' + p(Math.floor(s % 3600 / 60)) + ':' + p(s % 60); };
+        const cdSpan = (p, cls) => { const s = saleInfo(p); return s && s.until && cdLeft(s.until) < 3 * 864e5 ? `<div class="${cls || 'cd'}" data-cd="${s.until}">⏳ ينتهي قريباً</div>` : ''; };
         const waOffer = p => { const s = saleInfo(p); return s ? ` (عليه خصم ${s.pct}%)` : ''; };
 
         let waNumber = "201271425089";
@@ -824,8 +871,8 @@
                         ${off ? '<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-bold">غير متوفر حالياً</div>' : ''}
                     </div>
                     <div class="p-3 md:p-4 flex flex-col flex-1">
-                        <h4 class="text-sm md:text-lg font-bold mb-1 truncate">${esc(p.title)}</h4>
-                        ${priceHtml(p)}
+                        <h4 class="text-sm md:text-lg font-bold mb-1 truncate">${esc(p.title)}</h4>${window.ratingHtml ? window.ratingHtml(p.id) : ''}
+                        ${priceHtml(p)}${cdSpan(p)}
                         <p class="text-gray-400 text-[10px] md:text-sm mb-3 line-clamp-2 flex-1">${esc(p.description)}</p>
                         <div class="flex justify-between items-center mt-auto pt-2 border-t border-gray-700/50">
                             <button onclick="quickWa(${Number(p.id)})" class="text-brand-whatsapp hover:text-green-400 transition bg-green-900/20 w-8 h-8 rounded-full flex items-center justify-center">
@@ -885,7 +932,7 @@
             document.getElementById('offer-track').innerHTML = o.map(p => `
                 <div class="snap-start shrink-0 w-36 md:w-44 glass-panel rounded-xl overflow-hidden relative cursor-pointer" onclick="openModal(${Number(p.id)})">
                     <div class="h-44 md:h-52 bg-gray-800 relative">${p.image ? `<img loading="lazy" src="${esc(p.image)}" alt="${esc(p.title)}" class="w-full h-full object-cover">` : ''}${saleBadge(p)}${tagHtml(p)}</div>
-                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>${priceHtml(p)}
+                    <p class="p-2 text-xs md:text-sm font-bold truncate">${esc(p.title)}</p>${priceHtml(p)}${cdSpan(p)}
                 </div>`).join('');
         }
         const ft = document.getElementById('feat-track');
@@ -985,7 +1032,7 @@
                 : '<i class="fas fa-tag"></i> متاح للمعاينة بالفرع';
             document.getElementById('modal-price').innerHTML = (() => {
                 const sl = saleInfo(currentProduct), u = sl ? untilText(sl.until) : '';
-                return (sl ? `<span class="sale-pill">🏷️ خصم ${sl.pct}%</span>` : '') + priceHtml(currentProduct) + (u ? `<div class="until">⏳ ${u}</div>` : '');
+                return (sl ? `<span class="sale-pill">🏷️ خصم ${sl.pct}%</span>` : '') + priceHtml(currentProduct) + (cdSpan(currentProduct, 'until') || (u ? `<div class="until">⏳ ${u}</div>` : ''));
             })();
             
             const imgContainer = document.getElementById('modal-image-container');
@@ -1000,6 +1047,7 @@
             
             renderGallery();
             if (typeof syncModalFav === 'function') syncModalFav();
+            if (window.noorModalExtras) window.noorModalExtras();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -2312,5 +2360,148 @@
             if (g) g.addEventListener('click', function () { try { sessionStorage.setItem('noor_launched', '1'); } catch (x) {} });
         })();
     </script>
+<script>
+(function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var lock = function (on) { document.body.style.overflow = on ? 'hidden' : 'auto'; };
+    var P = function (id) { return products.find(function (p) { return p.id === Number(id); }); };
+    var unit = function (p) { var s = saleInfo(p); return s && s.now ? s.now : (Number(p.price) > 0 ? Number(p.price) : 0); };
+    var stars = function (n) { return '★'.repeat(n) + '☆'.repeat(5 - n); };
+    var thumb = function (p) { return p.image ? '<img loading="lazy" alt="" src="' + esc(p.image) + '">' : '<div class="fv-ph">👗</div>'; };
+
+    // ===== 1) سلة واتساب =====
+    var cart = []; try { cart = JSON.parse(localStorage.getItem('noor_cart') || '[]'); if (!Array.isArray(cart)) cart = []; } catch (e) { cart = []; }
+    function saveCart() { try { localStorage.setItem('noor_cart', JSON.stringify(cart.slice(0, 40))); } catch (e) {} }
+    function cartBadge() { var n = cart.reduce(function (a, c) { return a + c.qty; }, 0), b = $('cart-count'); b.textContent = n; b.style.display = n ? 'flex' : 'none'; }
+    function renderCart() {
+        cart = cart.filter(function (c) { return P(c.id); });
+        var tot = 0;
+        $('ct-list').innerHTML = cart.length ? cart.map(function (c, i) {
+            var p = P(c.id), u = unit(p); tot += u * c.qty;
+            return '<div class="fv-item" data-i="' + i + '">' + thumb(p) + '<div class="fv-t"><b>' + esc(p.title) + '</b><small>' + ([c.color, c.size].filter(Boolean).map(esc).join(' • ') || '—') + (u ? ' • ' + fmtEGP(u) : '') + '</small><div class="ct-q"><button type="button" data-d="-1">−</button><b>' + c.qty + '</b><button type="button" data-d="1">+</button></div></div><button type="button" class="fv-rm" data-rm="1">✕</button></div>';
+        }).join('') : '<div class="fv-empty">السلة فاضية 🛒<br>اختاري موديل وضيفيه للسلة.</div>';
+        $('ct-tot').textContent = tot ? 'الإجمالي: ' + fmtEGP(tot) : '';
+        $('ct-foot').style.display = cart.length ? 'flex' : 'none';
+        cartBadge();
+    }
+    $('ct-list').addEventListener('click', function (e) {
+        var it = e.target.closest('.fv-item'); if (!it) return;
+        var i = +it.getAttribute('data-i'), d = e.target.getAttribute('data-d');
+        if (e.target.hasAttribute('data-rm')) cart.splice(i, 1);
+        else if (d) cart[i].qty = Math.max(1, Math.min(20, cart[i].qty + Number(d)));
+        else return;
+        saveCart(); renderCart();
+    });
+    window.openCart = function () { renderCart(); $('cart-panel').classList.add('on'); lock(true); };
+    window.closeCart = function () { $('cart-panel').classList.remove('on'); lock(false); };
+    window.clearCart = function () { if (cart.length && confirm('تمسحي السلة؟')) { cart = []; saveCart(); renderCart(); } };
+    window.addToCart = function () {
+        var p = currentProduct; if (!p || p.available === false) return;
+        var nc = (p.colors || []).length && !selectedColor, ns = (p.sizes || []).length && !selectedSize, h = $('modal-wa-hint');
+        if (nc || ns) { h.textContent = 'اختاري ' + (nc && ns ? 'اللون والمقاس' : nc ? 'اللون' : 'المقاس') + ' الأول عشان نضيفه للسلة.'; return; }
+        var qty = Math.max(1, Math.min(20, parseInt($('modal-quantity').value, 10) || 1));
+        var k = cart.filter(function (c) { return c.id === p.id && c.color === selectedColor && c.size === selectedSize; })[0];
+        if (k) k.qty = Math.min(20, k.qty + qty); else cart.unshift({ id: p.id, color: selectedColor, size: selectedSize, qty: qty });
+        saveCart(); cartBadge(); h.textContent = '✓ اتضاف للسلة — افتحي 🛒 فوق لما تخلصي';
+    };
+    window.sendCart = function () {
+        cart = cart.filter(function (c) { return P(c.id); }); if (!cart.length) return;
+        var head = 'السلام عليكم، عايزة أطلب الموديلات دي من الموقع 🛍️\n\n', tail = '\nممكن تأكدوا التوفر؟', blocks = [], tot = 0, len = encodeURIComponent(head + tail).length;
+        cart.forEach(function (c, i) {
+            var p = P(c.id); tot += unit(p) * c.qty;
+            var b = (i + 1) + ') ' + waItem(p, { ask: true, color: c.color, size: c.size, qty: c.qty }) + '\n', l = encodeURIComponent(b + '\n').length;
+            if (len + l < 3100) { blocks.push(b); len += l; }
+        });
+        if (blocks.length < cart.length) blocks.push('+ ' + (cart.length - blocks.length) + ' موديلات تانية في السلة\n');
+        waOpen(head + blocks.join('\n') + (tot ? '\nالإجمالي: ' + fmtEGP(tot) + '\n' : '') + tail);
+    };
+
+    // ===== 2) عدّاد انتهاء العرض =====
+    var reDone = false;
+    function tick() {
+        [].forEach.call(document.querySelectorAll('[data-cd]'), function (e) {
+            var l = cdLeft(e.getAttribute('data-cd'));
+            if (l <= 0) { e.remove(); if (!reDone) { reDone = true; setTimeout(function () { renderProducts(); renderOffers(); reDone = false; }, 1500); } return; }
+            e.textContent = '⏳ ينتهي بعد ' + cdFmt(l);
+        });
+    }
+    setInterval(tick, 1000);
+
+    // ===== 3) شوفتي كمان =====
+    function more() {
+        var p = currentProduct, cs = (p.colors || []).map(function (x) { return String(x).trim(); });
+        var L = products.filter(function (x) { return x.id !== p.id && x.available !== false; }).map(function (x) {
+            return { x: x, s: (x.category && x.category === p.category ? 2 : 0) + ((x.colors || []).some(function (c) { return cs.indexOf(String(c).trim()) !== -1; }) ? 1 : 0) };
+        }).filter(function (o) { return o.s > 0; }).sort(function (a, b) { return b.s - a.s; }).slice(0, 6);
+        $('modal-more').innerHTML = L.length ? '<p class="text-xs md:text-sm text-gray-400 mt-5 mb-2">شوفتي كمان 👀</p><div class="more-row">' + L.map(function (o) {
+            return '<div data-m="' + o.x.id + '">' + (o.x.image ? '<img loading="lazy" alt="" src="' + esc(o.x.image) + '">' : '') + '<small class="block truncate text-[11px] mt-1">' + esc(o.x.title) + '</small></div>';
+        }).join('') + '</div>' : '';
+    }
+    $('modal-more').addEventListener('click', function (e) {
+        var d = e.target.closest('[data-m]'); if (!d) return;
+        openModal(Number(d.getAttribute('data-m'))); $('product-modal').scrollTop = 0;
+    });
+
+    // ===== 4) مشاركة المفضلة =====
+    window.shareFavs = function () {
+        var ids = []; try { ids = JSON.parse(localStorage.getItem('noor_favs') || '[]'); } catch (e) {}
+        ids = ids.filter(P); if (!ids.length) return;
+        var url = location.origin + location.pathname + '#f=' + ids.join(',');
+        if (navigator.share) navigator.share({ title: 'قايمتي من محل نور', text: 'شوفي الموديلات اللي عجبتني من محل نور 💕', url: url }).catch(function () {});
+        else if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { alert('تم نسخ رابط القايمة ✓'); });
+        else prompt('انسخي الرابط:', url);
+    };
+    var shIds = [];
+    function openShared(ids) {
+        shIds = ids.filter(P); if (!shIds.length) return;
+        $('sh-list').innerHTML = shIds.map(function (id) { var p = P(id); return '<div class="fv-item" data-id="' + id + '">' + thumb(p) + '<div class="fv-t"><b>' + esc(p.title) + '</b><small class="' + (p.available === false ? 'off' : '') + '">' + (p.available === false ? 'غير متاح حالياً' : (unit(p) ? fmtEGP(unit(p)) : 'متاح للمعاينة بالفرع')) + '</small></div></div>'; }).join('');
+        $('sh-panel').classList.add('on'); lock(true);
+    }
+    window.closeShared = function () { $('sh-panel').classList.remove('on'); lock(false); if (location.hash.indexOf('#f=') === 0) history.replaceState(null, '', location.pathname + location.search); };
+    window.addShared = function () { shIds.forEach(function (id) { if (!isFav(id)) toggleFav(id); }); closeShared(); openFav(); };
+    $('sh-list').addEventListener('click', function (e) { var it = e.target.closest('.fv-item'); if (it) { $('sh-panel').classList.remove('on'); openModal(Number(it.getAttribute('data-id'))); } });
+    function fromHash() { var m = location.hash.match(/^#f=([\d,]+)$/); if (m && window.noorProductsReady) openShared(m[1].split(',').map(Number).slice(0, 40)); }
+    window.addEventListener('hashchange', fromHash);
+
+    // ===== التقييمات والتعليقات (بتتضاف من لوحة التحكم) =====
+    var myR = 0;
+    var avg = function (id) { var p = P(id), L = (p && p.reviews) || []; return L.length ? { a: L.reduce(function (s, x) { return s + x.rating; }, 0) / L.length, n: L.length } : null; };
+    window.ratingHtml = function (id) { var r = avg(id); return r ? '<div class="stars" style="font-size:11px;margin-bottom:2px">' + stars(Math.round(r.a)) + ' <span style="color:var(--muted)">' + r.a.toFixed(1) + ' (' + r.n + ')</span></div>' : ''; };
+    function reviews() {
+        var box = $('modal-rv'), p = currentProduct, L = p.reviews || [], r = avg(p.id); myR = 0;
+        box.innerHTML = '<div class="mt-5"><b class="text-sm">⭐ التقييمات</b> ' + (r ? '<span class="stars">' + stars(Math.round(r.a)) + '</span> <small class="text-gray-400">' + r.a.toFixed(1) + ' (' + r.n + ')</small>' : '<small class="text-gray-400">لسه مفيش تقييمات — كوني أول واحدة 💕</small>') + '</div>' +
+            L.slice(0, 20).map(function (x) { return '<div class="rv-i"><b>' + esc(x.name || 'زبونة') + '</b> <span class="stars">' + stars(x.rating) + '</span><div class="text-gray-300">' + esc(x.text) + '</div></div>'; }).join('') +
+            '<div class="mt-3"><div class="rate-in" id="rv-st">' + [1, 2, 3, 4, 5].map(function (i) { return '<button type="button" data-s="' + i + '">★</button>'; }).join('') + '</div><input id="rv-n" maxlength="30" placeholder="اسمك (اختياري)" class="rv-f"><textarea id="rv-t" maxlength="300" rows="2" placeholder="اكتبي رأيك في الموديل..." class="rv-f"></textarea><button type="button" id="rv-go" class="rv-go">💬 ابعتي رأيك للمحل على واتساب</button><p id="rv-m" class="text-xs mt-1"></p></div>';
+    }
+    $('modal-rv').addEventListener('click', function (e) {
+        var s = e.target.closest('[data-s]');
+        if (s) { myR = +s.getAttribute('data-s'); [].forEach.call($('rv-st').children, function (b, i) { b.classList.toggle('on', i < myR); }); return; }
+        if (e.target.id !== 'rv-go') return;
+        var m = $('rv-m'), t = $('rv-t').value.trim(), n = $('rv-n').value.trim(), p = currentProduct;
+        if (!myR) { m.textContent = 'اختاري عدد النجوم الأول ⭐'; return; }
+        if (t.length < 3) { m.textContent = 'اكتبي كلمتين على الأقل عن رأيك'; return; }
+        waOpen(['السلام عليكم، حابة أقيّم الموديل ده:', p.title, 'التقييم: ' + stars(myR) + ' (' + myR + '/5)', 'رأيي: ' + t, n ? 'الاسم: ' + n : '', 'الرابط: ' + location.origin + location.pathname + '#p' + p.id].filter(Boolean).join('\n'), p.id);
+        m.textContent = 'شكراً 🤍 رأيك هيظهر في الموقع بعد ما المحل يراجعه.';
+    });
+
+    window.noorModalExtras = function () { more(); reviews(); };
+
+    // ===== 8) جديد من آخر زيارة =====
+    function newBar() {
+        var seen = 0, mx = Math.max.apply(null, [0].concat(products.map(function (p) { return p.id; })));
+        try { seen = Number(localStorage.getItem('noor_seen') || 0); localStorage.setItem('noor_seen', mx); } catch (e) { return; }
+        var n = products.filter(function (p) { return p.id > seen && p.available !== false; }).length;
+        if (!seen || !n || $('new-bar')) return;
+        var d = document.createElement('div'); d.id = 'new-bar';
+        d.innerHTML = '<span>✨ نزل ' + n + ' موديل جديد من آخر زيارة ليكِ</span><button type="button" data-go>شوفيهم</button><button type="button" data-x aria-label="إغلاق">✕</button>';
+        d.addEventListener('click', function (e) { if (e.target.hasAttribute('data-go')) { nzGo('collection'); d.remove(); } else if (e.target.hasAttribute('data-x')) d.remove(); });
+        var h = document.querySelector('.nz-hero'); h.parentNode.insertBefore(d, h);
+    }
+
+    document.addEventListener('noor:products', function () { cartBadge(); newBar(); fromHash(); loadRv(); });
+    cartBadge();
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && $('cart-panel').classList.contains('on')) closeCart(); });
+})();
+</script>
 </body>
 </html>
