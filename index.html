@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Noor Store · index.html · v2.3 · 2026-11-18 -->
+<!-- Noor Store · index.html · v2.4 · 2026-11-19 -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -600,6 +600,9 @@
 .cd{padding:0 10px 6px;font-size:11px;font-weight:800;color:var(--sale)}
 .ct-q{display:flex;align-items:center;gap:10px;margin-top:6px}
 .ct-q button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line2,#444);background:transparent;color:inherit;font-size:16px;cursor:pointer}
+.ct-warn{margin:0 0 8px;padding:9px 12px;border-radius:12px;background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.4);color:#ef5350;font-size:12px;font-weight:700;line-height:1.7}
+.ct-off{opacity:.7}
+.ct-offt{display:block;margin-top:2px;color:#ef5350;font-size:11px;font-weight:800}
 .ct-tot{padding:6px 18px;font-weight:800;text-align:center;color:var(--accent2)}
 #product-modal{overflow-y:auto;align-items:flex-start;padding-top:16px;padding-bottom:16px}
 .more-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
@@ -909,7 +912,7 @@
 
         let waNumber = "201271425089";
         // ===== واتساب: الرقم بيتغير من اللوحة + رسالة موحدة لكل الأماكن =====
-        window.NOOR_VERSION = '2.3 · 2026-11-18';
+        window.NOOR_VERSION = '2.4 · 2026-11-19';
         let waWarned = false;
         const waUrl = text => 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(text);
         function waOpen(text, productId) {                         // أي فتح لواتساب من الصفحة بيعدّي من هنا
@@ -1750,7 +1753,7 @@
                 var t = String(p.title);
                 if (t.length > 26) t = t.slice(0, 25) + '…';
                 var sl = (typeof saleInfo === 'function') ? saleInfo(p) : null;
-                return { text: sl ? '«' + t + '» عليه خصم ' + sl.pct + '% 🏷️ 👆' : pick(PRODUCT_TEMPLATES).replace('{t}', t), id: Number(p.id) };
+                return { text: sl ? '«' + t + '» عليه خصم ' + sl.pct + '%\u200E 🏷️ 👆' : pick(PRODUCT_TEMPLATES).replace('{t}', t), id: Number(p.id) };
             }
             function modalOpen() { var m = document.getElementById('product-modal'); return !!(m && m.classList.contains('active')); }
 
@@ -2195,7 +2198,7 @@
             var pop = document.getElementById('theme-pop'), tbtn = document.getElementById('theme-open'), meta = document.getElementById('meta-theme');
             var COLORS = { luxe: '#0a0a0d', violet: '#17151c', light: '#faf5f1', emerald: '#07130f', royal: '#080d1f', sand: '#f6efe4', blush: '#fdf1f3' };
             var tnote = document.getElementById('tp-note'), ttitle = document.getElementById('tp-title');
-            function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+            function savePref(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
             function paint() {
                 var t = root.getAttribute('data-theme'), c = root.getAttribute('data-cards') || 'small';
                 var ap = window.noorAP || { hidden: [], force: '' };
@@ -2212,11 +2215,11 @@
             }
             pop.addEventListener('click', function (e) {
                 var b = e.target.closest ? e.target.closest('.tp-opt') : null;
-                if (b) { if (window.noorAP && window.noorAP.force) return; root.setAttribute('data-theme', b.getAttribute('data-theme')); put('noor_theme', b.getAttribute('data-theme')); paint(); return; }
+                if (b) { if (window.noorAP && window.noorAP.force) return; root.setAttribute('data-theme', b.getAttribute('data-theme')); savePref('noor_theme', b.getAttribute('data-theme')); paint(); return; }
                 var c = e.target.closest ? e.target.closest('[data-cards]') : null;
-                if (c) { if (c.getAttribute('data-cards') === 'big') root.setAttribute('data-cards', 'big'); else root.removeAttribute('data-cards'); put('noor_cards', c.getAttribute('data-cards')); paint(); }
+                if (c) { if (c.getAttribute('data-cards') === 'big') root.setAttribute('data-cards', 'big'); else root.removeAttribute('data-cards'); savePref('noor_cards', c.getAttribute('data-cards')); paint(); }
             });
-            document.getElementById('tp-lite').addEventListener('change', function (e) { root.classList.toggle('lite', e.target.checked); put('noor_lite', e.target.checked ? '1' : '0'); });
+            document.getElementById('tp-lite').addEventListener('change', function (e) { root.classList.toggle('lite', e.target.checked); savePref('noor_lite', e.target.checked ? '1' : '0'); });
             tbtn.addEventListener('click', function () { var on = pop.classList.toggle('on'); tbtn.setAttribute('aria-expanded', on); });
             document.addEventListener('pointerdown', function (e) {
                 if (pop.classList.contains('on') && !pop.contains(e.target) && !tbtn.contains(e.target)) { pop.classList.remove('on'); tbtn.setAttribute('aria-expanded', 'false'); }
@@ -2509,13 +2512,15 @@
     function cartBadge() { var n = cart.reduce(function (a, c) { return a + c.qty; }, 0), b = $('cart-count'); b.textContent = n; b.style.display = n ? 'flex' : 'none'; }
     function renderCart() {
         cart = cart.filter(function (c) { return P(c.id); });
-        var tot = 0;
-        $('ct-list').innerHTML = cart.length ? cart.map(function (c, i) {
-            var p = P(c.id), u = unit(p); tot += u * c.qty;
-            return '<div class="fv-item" data-i="' + i + '">' + thumb(p) + '<div class="fv-t"><b>' + esc(p.title) + '</b><small>' + ([c.color, c.size].filter(Boolean).map(esc).join(' • ') || '—') + (u ? ' • ' + fmtEGP(u) : '') + '</small><div class="ct-q"><button type="button" data-d="-1">−</button><b>' + c.qty + '</b><button type="button" data-d="1">+</button></div></div><button type="button" class="fv-rm" data-rm="1">✕</button></div>';
-        }).join('') : '<div class="fv-empty">السلة فاضية 🛒<br>اختاري موديل وضيفيه للسلة.</div>';
+        var tot = 0, offN = 0;
+        $('ct-list').innerHTML = (cart.some(function (c) { return P(c.id).available === false; }) ? '<div class="ct-warn">⚠️ فيه موديلات في السلة بقت غير متاحة حالياً — مش هتتبعت في طلب واتساب.</div>' : '') + (cart.length ? cart.map(function (c, i) {
+            var p = P(c.id), u = unit(p), off = p.available === false;
+            if (off) offN++; else tot += u * c.qty;
+            return '<div class="fv-item' + (off ? ' ct-off' : '') + '" data-i="' + i + '">' + thumb(p) + '<div class="fv-t"><b>' + esc(p.title) + '</b><small>' + ([c.color, c.size].filter(Boolean).map(esc).join(' • ') || '—') + (u ? ' • ' + fmtEGP(u) : '') + '</small>' + (off ? '<span class="ct-offt">غير متاح حالياً</span>' : '') + '<div class="ct-q"><button type="button" data-d="-1">−</button><b>' + c.qty + '</b><button type="button" data-d="1">+</button></div></div><button type="button" class="fv-rm" data-rm="1">✕</button></div>';
+        }).join('') : '<div class="fv-empty">السلة فاضية 🛒<br>اختاري موديل وضيفيه للسلة.</div>');
         $('ct-tot').textContent = tot ? 'الإجمالي: ' + fmtEGP(tot) : '';
         $('ct-foot').style.display = cart.length ? 'flex' : 'none';
+        var wb = $('ct-foot').querySelector('.fv-wa'); if (wb) { wb.disabled = !!cart.length && offN === cart.length; wb.style.opacity = wb.disabled ? '.5' : ''; }
         cartBadge();
     }
     $('ct-list').addEventListener('click', function (e) {
@@ -2539,14 +2544,17 @@
         saveCart(); cartBadge(); h.textContent = '✓ اتضاف للسلة — افتحي 🛒 فوق لما تخلصي';
     };
     window.sendCart = function () {
-        cart = cart.filter(function (c) { return P(c.id); }); if (!cart.length) return;
+        cart = cart.filter(function (c) { return P(c.id); });
+        var all = cart; cart = cart.filter(function (c) { return P(c.id).available !== false; });   // غير المتاح مبيتبعتش
+        if (!cart.length) { cart = all; if (all.length) alert('كل الموديلات اللي في السلة غير متاحة حالياً'); return; }
+        var send = cart; cart = all;
         var head = 'السلام عليكم، عايزة أطلب الموديلات دي من الموقع 🛍️\n\n', tail = '\nممكن تأكدوا التوفر؟', blocks = [], tot = 0, len = encodeURIComponent(head + tail).length;
-        cart.forEach(function (c, i) {
+        send.forEach(function (c, i) {
             var p = P(c.id); tot += unit(p) * c.qty;
             var b = (i + 1) + ') ' + waItem(p, { ask: true, color: c.color, size: c.size, qty: c.qty }) + '\n', l = encodeURIComponent(b + '\n').length;
             if (len + l < 3100) { blocks.push(b); len += l; }
         });
-        if (blocks.length < cart.length) blocks.push('+ ' + (cart.length - blocks.length) + ' موديلات تانية في السلة\n');
+        if (blocks.length < send.length) blocks.push('+ ' + (send.length - blocks.length) + ' موديلات تانية في السلة\n');
         waOpen(head + blocks.join('\n') + (tot ? '\nالإجمالي: ' + fmtEGP(tot) + '\n' : '') + tail);
     };
 
@@ -2635,6 +2643,46 @@
     document.addEventListener('noor:products', function () { cartBadge(); newBar(); fromHash(); });
     cartBadge();
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && $('cart-panel').classList.contains('on')) closeCart(); });
+})();
+</script>
+<script>
+// زرار/سحبة الرجوع في الموبايل: بتقفل النافذة المفتوحة بس بدل ما تخرج من الموقع
+(function () {
+    var IDS = ['product-modal', 'fav-panel', 'cart-panel', 'sh-panel', 'lightbox', 'theme-pop'];
+    var isOpen = function (el) { return !!el && (el.classList.contains('active') || el.classList.contains('on')); };
+    var state = {}, navD = 0, ignore = 0, skipClose = 0;
+    IDS.forEach(function (id) { state[id] = isOpen(document.getElementById(id)); });
+    function closeTop() {
+        var g = function (id) { return document.getElementById(id); };
+        if (isOpen(g('lightbox'))) { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); return true; }
+        if (isOpen(g('product-modal'))) { closeModal(); return true; }
+        if (isOpen(g('sh-panel')) && window.closeShared) { closeShared(); return true; }
+        if (isOpen(g('cart-panel')) && window.closeCart) { closeCart(); return true; }
+        if (isOpen(g('fav-panel')) && window.closeFav) { closeFav(); return true; }
+        if (isOpen(g('theme-pop'))) { g('theme-pop').classList.remove('on'); var tb = g('theme-open'); if (tb) tb.setAttribute('aria-expanded', 'false'); return true; }
+        return false;
+    }
+    var mo = new MutationObserver(function () {
+        var opened = 0, closed = 0;
+        IDS.forEach(function (id) {
+            var now = isOpen(document.getElementById(id));
+            if (now && !state[id]) opened++; else if (!now && state[id]) closed++;
+            state[id] = now;
+        });
+        var c = Math.max(0, closed - skipClose); skipClose = Math.max(0, skipClose - closed);   // اللي اتقفل بسبب popstate مش بنرجع عليه تاني
+        var net = opened - c;
+        for (; net > 0; net--) { try { history.pushState({ noorNav: 1 }, ''); navD++; } catch (e) {} }
+        if (net < 0) { var k = Math.min(-net, navD); if (k > 0) { navD -= k; ignore++; try { history.go(-k); } catch (e) { ignore--; } } }
+        if (typeof syncScroll === 'function') syncScroll();
+    });
+    IDS.forEach(function (id) { var el = document.getElementById(id); if (el) mo.observe(el, { attributes: true, attributeFilter: ['class'] }); });
+    window.addEventListener('popstate', function () {
+        if (ignore > 0) { ignore--; return; }
+        if (navD > 0) navD--;
+        skipClose = 1;
+        if (!closeTop()) skipClose = 0;
+        if (typeof syncScroll === 'function') syncScroll();
+    });
 })();
 </script>
 </body>

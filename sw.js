@@ -3,10 +3,11 @@
    - الصور والأيقونات والخطوط: من الكاش وتتحدّث في الخلفية.
    - طلبات GitHub API (لوحة التحكم) مابتعديش من هنا خالص.
    لو غيّرتي في قايمة SHELL، غيّري رقم VERSION. */
-const VERSION = 'noor-pages-v3';
+const VERSION = 'noor-pages-v4';
 const RUNTIME = 'noor-assets-v1';
 const SHELL = ['./', 'index.html', 'admin.html', 'manifest.json', 'admin-manifest.json',
-               'logo.jpg', 'icon-192.png', 'icon-512.png', 'admin-192.png', 'admin-512.png'];
+               'logo.jpg', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'admin-192.png', 'admin-512.png', 'admin-maskable-512.png',
+               'welcome.webp', 'idle.webp', 'heart.webp', 'confused.webp', 'drag.webp', 'point.webp', 'cheer.webp', 'think.webp', 'sleep.webp'];
 const CDN = ['cdn.tailwindcss.com', 'fonts.googleapis.com', 'fonts.gstatic.com', 'cdnjs.cloudflare.com'];
 const MAX_RUNTIME = 160;
 
@@ -40,7 +41,7 @@ async function networkFirst(e, req, key) {
     return res;
   });
   const first = await Promise.race([net.catch(() => null), sleep(4000).then(() => null)]);
-  if (first) return first;
+  if (first && first.ok) return first;
   const cached = await cache.match(key);
   if (cached) { e.waitUntil(net.catch(() => {})); return cached; }
   try { return await net; } catch (_) {}
