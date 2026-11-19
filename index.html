@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Noor Store · index.html · v2.1 · 2026-11-13 -->
+<!-- Noor Store · index.html · v2.3 · 2026-11-18 -->
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -32,7 +32,18 @@
             try {
                 var d = document.documentElement, nav = navigator, conn = nav.connection || {};
                 var t = localStorage.getItem('noor_theme'), l = localStorage.getItem('noor_lite'), c = localStorage.getItem('noor_cards');
-                d.setAttribute('data-theme', /^(luxe|violet|light)$/.test(t) ? t : 'luxe');   // الثيم الافتراضي: luxe
+                // الثيمات المتاحة + إعدادات «شكل الموقع» (بتيجي من products.json وبتتخزّن هنا عشان مفيش وميض)
+                var T = ['luxe', 'violet', 'light', 'emerald', 'royal', 'sand', 'blush'];
+                var ap = {}; try { ap = JSON.parse(localStorage.getItem('noor_appearance') || '{}') || {}; } catch (x) { ap = {}; }
+                var hid = Array.isArray(ap.hidden) ? ap.hidden : [];
+                var ok = function (x) { return T.indexOf(x) > -1; };
+                var pick = ok(ap.force) ? ap.force
+                    : (ok(t) && hid.indexOf(t) < 0) ? t
+                    : (ok(ap.default) && hid.indexOf(ap.default) < 0) ? ap.default
+                    : (T.filter(function (x) { return hid.indexOf(x) < 0; })[0] || 'luxe');   // الافتراضي: luxe
+                d.setAttribute('data-theme', pick);
+                var mc = { luxe: '#0a0a0d', violet: '#17151c', light: '#faf5f1', emerald: '#07130f', royal: '#080d1f', sand: '#f6efe4', blush: '#fdf1f3' }[pick];
+                var mt = document.getElementById('meta-theme'); if (mt && mc) mt.setAttribute('content', mc);
                 // جهاز المدير (فيه توكن): بيظهر رابط اللوحة، والتطبيق المثبّت ممكن يفتح عليها على طول
                 var raw = localStorage.getItem('noor_cfg'), tok = raw && JSON.parse(raw).token;
                 if (tok) {
@@ -48,6 +59,43 @@
                 if (c === 'big') d.setAttribute('data-cards', 'big');
             } catch (e) { document.documentElement.setAttribute('data-theme', 'luxe'); document.documentElement.classList.add('js'); }
         })();
+    </script>
+    <script>
+        // قفل التمرير مركزي: بيفضل مقفول طول ما أي نافذة/لوحة مفتوحة، ويتفتح لما كلهم يتقفلوا
+        function syncScroll() {
+            var ids = ['product-modal', 'fav-panel', 'cart-panel', 'sh-panel', 'lightbox'], open = false;
+            for (var i = 0; i < ids.length; i++) {
+                var e = document.getElementById(ids[i]);
+                if (e && (e.classList.contains('active') || e.classList.contains('on'))) { open = true; break; }
+            }
+            if (document.body) document.body.style.overflow = open ? 'hidden' : '';
+        }
+
+        // إعدادات «شكل الموقع» من products.json: ثيم افتراضي + ثيمات مخفية + ثيم موسمي إجباري
+        window.noorThemes = ['luxe', 'violet', 'light', 'emerald', 'royal', 'sand', 'blush'];
+        window.noorAP = (function () {
+            try { return noorNormAP(JSON.parse(localStorage.getItem('noor_appearance') || '{}')); } catch (e) { return noorNormAP({}); }
+        })();
+        function noorNormAP(a) {
+            var T = window.noorThemes; a = a && typeof a === 'object' ? a : {};
+            var hidden = (Array.isArray(a.hidden) ? a.hidden : []).filter(function (x, i, arr) { return T.indexOf(x) > -1 && arr.indexOf(x) === i; });
+            if (hidden.length >= T.length) hidden = [];                       // مينفعش كل الثيمات تتخفي
+            var def = T.indexOf(a.default) > -1 && hidden.indexOf(a.default) < 0 ? a.default : (T.filter(function (x) { return hidden.indexOf(x) < 0; })[0] || 'luxe');
+            return { default: def, hidden: hidden, force: T.indexOf(a.force) > -1 ? a.force : '' };
+        }
+        window.noorResolveTheme = function () {
+            var ap = window.noorAP, t = null;
+            try { t = localStorage.getItem('noor_theme'); } catch (e) {}
+            if (ap.force) return ap.force;                                     // ثيم موسمي إجباري
+            if (window.noorThemes.indexOf(t) > -1 && ap.hidden.indexOf(t) < 0) return t;   // اختيار الزبونة (لو لسه متاح)
+            return ap.default;
+        };
+        window.noorSetAppearance = function (raw) {
+            window.noorAP = noorNormAP(raw);
+            try { localStorage.setItem('noor_appearance', JSON.stringify(window.noorAP)); } catch (e) {}
+            document.documentElement.setAttribute('data-theme', window.noorResolveTheme());
+            if (window.noorPaintTheme) window.noorPaintTheme();
+        };
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -176,7 +224,7 @@
 
         
         /* =====================================================================
-           NOOR STORE — الشكل النهائي: ثيمات (luxe / violet / light) + هولوجرام
+           NOOR STORE — الشكل النهائي: 7 ثيمات (luxe / violet / light / emerald / royal / sand / blush) + هولوجرام
            ===================================================================== */
         :root, html[data-theme="luxe"] {
             --bg:#0a0a0d; --bg2:#121217; --w1:rgba(255,255,255,.05); --w2:rgba(255,255,255,.085);
@@ -211,6 +259,50 @@
             --pop-bg:#fff; --pop-text:#2a2127; --pop-hover:#f7e8e1; --pop-head:#b8715a; --pop-ring:#b8715a; --pop-click:#fdeee8;
             color-scheme:light;
         }
+        html[data-theme="emerald"] {
+            --bg:#07130f; --bg2:#0d1f19; --w1:rgba(255,255,255,.05); --w2:rgba(255,255,255,.085);
+            --text:#eef7f2; --muted:#9fb8ad; --faint:#86a094;
+            --accent:#d9b86c; --accent-rgb:217 184 108; --accent-soft:#ecd08e; --accent2:#5fd3a1; --champ:#f0dca4;
+            --line:rgba(217,184,108,.22); --line2:rgba(217,184,108,.5);
+            --glow:#34d399; --glow-rgb:52 211 153; --sale:#ff6b81; --sale2:#ffa94d;
+            --on-accent:#10180f; --hdr:rgba(7,19,15,.84); --modal:#0f221b; --sheet:#0f221b; --card-img:#14291f;
+            --bg-g1:rgba(16,185,129,.22); --bg-g2:rgba(217,184,108,.09);
+            --pop-bg:#0f221b; --pop-text:#fff; --pop-hover:#1b3a2d; --pop-head:#d9b86c; --pop-ring:#d9b86c; --pop-click:#1b3a2d;
+            color-scheme:dark;
+        }
+        html[data-theme="royal"] {
+            --bg:#080d1f; --bg2:#0f1730; --w1:rgba(255,255,255,.05); --w2:rgba(255,255,255,.085);
+            --text:#eef2ff; --muted:#a5b0d0; --faint:#8791b5;
+            --accent:#e3c27a; --accent-rgb:227 194 122; --accent-soft:#f1d9a0; --accent2:#8fb0ff; --champ:#f4e2b4;
+            --line:rgba(227,194,122,.22); --line2:rgba(227,194,122,.5);
+            --glow:#5b8cff; --glow-rgb:91 140 255; --sale:#ff5c8a; --sale2:#ff9f5a;
+            --on-accent:#14110a; --hdr:rgba(8,13,31,.86); --modal:#101a38; --sheet:#101a38; --card-img:#16224a;
+            --bg-g1:rgba(59,100,255,.26); --bg-g2:rgba(227,194,122,.08);
+            --pop-bg:#101a38; --pop-text:#fff; --pop-hover:#1c2b5a; --pop-head:#e3c27a; --pop-ring:#e3c27a; --pop-click:#1c2b5a;
+            color-scheme:dark;
+        }
+        html[data-theme="sand"] {
+            --bg:#f6efe4; --bg2:#fffaf1; --w1:rgba(60,45,25,.05); --w2:rgba(60,45,25,.09);
+            --text:#3a2e20; --muted:#756650; --faint:#8f8068;
+            --accent:#a0703a; --accent-rgb:160 112 58; --accent-soft:#b98550; --accent2:#8a6a2a; --champ:#c9a45a;
+            --line:rgba(160,112,58,.28); --line2:rgba(160,112,58,.55);
+            --glow:#d98b4a; --glow-rgb:217 139 74; --sale:#c2410c; --sale2:#d97706;
+            --on-accent:#ffffff; --hdr:rgba(246,239,228,.88); --modal:#fffaf1; --sheet:#fffaf1; --card-img:#eadfcd;
+            --bg-g1:rgba(217,139,74,.14); --bg-g2:rgba(201,164,90,.14);
+            --pop-bg:#fff; --pop-text:#3a2e20; --pop-hover:#f3e5cf; --pop-head:#a0703a; --pop-ring:#a0703a; --pop-click:#f8ecd9;
+            color-scheme:light;
+        }
+        html[data-theme="blush"] {
+            --bg:#fdf1f3; --bg2:#ffffff; --w1:rgba(59,42,48,.045); --w2:rgba(59,42,48,.08);
+            --text:#3b2a30; --muted:#7a6168; --faint:#957b83;
+            --accent:#c4577a; --accent-rgb:196 87 122; --accent-soft:#d77595; --accent2:#b98a6b; --champ:#d9a98a;
+            --line:rgba(196,87,122,.26); --line2:rgba(196,87,122,.55);
+            --glow:#ef6b95; --glow-rgb:239 107 149; --sale:#d6336c; --sale2:#e8590c;
+            --on-accent:#ffffff; --hdr:rgba(253,241,243,.88); --modal:#ffffff; --sheet:#ffffff; --card-img:#f6e0e5;
+            --bg-g1:rgba(239,107,149,.14); --bg-g2:rgba(217,169,138,.16);
+            --pop-bg:#fff; --pop-text:#3b2a30; --pop-hover:#fbe4ea; --pop-head:#c4577a; --pop-ring:#c4577a; --pop-click:#fdeef2;
+            color-scheme:light;
+        }
         html.js .nz-reveal { opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
         html.js .nz-reveal.in { opacity:1; transform:none; }
         body { background:var(--bg) !important; color:var(--text) !important; }
@@ -222,18 +314,20 @@
         .nz-hdr { position:fixed; top:0; left:0; right:0; z-index:50; background:var(--hdr); backdrop-filter:blur(14px); transition:transform .32s ease;
             border-bottom:1px solid transparent; border-image:linear-gradient(90deg, transparent, var(--line2), transparent) 1; }
         .nz-hdr.nz-hide { transform:translateY(-112%); }
-        .nz-hdr-in { max-width:1100px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
-        .nz-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
+        .nz-hdr-in { max-width:1100px; margin:0 auto; padding:9px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+        .nz-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; flex:1 1 auto; min-width:0; }
+        .nz-brand > div { min-width:0; flex:1 1 auto; }
+        .nz-logo { flex:none; }
         .nz-logo { width:46px; height:46px; border-radius:50%; object-fit:cover; background:#000;
             box-shadow:0 0 0 1.5px var(--line2), 0 0 18px rgba(var(--glow-rgb)/.28); }
-        .nz-name { font:700 22px/1.1 'Amiri','Cairo',serif; background:linear-gradient(90deg,var(--accent-soft),var(--accent2));
+        .nz-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font:700 22px/1.1 'Amiri','Cairo',serif; background:linear-gradient(90deg,var(--accent-soft),var(--accent2));
             -webkit-background-clip:text; background-clip:text; color:transparent; }
         .nz-name small { font:700 10px 'Cairo',sans-serif; padding:1px 7px; margin-right:5px; border-radius:99px; background:var(--w2); -webkit-text-fill-color:var(--muted); }
-        .nz-sub { font:600 9.5px/1.3 'Playfair Display',serif; letter-spacing:.2em; color:var(--faint); text-transform:uppercase; white-space:nowrap; }
+        .nz-sub { font:600 9.5px/1.3 'Playfair Display',serif; letter-spacing:.2em; color:var(--faint); text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .nz-sub .lg { display:none; }
         @media (min-width:480px) { .nz-sub .lg { display:inline; } }
-        .nz-tools { display:flex; gap:7px; }
-        .nz-ic { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; cursor:pointer; text-decoration:none; position:relative;
+        .nz-tools { display:flex; gap:8px; flex:none; }
+        .nz-ic { flex:none; width:42px; height:42px; border-radius:50%; display:grid; place-items:center; cursor:pointer; text-decoration:none; position:relative;
             background:var(--w1); border:1px solid var(--line2); color:var(--accent-soft); font-size:17px; transition:transform .2s; }
         .nz-ic:active { transform:scale(.9); }
         .nz-ic.nz-wa { color:#25d366; border-color:rgba(37,211,102,.45); }
@@ -244,9 +338,9 @@
             background:var(--sheet); border:1px solid var(--line2); box-shadow:0 20px 50px rgba(0,0,0,.45); }
         #theme-pop.on { display:block; animation:nzPop .2s ease; }
         .tp-h { margin:0 0 8px; font-size:12px; font-weight:700; color:var(--faint); }
-        .tp-opt { display:flex; align-items:center; gap:12px; width:100%; padding:9px 10px; margin-bottom:6px; border-radius:14px; border:1px solid transparent; background:var(--w1);
+        .tp-opt, .tp-link { display:flex; align-items:center; gap:12px; width:100%; padding:9px 10px; margin-bottom:6px; border-radius:14px; border:1px solid transparent; background:var(--w1);
             color:var(--text); font:700 13px 'Cairo',sans-serif; cursor:pointer; text-align:right; }
-        .tp-opt i { width:30px; height:30px; border-radius:50%; flex:none; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25); }
+        .tp-opt i, .tp-link i { width:30px; height:30px; border-radius:50%; flex:none; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25); }
         .tp-opt.on { border-color:var(--accent); background:var(--w2); }
         .tp-opt.on::after { content:"✓"; margin-right:auto; color:var(--accent); font-weight:900; }
         .tp-sep { height:1px; background:var(--line); margin:12px 0; }
@@ -332,6 +426,20 @@
             background:linear-gradient(160deg,var(--w2),var(--w1)); border:1px solid var(--line2); box-shadow:0 0 18px rgba(var(--glow-rgb)/.13), inset 0 0 14px rgba(255,255,255,.04); }
         .nz-act:first-child i { color:var(--glow); }
         .nz-act:active i { transform:scale(.9); }
+        .nz-actions { flex-wrap:wrap; row-gap:14px; }
+        .nz-act { flex:0 0 auto; }
+        @media (max-width:420px) {
+            .nz-hdr-in { padding:8px 10px; gap:8px; }
+            .nz-logo { width:42px; height:42px; }
+            .nz-brand { gap:8px; }
+            .nz-name { font-size:20px; }
+            .nz-name small { padding:1px 5px; margin-right:3px; }
+            .nz-sub { letter-spacing:.1em; font-size:9px; }
+            .nz-tools { gap:6px; }
+            .nz-actions { gap:12px 9px; }
+            .nz-act i { width:48px; height:48px; font-size:19px; }
+            #theme-pop { top:60px; left:8px; max-height:calc(100vh - 76px); overflow-y:auto; }
+        }
 
         /* ---------- عناوين الأقسام ---------- */
         .nz-sec { display:flex; align-items:center; gap:12px; font-size:18px; font-weight:800; margin:0 0 14px; padding:0 4px; }
@@ -361,7 +469,7 @@
         .pr { display:flex; align-items:baseline; gap:8px; margin:0 0 8px; }
         .pr-now { color:var(--accent-soft); font-size:15px; font-weight:900; }
         .pr-was { color:var(--faint); font-size:11.5px; text-decoration:line-through; }
-        html[data-theme="light"] .pr-now { color:var(--accent); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .pr-now { color:var(--accent); }
         .pr.is-sale .pr-now { color:var(--sale); }
         #feat-track > div, #trend-track > div, #offer-track > div { border-radius:18px !important; }
         #feat-track .pr, #trend-track .pr, #offer-track .pr { margin:-2px 8px 8px; }
@@ -431,22 +539,22 @@
         #mascot-close { border-color:var(--line2); }
 
         /* ---------- الثيم الفاتح: تعديل ألوان Tailwind القديمة ---------- */
-        html[data-theme="light"] :is(h1,h2,h3,h4,p,span,div,a,button,li).text-white:not([class*="bg-"]):not([class*="from-"]) { color:var(--text); }
-        html[data-theme="light"] .text-gray-300, html[data-theme="light"] .text-gray-400, html[data-theme="light"] .text-gray-500 { color:var(--muted); }
-        html[data-theme="light"] .bg-gray-800 { background-color:var(--card-img); }
-        html[data-theme="light"] .border-gray-600, html[data-theme="light"] .border-gray-700, html[data-theme="light"] .border-gray-800, html[data-theme="light"] .border-gray-900 { border-color:var(--line); }
-        html[data-theme="light"] .bg-brand-accent.text-black { color:var(--on-accent); }
-        html[data-theme="light"] .fav-btn { color:#fff; }
-        html[data-theme="light"] .st-open { color:#15803d; background:rgba(22,163,74,.12); border-color:rgba(22,163,74,.4); }
-        html[data-theme="light"] .st-closed { color:#b91c1c; background:rgba(220,38,38,.1); border-color:rgba(220,38,38,.35); }
-        html[data-theme="light"] #modal-title, html[data-theme="light"] #modal-desc { color:var(--text); }
-        html[data-theme="light"] .nz-hdr { box-shadow:0 4px 18px rgba(42,33,39,.08); }
-        html[data-theme="light"] .nz-logo { background:#fff; }
-        html[data-theme="light"] .nz-ic.nz-wa { color:#16a34a; }
-        html[data-theme="light"] #theme-pop { box-shadow:0 20px 50px rgba(42,33,39,.2); }
-        html[data-theme="light"] .nz-act i { box-shadow:0 4px 14px rgba(42,33,39,.08); }
-        html[data-theme="light"] .product-card:hover { box-shadow:0 14px 30px rgba(42,33,39,.14); }
-        html[data-theme="light"] .holo-frame { box-shadow:0 18px 44px rgba(42,33,39,.22); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) :is(h1,h2,h3,h4,p,span,div,a,button,li).text-white:not([class*="bg-"]):not([class*="from-"]) { color:var(--text); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .text-gray-300, html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .text-gray-400, html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .text-gray-500 { color:var(--muted); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .bg-gray-800 { background-color:var(--card-img); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .border-gray-600, html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .border-gray-700, html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .border-gray-800, html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .border-gray-900 { border-color:var(--line); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .bg-brand-accent.text-black { color:var(--on-accent); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .fav-btn { color:#fff; }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .st-open { color:#15803d; background:rgba(22,163,74,.12); border-color:rgba(22,163,74,.4); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .st-closed { color:#b91c1c; background:rgba(220,38,38,.1); border-color:rgba(220,38,38,.35); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) #modal-title, html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) #modal-desc { color:var(--text); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .nz-hdr { box-shadow:0 4px 18px rgba(42,33,39,.08); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .nz-logo { background:#fff; }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .nz-ic.nz-wa { color:#16a34a; }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) #theme-pop { box-shadow:0 20px 50px rgba(42,33,39,.2); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .nz-act i { box-shadow:0 4px 14px rgba(42,33,39,.08); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .product-card:hover { box-shadow:0 14px 30px rgba(42,33,39,.14); }
+        html:is([data-theme="light"],[data-theme="sand"],[data-theme="blush"]) .holo-frame { box-shadow:0 18px 44px rgba(42,33,39,.22); }
 
         /* ---------- حجم الكروت ---------- */
         @media (max-width:767px) { html[data-cards="big"] #products-grid { grid-template-columns:1fr !important; } }
@@ -458,7 +566,7 @@
         html.lite .holo-ghost, html.lite .holo-main::before, html.lite body::before { display:none !important; }
         html.lite .holo-ring::after, html.lite .holo-deck, html.lite .holo-base, html.lite .sk-img, html.lite .sk-line { animation:none !important; }
         html.lite .holo-ring, html.lite .holo-frame { box-shadow:none; }
-        html.lite html.js .nz-reveal, html.lite .nz-reveal { transition:none; opacity:1; transform:none; }
+        html.lite.js .nz-reveal, html.lite .nz-reveal { transition:none; opacity:1; transform:none; }
         html.lite .product-card { box-shadow:none !important; }
         @media (prefers-reduced-motion: reduce) {
             .holo-deck, .holo-ring::after, .holo-base, .holo-main::before, .sk-img, .sk-line { animation:none !important; }
@@ -481,7 +589,9 @@
         .admin-only { display:none !important; }
         html.is-admin .admin-only { display:flex !important; }
         html.is-admin .tp-sep.admin-only { display:block !important; }
-        a.tp-opt { text-decoration:none; }
+        a.tp-link { text-decoration:none; }
+        .tp-opt[hidden] { display:none !important; }
+        .tp-note { margin:0 0 8px; padding:8px 10px; border-radius:12px; background:var(--w1); border:1px solid var(--line); font-size:12px; line-height:1.7; color:var(--muted); }
     </style>
 <style id="noor-plus-css">
 #cart-panel,#sh-panel{display:none;position:fixed;inset:0;z-index:90;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.78)}
@@ -521,24 +631,27 @@
                 <button id="theme-open" type="button" aria-label="تغيير الشكل" aria-haspopup="true" aria-expanded="false" class="nz-ic">🎨</button>
                 <button id="fav-open" type="button" onclick="openFav()" aria-label="المفضلة" class="nz-ic">♥<span id="fav-count"></span></button>
                 <button id="cart-open" type="button" onclick="openCart()" aria-label="السلة" class="nz-ic">🛒<span id="cart-count"></span></button>
-                <a href="https://wa.me/201271425089" data-wa target="_blank" aria-label="واتساب" class="nz-ic nz-wa"><i class="fab fa-whatsapp"></i></a>
-                <button type="button" onclick="sharePage()" aria-label="مشاركة" class="nz-ic"><i class="fas fa-share-alt"></i></button>
             </div>
         </div>
     </header>
 
     <!-- اختيار الشكل -->
     <div id="theme-pop" role="dialog" aria-label="اختيار الشكل">
-        <p class="tp-h">اختاري الشكل اللي يعجبك 🎨</p>
+        <p class="tp-h" id="tp-title">اختاري الشكل اللي يعجبك 🎨</p>
+        <p class="tp-note" id="tp-note" hidden></p>
         <button type="button" class="tp-opt" data-theme="luxe"><i style="background:linear-gradient(135deg,#0a0a0d 40%,#e8b4a0)"></i><span>أسود وروز جولد</span></button>
         <button type="button" class="tp-opt" data-theme="violet"><i style="background:linear-gradient(135deg,#6e3b83 40%,#d8be91)"></i><span>بنفسجي أنثوي</span></button>
         <button type="button" class="tp-opt" data-theme="light"><i style="background:linear-gradient(135deg,#faf5f1 40%,#b8715a)"></i><span>فاتح ناعم</span></button>
+        <button type="button" class="tp-opt" data-theme="emerald"><i style="background:linear-gradient(135deg,#0d3b2c 40%,#d9b86c)"></i><span>زمردي فاخر</span></button>
+        <button type="button" class="tp-opt" data-theme="royal"><i style="background:linear-gradient(135deg,#1e3a8a 40%,#e3c27a)"></i><span>أزرق ملكي</span></button>
+        <button type="button" class="tp-opt" data-theme="sand"><i style="background:linear-gradient(135deg,#f6efe4 40%,#a0703a)"></i><span>رملي / بيج دافئ</span></button>
+        <button type="button" class="tp-opt" data-theme="blush"><i style="background:linear-gradient(135deg,#fdf1f3 40%,#c4577a)"></i><span>وردي كشمير</span></button>
         <div class="tp-sep"></div>
         <p class="tp-h">حجم الكروت</p>
         <div class="tp-row"><button type="button" data-cards="small">صغير (2 جنب بعض)</button><button type="button" data-cards="big">كبير</button></div>
         <label class="tp-sw"><input type="checkbox" id="tp-lite"> تخفيف المؤثرات (للموبايلات الضعيفة)</label>
         <div class="tp-sep admin-only"></div>
-        <a class="tp-opt admin-only" href="admin.html" id="goadmin"><i style="background:linear-gradient(135deg,#d4af37,#1a1a1a)"></i><span>⚙ لوحة التحكم</span></a>
+        <a class="tp-link admin-only" href="admin.html" id="goadmin"><i style="background:linear-gradient(135deg,#d4af37,#1a1a1a)"></i><span>⚙ لوحة التحكم</span></a>
     </div>
 
     <!-- Hero Section -->
@@ -569,6 +682,7 @@
         <button type="button" class="nz-act" onclick="nzGo('trending')"><i>🔥</i>الرائج</button>
         <button type="button" class="nz-act" onclick="openDirections()"><i>📍</i>اتجاهات</button>
         <a class="nz-act" href="https://wa.me/201271425089" data-wa target="_blank"><i>💬</i>واتساب</a>
+        <button type="button" class="nz-act" onclick="sharePage()"><i>📤</i>مشاركة</button>
     </nav>
 
     <!-- Featured Slider -->
@@ -795,7 +909,7 @@
 
         let waNumber = "201271425089";
         // ===== واتساب: الرقم بيتغير من اللوحة + رسالة موحدة لكل الأماكن =====
-        window.NOOR_VERSION = '2.1 · 2026-11-13';
+        window.NOOR_VERSION = '2.3 · 2026-11-18';
         let waWarned = false;
         const waUrl = text => 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(text);
         function waOpen(text, productId) {                         // أي فتح لواتساب من الصفحة بيعدّي من هنا
@@ -970,6 +1084,7 @@
                     motd: (!Array.isArray(d) && typeof d.motd === 'string') ? d.motd.trim() : '',
                     shop: (!Array.isArray(d) && d.shop && typeof d.shop === 'object') ? d.shop : null
                 };
+                if (window.noorSetAppearance) window.noorSetAppearance(Array.isArray(d) ? null : d.appearance);
                 const cfgWa = String((window.noorShop.shop && window.noorShop.shop.whatsapp) || '').replace(/\D/g, '');
                 if (cfgWa.length >= 10 && cfgWa.length <= 15) waNumber = cfgWa;
                 applyWhatsapp();
@@ -1015,6 +1130,7 @@
 
         function openModal(id) {
             currentProduct = products.find(p => p.id === id);
+            if (!currentProduct) return;
             selectedColor = '';
             selectedSize = '';
             waWarned = false;
@@ -1036,10 +1152,10 @@
             })();
             
             const imgContainer = document.getElementById('modal-image-container');
-            if(currentProduct.image) {
-                imgContainer.innerHTML = `<img loading="lazy" src="${currentProduct.image}" class="w-full h-full object-cover">`;
-            } else {
-                imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center text-4xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
+            if (!(currentProduct.images && currentProduct.images.length)) {          // مفيش معرض صور: صورة واحدة أو أيقونة بديلة
+                imgContainer.innerHTML = currentProduct.image
+                    ? `<img loading="lazy" src="${esc(currentProduct.image)}" alt="${esc(currentProduct.title)}" class="w-full h-full object-cover">`
+                    : `<div class="w-full h-full flex items-center justify-center text-4xl text-gray-600"><i class="fas fa-tshirt"></i></div>`;
             }
 
             renderColors();
@@ -1049,7 +1165,7 @@
             if (typeof syncModalFav === 'function') syncModalFav();
             if (window.noorModalExtras) window.noorModalExtras();
             modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            syncScroll();
         }
 
         function renderColors() {
@@ -1123,8 +1239,17 @@
         function closeModal() {
             if (location.hash.startsWith('#p')) history.replaceState(null, '', location.pathname + location.search);
             modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            syncScroll();
         }
+
+        // Escape بيقفل نافذة الموديل (ومبيقفلش اللوحة اللي تحتها في نفس الضغطة)
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== 'Escape' || !modal.classList.contains('active')) return;
+            const lbx = document.getElementById('lightbox');
+            if (lbx && lbx.classList.contains('on')) return;       // عارض الصور بيقفل نفسه الأول
+            e.stopImmediatePropagation();
+            closeModal();
+        });
 
         modal.addEventListener('click', function(e) {
             if(e.target === modal) {
@@ -1238,11 +1363,11 @@
             window.openFav = function () {
                 renderFavPanel();
                 panel.classList.add('on');
-                document.body.style.overflow = 'hidden';
+                syncScroll();
             };
             window.closeFav = function () {
                 panel.classList.remove('on');
-                document.body.style.overflow = 'auto';
+                syncScroll();
             };
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && panel.classList.contains('on') && !document.getElementById('product-modal').classList.contains('active')) closeFav();
@@ -2068,18 +2193,26 @@
 
             // ---------- اختيار الشكل ----------
             var pop = document.getElementById('theme-pop'), tbtn = document.getElementById('theme-open'), meta = document.getElementById('meta-theme');
-            var COLORS = { luxe: '#0a0a0d', violet: '#17151c', light: '#faf5f1' };
+            var COLORS = { luxe: '#0a0a0d', violet: '#17151c', light: '#faf5f1', emerald: '#07130f', royal: '#080d1f', sand: '#f6efe4', blush: '#fdf1f3' };
+            var tnote = document.getElementById('tp-note'), ttitle = document.getElementById('tp-title');
             function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
             function paint() {
                 var t = root.getAttribute('data-theme'), c = root.getAttribute('data-cards') || 'small';
-                [].forEach.call(pop.querySelectorAll('.tp-opt'), function (b) { b.classList.toggle('on', b.getAttribute('data-theme') === t); });
+                var ap = window.noorAP || { hidden: [], force: '' };
+                [].forEach.call(pop.querySelectorAll('.tp-opt'), function (b) {
+                    var id = b.getAttribute('data-theme');
+                    b.classList.toggle('on', id === t);
+                    b.hidden = !!ap.force || ap.hidden.indexOf(id) > -1;      // المدير أخفى الثيم ده / أو في ثيم موسمي إجباري
+                });
+                if (tnote) { tnote.hidden = !ap.force; tnote.textContent = ap.force ? 'الموقع حالياً بشكل موسمي خاص ✨ هيرجع تقدري تختاري شكلك بعد انتهاء الموسم.' : ''; }
+                if (ttitle) ttitle.hidden = !!ap.force;
                 [].forEach.call(pop.querySelectorAll('[data-cards]'), function (b) { b.classList.toggle('on', b.getAttribute('data-cards') === c); });
                 document.getElementById('tp-lite').checked = root.classList.contains('lite');
                 if (meta) meta.setAttribute('content', COLORS[t] || COLORS.luxe);
             }
             pop.addEventListener('click', function (e) {
                 var b = e.target.closest ? e.target.closest('.tp-opt') : null;
-                if (b) { root.setAttribute('data-theme', b.getAttribute('data-theme')); put('noor_theme', b.getAttribute('data-theme')); paint(); return; }
+                if (b) { if (window.noorAP && window.noorAP.force) return; root.setAttribute('data-theme', b.getAttribute('data-theme')); put('noor_theme', b.getAttribute('data-theme')); paint(); return; }
                 var c = e.target.closest ? e.target.closest('[data-cards]') : null;
                 if (c) { if (c.getAttribute('data-cards') === 'big') root.setAttribute('data-cards', 'big'); else root.removeAttribute('data-cards'); put('noor_cards', c.getAttribute('data-cards')); paint(); }
             });
@@ -2089,6 +2222,7 @@
                 if (pop.classList.contains('on') && !pop.contains(e.target) && !tbtn.contains(e.target)) { pop.classList.remove('on'); tbtn.setAttribute('aria-expanded', 'false'); }
             }, true);
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape') pop.classList.remove('on'); });
+            window.noorPaintTheme = paint;
             paint();
 
             // ---------- هيدر بيختفي مع النزول ويرجع مع الطلوع ----------
@@ -2363,7 +2497,7 @@
 <script>
 (function () {
     var $ = function (id) { return document.getElementById(id); };
-    var lock = function (on) { document.body.style.overflow = on ? 'hidden' : 'auto'; };
+    var lock = function () { syncScroll(); };
     var P = function (id) { return products.find(function (p) { return p.id === Number(id); }); };
     var unit = function (p) { var s = saleInfo(p); return s && s.now ? s.now : (Number(p.price) > 0 ? Number(p.price) : 0); };
     var stars = function (n) { return '★'.repeat(n) + '☆'.repeat(5 - n); };
@@ -2498,7 +2632,7 @@
         var h = document.querySelector('.nz-hero'); h.parentNode.insertBefore(d, h);
     }
 
-    document.addEventListener('noor:products', function () { cartBadge(); newBar(); fromHash(); loadRv(); });
+    document.addEventListener('noor:products', function () { cartBadge(); newBar(); fromHash(); });
     cartBadge();
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && $('cart-panel').classList.contains('on')) closeCart(); });
 })();

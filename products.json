@@ -8,6 +8,11 @@
     "map": "",
     "whatsapp": "201271425089"
   },
+  "appearance": {
+    "default": "luxe",
+    "hidden": [],
+    "force": ""
+  },
   "products": [
     {
       "id": 2,

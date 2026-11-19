@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Noor Store · admin.html · v2.1 · 2026-11-13 -->
+<!-- Noor Store · admin.html · v2.3 · 2026-11-18 -->
 <html lang="ar" dir="rtl">
 <head>
 <script>
@@ -24,7 +24,7 @@ if(!ok){document.documentElement.style.display='none';location.replace('index.ht
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:Cairo,system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(92px + env(safe-area-inset-bottom)) env(safe-area-inset-left)}
-button,input,textarea{font:inherit;color:inherit}
+button,input,textarea,select{font:inherit;color:inherit}
 .top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(18,18,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}
 .top h1{flex:1;margin:0;font-size:18px;color:var(--gd)}
 .top .lg{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--gd);object-fit:cover;background:#000}
@@ -192,6 +192,10 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
 .sabout-b{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
 .sabout-b .btn{flex:1;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .sabout-b a.btn{color:var(--tx)}
+.thr{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-top:8px;border-radius:14px;background:var(--s1);border:1px solid var(--ln)}
+.thr i{width:30px;height:30px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}
+.thr b{flex:1;font-size:14px}
+.thr input{width:22px;height:22px;accent-color:var(--gd)}
 </style>
 </head>
 <body>
@@ -237,6 +241,7 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
   <div class="wrap">
     <button class="srow" type="button" data-go="cfg"><span class="si">🔗</span><span class="stt"><b>ربط GitHub</b><small id="set_gh">—</small></span><span class="sa">‹</span></button>
     <button class="srow" type="button" data-go="sshop"><span class="si">🏪</span><span class="stt"><b>بيانات المحل</b><small>واتساب • مواعيد الشغل • الخريطة</small></span><span class="sa">‹</span></button>
+    <button class="srow" type="button" data-go="sappear"><span class="si">🎨</span><span class="stt"><b>شكل الموقع</b><small id="set_ap">الثيم الافتراضي • إظهار وإخفاء • ثيم موسمي</small></span><span class="sa">‹</span></button>
     <button class="srow" type="button" data-go="sapp"><span class="si">📲</span><span class="stt"><b>التطبيق</b><small id="set_app">—</small></span><span class="sa">‹</span></button>
     <div class="sabout"><b>🚀 التطبيق المثبّت يفتح على</b><span class="mu">على الجهاز ده بس، لما تفتحيه من الأيقونة.</span>
       <div class="sabout-b"><button class="btn" id="ln_site" type="button">🛍️ المتجر</button><button class="btn" id="ln_admin" type="button">⚙ لوحة التحكم</button></div></div>
@@ -264,6 +269,22 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
     <input class="in ltr" id="sh_l" inputmode="url" placeholder="https://maps.app.goo.gl/...">
     <div class="mu" style="margin-top:6px">افتحي المحل على خرائط جوجل ← مشاركة ← انسخي الرابط وحطيه هنا.</div>
     <button class="btn p" id="sss" type="button" style="width:100%;margin-top:18px">حفظ</button>
+  </div>
+</section>
+
+<!-- شكل الموقع -->
+<section class="scr" id="sappear">
+  <div class="top"><button class="ib" data-back="set" aria-label="رجوع">→</button><h1>🎨 شكل الموقع</h1></div>
+  <div class="wrap">
+    <label>الثيم الافتراضي (اللي بتشوفه الزبونة أول مرة)</label>
+    <select class="in" id="ap_def"></select>
+    <label>الثيمات الظاهرة للزبونات</label>
+    <div class="mu">شيلي العلامة من أي ثيم عشان يختفي من قايمة الاختيار. لازم يفضل ثيم واحد ظاهر على الأقل.</div>
+    <div id="ap_list"></div>
+    <label>ثيم موسمي إجباري</label>
+    <select class="in" id="ap_force"></select>
+    <div class="mu" style="margin-top:6px">لو اخترتي ثيم هنا، الموقع كله بيتعرض بيه لكل الزبونات ومبتقدرش تغيّره لحد ما ترجعي تختاري «بدون». اختيار الزبونة السابق بيفضل محفوظ ويرجع بعد ما تقفلي الثيم الموسمي.</div>
+    <button class="btn p" id="apsave" type="button" style="width:100%;margin-top:18px">حفظ</button>
   </div>
 </section>
 
@@ -399,7 +420,7 @@ body{background:radial-gradient(ellipse at 85% -10%,rgba(110,59,131,.24),transpa
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let cfg={token:'',owner:'',repo:'',branch:''},items=[],banner='',motd='',shop={open:'',close:'',off:'',map:'',whatsapp:''},prev={},F=null,delId=null,tt;
+let cfg={token:'',owner:'',repo:'',branch:''},items=[],banner='',motd='',shop={open:'',close:'',off:'',map:'',whatsapp:''},appearance={default:'luxe',hidden:[],force:''},prev={},F=null,delId=null,tt;
 try{Object.assign(cfg,JSON.parse(localStorage.getItem('noor_cfg')||'{}'))}catch{}
 const saveCfg=()=>{try{localStorage.setItem('noor_cfg',JSON.stringify(cfg))}catch{}};
 
@@ -428,6 +449,9 @@ const delF=async(p,msg)=>{const f=await getF(p);if(f)await gh(`${R()}/contents/$
 const normSale=s=>{if(!s||typeof s!=='object')return null;const t=s.type==='percent'||s.type==='amount'?s.type:'',v=+s.value;if(!t||!(v>0))return null;return{type:t,value:Math.round(v*100)/100,until:/^\d{4}-\d{2}-\d{2}$/.test(s.until||'')?s.until:'',from:/^\d{4}-\d{2}-\d{2}$/.test(s.from||'')?s.from:''}};
 const norm=p=>({id:+p.id||0,title:p.title||'',badge:p.badge||'',image:p.image||'',description:p.description||'',colors:Array.isArray(p.colors)?p.colors:[],sizes:Array.isArray(p.sizes)?p.sizes:[],category:p.category||'',tag:p.tag||'',featured:!!p.featured,images:Array.isArray(p.images)&&p.images.length?p.images:(p.image?[p.image]:[]),tiktokUrl:p.tiktokUrl||'',available:p.available!==false,price:+p.price>0?Math.round(p.price*100)/100:0,sale:normSale(p.sale),reviews:Array.isArray(p.reviews)?p.reviews.map(x=>({name:String(x.name||'').slice(0,30),rating:Math.max(1,Math.min(5,+x.rating||5)),text:String(x.text||'').slice(0,300)})).filter(x=>x.text):[],added:/^\d{4}-\d{2}-\d{2}$/.test(p.added||'')?p.added:''});
 const normShop=x=>{x=x||{};const t=v=>/^\d{1,2}:\d{2}$/.test(v||'')?v:'';return{open:t(x.open),close:t(x.close),off:(x.off===0||x.off)?String(x.off):'',map:typeof x.map==='string'?x.map:'',whatsapp:typeof x.whatsapp==='string'?x.whatsapp.replace(/\D/g,''):''}};
+const THEMES=[['luxe','أسود وروز جولد','linear-gradient(135deg,#0a0a0d 40%,#e8b4a0)'],['violet','بنفسجي أنثوي','linear-gradient(135deg,#6e3b83 40%,#d8be91)'],['light','فاتح ناعم','linear-gradient(135deg,#faf5f1 40%,#b8715a)'],['emerald','زمردي فاخر','linear-gradient(135deg,#0d3b2c 40%,#d9b86c)'],['royal','أزرق ملكي','linear-gradient(135deg,#1e3a8a 40%,#e3c27a)'],['sand','رملي / بيج دافئ','linear-gradient(135deg,#f6efe4 40%,#a0703a)'],['blush','وردي كشمير','linear-gradient(135deg,#fdf1f3 40%,#c4577a)']];
+const TIDS=THEMES.map(t=>t[0]);
+const normAp=x=>{x=x&&typeof x==='object'?x:{};let h=(Array.isArray(x.hidden)?x.hidden:[]).filter((v,i,a)=>TIDS.includes(v)&&a.indexOf(v)===i);if(h.length>=TIDS.length)h=[];const d=TIDS.includes(x.default)&&!h.includes(x.default)?x.default:(TIDS.find(v=>!h.includes(v))||'luxe');return{default:d,hidden:h,force:TIDS.includes(x.force)?x.force:''}};
 const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const fmtEGP=n=>Number(n).toLocaleString('en-US')+' ج.م';
 function saleInfo(p){
@@ -440,18 +464,18 @@ function saleInfo(p){
   return{pct,was:price,now,until:s.until||''};
 }
 function untilText(u){if(!u)return'';const d=Math.round((new Date(u+'T00:00:00')-new Date(todayISO()+'T00:00:00'))/86400000);if(d<0||d>7)return'';return d===0?'ينتهي النهاردة':d===1?'ينتهي بكرة':'ينتهي خلال '+d+' أيام'}
-function parse(f){if(!f)return{banner:'',motd:'',shop:normShop(),products:[]};const j=JSON.parse(dec(f.content)),l=Array.isArray(j)?j:j.products;if(!Array.isArray(l))throw new Error('products.json مش بالصيغة المتوقعة');const o=Array.isArray(j)?{}:j;return{banner:o.banner||'',motd:typeof o.motd==='string'?o.motd:'',shop:normShop(o.shop),products:l.map(norm)}}
+function parse(f){if(!f)return{banner:'',motd:'',shop:normShop(),appearance:normAp(),products:[]};const j=JSON.parse(dec(f.content)),l=Array.isArray(j)?j:j.products;if(!Array.isArray(l))throw new Error('products.json مش بالصيغة المتوقعة');const o=Array.isArray(j)?{}:j;return{banner:o.banner||'',motd:typeof o.motd==='string'?o.motd:'',shop:normShop(o.shop),appearance:normAp(o.appearance),products:l.map(norm)}}
 
 async function load(){
   busy('جاري تحميل الموديلات...');
-  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;motd=d.motd;shop=d.shop;$('#bt').value=banner;fillShop();render();setTimeout(maybeTour,500);autoLaunch()}
+  try{const d=parse(await getF('products.json'));items=d.products;banner=d.banner;motd=d.motd;shop=d.shop;appearance=d.appearance;$('#bt').value=banner;fillShop();render();setTimeout(maybeTour,500);autoLaunch()}
   catch(e){toast(e.message,1)}finally{busy()}
 }
 /* كل تعديل بيقرأ أحدث نسخة من الملف الأول عشان ميحصلش تعارض */
 async function mutate(fn,msg,bn,ex){
   for(let i=0;i<2;i++){
-    const f=await getF('products.json'),d=parse(f),nx=fn(d.products),b=bn===undefined?d.banner:bn,x=ex===undefined?{motd:d.motd,shop:d.shop}:(typeof ex==='function'?ex(d):ex);
-    try{await putF('products.json',enc(JSON.stringify({banner:b,motd:x.motd,shop:x.shop,products:nx},null,2)+'\n'),msg,f&&f.sha);items=nx;banner=b;motd=x.motd;shop=x.shop;render();return}
+    const f=await getF('products.json'),d=parse(f),nx=fn(d.products),b=bn===undefined?d.banner:bn,x=ex===undefined?{motd:d.motd,shop:d.shop}:(typeof ex==='function'?ex(d):ex),ap=x.appearance!==undefined?normAp(x.appearance):d.appearance;
+    try{await putF('products.json',enc(JSON.stringify({banner:b,motd:x.motd,shop:x.shop,appearance:ap,products:nx},null,2)+'\n'),msg,f&&f.sha);items=nx;banner=b;motd=x.motd;shop=x.shop;appearance=ap;render();return}
     catch(e){if((e.st!==409&&e.st!==422)||i)throw e}
   }
 }
@@ -558,7 +582,7 @@ function openForm(id,dup){
   $('#f_c').value='';$('#f_u').value=p?p.tiktokUrl:'';$('#f_a').checked=p?(cp?true:p.available):true;$('#f_k').value=p?p.category:'';$('#f_g').value=p?p.tag:'';$('#f_f').checked=p&&!cp?p.featured:false;fillPrice(p);
   $('#cats').innerHTML=[...new Set(['تيشرتات','هوديز','بنطلونات',...items.map(x=>x.category)].filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
   $('#f_s').value='';chips();schips();pickShow();rvShow();
-  $('#frm').classList.add('on');$('#frm').scrollTop=0;document.body.style.overflow='hidden';
+  $('#frm').classList.add('on');$('#frm').scrollTop=0;document.body.style.overflow='hidden';navPush();
   if(cp){toast('اتنسخت البيانات ✓ عدّل الاسم وضيف صور الموديل الجديد');setTimeout(()=>{$('#f_t').focus();$('#f_t').select()},300)}
 }
 function fillPrice(p){
@@ -570,7 +594,7 @@ function dprev(){
   $('#f_dprev').textContent=h?'🏷️ '+h:'';
 }
 ['f_p','f_dt','f_dv'].forEach(i=>$('#'+i).addEventListener('input',dprev));
-const closeForm=()=>{$('#frm').classList.remove('on');document.body.style.overflow=''};
+const closeForm=()=>{$('#frm').classList.remove('on');document.body.style.overflow='';navReset()};
 const chips=()=>{$('#chips').innerHTML=F.colors.map((c,i)=>`<span class="chip"><button type="button" data-i="${i}" aria-label="حذف اللون">×</button>${esc(c)}</span>`).join('')};
 function addColors(){
   $('#f_c').value.split(/[,،\n]/).map(s=>s.trim()).filter(s=>s&&!F.colors.includes(s)).forEach(s=>F.colors.push(s));
@@ -723,16 +747,55 @@ $('#fs').onclick=async()=>{
   }finally{busy()}
 };
 
+/* ===== شكل الموقع ===== */
+function fillAp(){
+  const a=appearance;
+  $('#ap_list').innerHTML=THEMES.map(t=>`<label class="thr"><i style="background:${t[2]}"></i><b>${t[1]}</b><input type="checkbox" data-t="${t[0]}"${a.hidden.includes(t[0])?'':' checked'}></label>`).join('');
+  $('#ap_def').innerHTML=THEMES.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('');$('#ap_def').value=a.default;
+  $('#ap_force').innerHTML='<option value="">بدون (الزبونة تختار)</option>'+THEMES.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('');$('#ap_force').value=a.force;
+  const nm=id=>(THEMES.find(t=>t[0]===id)||[])[1]||'';
+  $('#set_ap').textContent=a.force?'ثيم موسمي شغّال: '+nm(a.force):'الافتراضي: '+nm(a.default);
+}
+$('#apsave').onclick=async()=>{
+  const vis=[...document.querySelectorAll('#ap_list input')].filter(i=>i.checked).map(i=>i.dataset.t),hidden=TIDS.filter(t=>!vis.includes(t));
+  if(!vis.length){toast('سيبي ثيم واحد ظاهر على الأقل',1);return}
+  const def=$('#ap_def').value;
+  if(hidden.includes(def)){toast('الثيم الافتراضي لازم يكون من الثيمات الظاهرة',1);return}
+  const ap={default:def,hidden,force:$('#ap_force').value};
+  busy('جاري الحفظ...');
+  try{await mutate(l=>l,'Update site appearance',undefined,d=>({motd:d.motd,shop:d.shop,appearance:ap}));fillAp();toast('✓ تم الحفظ — الشكل بيظهر في الموقع خلال دقيقة أو اتنين')}
+  catch(e){toast(e.message,1)}finally{busy()}
+};
+
 /* ===== الإعدادات ===== */
 function guess(){
   const m=location.hostname.match(/^(.+)\.github\.io$/);if(!m)return{};
   const seg=location.pathname.split('/')[1];
   return{owner:m[1],repo:seg&&!/\.html?$/i.test(seg)?seg:location.hostname};
 }
-const SCRS=['set','cfg','sshop','sapp'];
-const ADMIN_VER='2.1 · 2026-11-13';
-function openScr(id){SCRS.forEach(x=>$('#'+x).classList.toggle('on',x===id));document.body.style.overflow='hidden'}
-function closeScr(){SCRS.forEach(x=>$('#'+x).classList.remove('on'));document.body.style.overflow=''}
+const SCRS=['set','cfg','sshop','sappear','sapp'];
+const ADMIN_VER='2.3 · 2026-11-18';
+/* زرار الرجوع في الموبايل: بيقفل الشاشة الفرعية بدل ما يخرج من اللوحة */
+let navD=0,navIgnore=false;
+function navPush(){try{history.pushState({noorNav:1},'');navD++}catch{}}
+function navReset(){if(navD>0){const d=navD;navD=0;navIgnore=true;try{history.go(-d)}catch{navIgnore=false}}}
+function showScr(id){SCRS.forEach(x=>$('#'+x).classList.toggle('on',x===id));document.body.style.overflow='hidden'}
+function hideScr(){SCRS.forEach(x=>$('#'+x).classList.remove('on'));document.body.style.overflow=''}
+function openScr(id){
+  const was=SCRS.some(x=>$('#'+x).classList.contains('on'));
+  showScr(id);
+  if(id==='set'&&was){if(navD>0){navD--;navIgnore=true;try{history.back()}catch{navIgnore=false}}}
+  else navPush();
+}
+function closeScr(){hideScr();navReset()}
+window.addEventListener('popstate',()=>{
+  if(navIgnore){navIgnore=false;return}
+  if(navD>0)navD--;
+  if($('#frm').classList.contains('on')){$('#frm').classList.remove('on');document.body.style.overflow='';return}
+  const cur=SCRS.find(x=>$('#'+x).classList.contains('on'));
+  if(!cur)return;
+  if(cur!=='set')showScr('set');else hideScr();
+});
 function openCfg(){
   const g=guess();
   $('#tk').value=cfg.token;$('#ow').value=cfg.owner||g.owner||'';$('#rp').value=cfg.repo||g.repo||'';$('#br').value=cfg.branch;
@@ -771,7 +834,7 @@ $('#tc').onclick=async()=>{
 $('#cc').onclick=()=>openScr('set');
 $('#set_x').onclick=closeScr;
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>openScr(b.dataset.back));
-document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(b.dataset.go==='cfg')openCfg();else{fillShop();openScr(b.dataset.go)}});
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(b.dataset.go==='cfg')openCfg();else{fillShop();if(b.dataset.go==='sappear')fillAp();openScr(b.dataset.go)}});
 $('#set_lo').onclick=()=>{if(!confirm('تسجيل الخروج ومسح التوكن من الجهاز ده؟'))return;cfg={token:'',owner:cfg.owner,repo:cfg.repo,branch:''};saveCfg();items=[];render();openCfg()};
 $('#set_tour').onclick=()=>{closeScr();tourStart()};
 const isApp=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
